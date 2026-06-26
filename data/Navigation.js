@@ -1,36 +1,32 @@
 export const navItems = [
-  { title: "New Arrivals" },
   {
-    title: "Linen",
+    title: "Landscape & Outdoor Living",
     active: true,
     categories: [
       {
-        title: "Categories",
+        title: "Outdoor Artistry Series",
         links: [
-          "Cushion Covers",
-          "Bedspreads + Euros",
-          "Cushion Fillers",
-          "View All",
+          "Sculpture Fountains",
+          "Stone Boulders",
+          "Stone Lamps",
+          "Stone Planters",
         ],
       },
       {
-        title: "Collections",
+        title: "Stone Furniture & Seating",
         links: [
-          "Briza",
-          "Quorra",
-          "Matrix",
-          "Tzarina",
-          "Ziana",
-          "Kai",
-          "Qarshi",
-          "Art",
-          "Songbird",
+          "Stone Benches",
+          "Stone Seating Sets",
         ],
+      },
+      {
+        title: "Pathway Elements",
+        links: ["Gravels", "Pebles", "Stepping Stones", "Steps",],
       },
     ],
     images: [
       {
-        title: "Bedspreads",
+        title: "Sculpture Fountains",
         image:
           "/assets/nav-banners/Nav_Banner1_linen.jpg",
       },
@@ -43,45 +39,29 @@ export const navItems = [
   },
 
   {
-    title: "Tableware",
+    title: "Flooring & Paving Surfaces",
     categories: [
       {
-        title: "Dining",
-        links: ["Dinner Sets", "Dinnerware", "View All"],
+        title: "Paving Surfaces",
+        links: ["Coblestone",
+          "Crazy Paving",
+          "Paving Tiles",
+          "Pebble Tiles",],
       },
       {
-        title: "Serving",
+        title: "Poolside Collection",
         links: [
-          "Tea Service",
-          "Mugs & Cup Saucers",
-          "Serving Trays",
-          "Platters & Dessert Stands",
-          "Cutlery",
-          "Napkins & Napkin Rings",
-          "Table Runners & Placemats",
-          "Coasters",
-          "View All",
+          "Pool Copings",
+          "Pool Tiles",
         ],
       },
       {
-        title: "Bar & Glassware",
+        title: "Signature Stone Flooring",
         links: [
-          "Whiskey Glasses",
-          "Wine Glasses",
-          "Drinking Glasses",
-          "Bar Accessories",
-          "View All",
-        ],
-      },
-      {
-        title: "Collections",
-        links: [
-          "Le' Floret",
-          "Santorini",
-          "Fleur-De-Lis",
-          "Medicci",
-          "Alessi",
-          "Le Jardin",
+          "Ash Grey",
+          "Kadappa Black",
+          "Kota Blue",
+          "Kota Brown",
         ],
       },
     ],

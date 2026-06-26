@@ -36,24 +36,40 @@ export default function HeroSection() {
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setActiveSlide((prev) => (prev + 1) % heroItems.length);
-  }, 15000);
+    const timer = setTimeout(() => {
+      setActiveSlide((prev) => (prev + 1) % heroItems.length);
+    }, 10000);
 
-  return () => clearTimeout(timer);
-}, [activeSlide]);
+    return () => clearTimeout(timer);
+  }, [activeSlide]);
 
   return (
     <section className="relative h-screen overflow-hidden">
       {/* Slides */}
+
       {heroItems.map((item, index) => (
-        <div
+        <motion.div
           key={item.title}
-          className={`absolute inset-0 transition-opacity duration-1500 ${
-            activeSlide === index
-              ? "opacity-100"
-              : "opacity-0 pointer-events-none"
-          }`}
+          className="absolute inset-0"
+          initial={false}
+          animate={{
+            opacity: activeSlide === index ? 1 : 1,
+            scale: activeSlide === index ? 1 : 1.08,
+          }}
+          transition={{
+            opacity: {
+              duration: 1.2,
+              ease: "easeInOut",
+            },
+            scale: {
+              duration: 1,
+              ease: "linear",
+            },
+          }}
+          style={{
+            pointerEvents: activeSlide === index ? "auto" : "none",
+            zIndex: activeSlide === index ? 1 : 0,
+          }}
         >
           <Image
             src={item.image}
@@ -62,11 +78,13 @@ export default function HeroSection() {
             priority={index === 0}
             className="object-cover"
           />
-        </div>
+        </motion.div>
       ))}
 
       {/* Content */}
-      <div className={`absolute ${heroItems[activeSlide].title === "Le' Floret" ? "left-9 bottom-18 text-left" : "inset-0 text-center"} z-10 flex flex-col items-center justify-center px-6 text-white`}>
+      <div
+        className={`absolute ${heroItems[activeSlide].title === "Le' Floret" ? "left-9 bottom-18 text-left" : "inset-0 text-center"} z-10 flex flex-col items-center justify-center px-6 text-white`}
+      >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={`content-${activeSlide}`}
