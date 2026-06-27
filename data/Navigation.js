@@ -30,11 +30,11 @@ export const navItems = [
         image:
           "/assets/nav-banners/Nav_Banner1_linen.jpg",
       },
-      {
-        title: "Cushions",
-        image:
-          "/assets/nav-banners/Nav_Banner2_linen.jpg",
-      },
+      // {
+      //   title: "Cushions",
+      //   image:
+      //     "/assets/nav-banners/Nav_Banner2_linen.jpg",
+      // },
     ],
   },
 

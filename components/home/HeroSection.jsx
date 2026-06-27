@@ -8,28 +8,33 @@ const heroItems = [
   {
     title: "Le' Floret",
     type: "Dinnerware",
-    image: "/assets/hero/hero1.jpg",
+    image: "/assets/hero/HomePage-Slider-1.webp",
   },
   {
     title: "L'arte Del Movimento",
     type: "Platters & Bowls",
-    image: "/assets/hero/hero2.jpg",
+    image: "/assets/hero/HomePage-Slider-2.webp",
   },
   {
     title: "Eredità Fiorita",
     type: "Cushion Covers",
-    image: "/assets/hero/hero3.jpg",
+    image: "/assets/hero/HomePage-Slider-3.webp",
   },
   {
     title: "Lumière Voilée",
     type: "Furniture",
-    image: "/assets/hero/hero4.jpg",
+    image: "/assets/hero/HomePage-Slider-4.webp",
   },
   {
     title: "Jardin Majestueux",
     type: "Leather",
-    image: "/assets/hero/hero5.jpg",
+    image: "/assets/hero/HomePage-Slider-5.webp",
   },
+  {
+    title: "Jardin",
+    type: "Leather",
+    image: "/assets/hero/HomePage-Slider-6.webp",
+  }
 ];
 
 export default function HeroSection() {

@@ -45,7 +45,7 @@ export default function Carousel({title, data}) {
   }, [emblaApi]);
 
   return (
-    <section className="pt-12 pb-20">
+    <section className="pt-12 lg:pb-20 sm:pb-4">
       <Container>
         <div className="relative">
           {/* Heading */}
