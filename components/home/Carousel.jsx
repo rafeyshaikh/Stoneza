@@ -50,7 +50,7 @@ export default function Carousel({title, data}) {
         <div className="relative">
           {/* Heading */}
 
-          <h2 className="mb-12 text-center text-[32px] uppercase tracking-[8px] font-display text-[#393938]">
+          <h2 className="mb-12 text-center lg:text-[32px] sm:text-[22px] uppercase tracking-[8px] font-display text-[#393938]">
             {title}
           </h2>
 
@@ -175,7 +175,7 @@ function ProductCard({ item }) {
         {/* Content */}
 
         <div className="pt-5 text-center">
-          <h3 className={` ${item.titleStyle ? item.titleStyle : 'font-body'} "text-[15px] text-[#393938]`}>
+          <h3 className={` ${item.titleStyle ? item.titleStyle : 'font-body'} "text-[15px]  text-[#393938]`}>
             {item.title}{item.titleStyle ? " >" : ''}
           </h3>
 
