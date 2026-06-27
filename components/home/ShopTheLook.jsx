@@ -47,7 +47,7 @@ export default function ShopTheLook() {
 
   return (
     <section className="pb-15 border-b border-gray-300 mb-20">
-      <div className="relative mx-auto max-w-[1480px] px-4 lg:px-[130px]">
+      <div className="relative mx-auto max-w-[1480px] px-4 lg:px-[130px] pt-5">
         {/* TITLE */}
 
         <h2 className="mb-10 text-center font-display text-[28px] uppercase tracking-[6px] text-[#1C1B1B]">
