@@ -47,7 +47,7 @@ export default function LoginPage() {
       toast.success(data.message);
 
       setUser(data.user);
-      router.push("/");
+      window.location.href = "/";
     } catch (error) {
       setError(error.message);
       toast.error(error.message);
