@@ -1,20 +1,11 @@
 import Image from "next/image";
+import { useState } from "react";
+import ImageWithLoader from "./Loader";
 
 export default function MegaMenu({ item }) {
   return (
     <div
-      className="
-        absolute
-        top-full
-        left-1/2
-        -translate-x-1/2
-        w-screen
-        mt-2
-        bg-[#C5B9AB]
-        text-[#393938]
-        shadow-md
-        z-[999]
-      "
+      className="absolute top-full left-1/2 -translate-x-1/2 w-screen mt-2 bg-[#C5B9AB] text-[#393938] shadow-md z-[999]"
     >
       <div className="max-w-[1280px] mx-auto px-8 py-10">
         <div className="flex items-start justify-between gap-12">
@@ -55,7 +46,7 @@ export default function MegaMenu({ item }) {
                   className="group text-center"
                 >
                   <div className="relative w-[320px] h-[240px] overflow-hidden bg-[#d4c9b8]">
-                    <Image
+                    <ImageWithLoader
                       src={img.image}
                       fill
                       alt={img.title}

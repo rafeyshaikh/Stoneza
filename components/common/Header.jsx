@@ -4,6 +4,7 @@ import Container from "./Container";
 import Image from "next/image";
 import Link from "next/link";
 import MegaMenu from "./Megamenu";
+import { useAuth } from "@/context/AuthContext";
 
 import { navItems } from "../../data/Navigation";
 
@@ -23,6 +24,7 @@ export default function Header() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isLoggedIn } = useAuth();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
@@ -40,7 +42,7 @@ export default function Header() {
   const closeMenu = () => {
     closeTimer.current = setTimeout(() => {
       setActiveMenu(null);
-    }, 200);
+    }, 300);
   };
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export default function Header() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isLoggedIn]);
 
   const darkMode = !isHomePage || isScrolled || logoHovered;
 
@@ -113,7 +115,7 @@ export default function Header() {
           {/* USER */}
 
           <Link
-            href="/auth/login"
+            href={isLoggedIn ? "/profile" : "/auth/login"}
             className="absolute right-20 top-1/2 hidden -translate-y-1/2 lg:block"
           >
             <PiUserLight className="text-2xl" />
@@ -207,20 +209,7 @@ export default function Header() {
                   duration: 0.35,
                   ease: "easeInOut",
                 }}
-                className="
-                  fixed
-                  left-0
-                  top-0
-                  z-[9999]
-                  h-screen
-                  w-[90%]
-                  max-w-[380px]
-                  overflow-y-auto
-                  bg-[#C5B9AB]
-                  text-[#393938]
-                  shadow-2xl
-                  lg:hidden
-                "
+                className="fixed left-0 top-0 z-[9999] h-screen w-[90%] max-w-[380px] overflow-y-auto bg-[#C5B9AB] text-[#393938] shadow-2xl lg:hidden"
               >
                 {/* CLOSE BUTTON */}
 
@@ -294,13 +283,7 @@ export default function Header() {
                                     {/* CATEGORY TITLE */}
 
                                     <h4
-                                      className="
-                                        mb-3
-                                        text-[12px]
-                                        font-semibold
-                                        uppercase
-                                        tracking-[2px]
-                                      "
+                                      className="mb-3text-[12px]font-semibolduppercasetracking-[2px]"
                                     >
                                       {category.title}
                                     </h4>
@@ -316,14 +299,7 @@ export default function Header() {
                                             onClick={() =>
                                               setMobileMenuOpen(false)
                                             }
-                                            className="
-                                              block
-                                              pl-3
-                                              text-[14px]
-                                              text-[#5e5e5e]
-                                              transition
-                                              hover:text-black
-                                            "
+                                            className="block pl-3 text-[14px] text-[#5e5e5e] transition hover:text-black"
                                           >
                                             {link}
                                           </Link>

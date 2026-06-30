@@ -8,7 +8,7 @@ export default function PageWrapper({ children }) {
   return (
     <main
       className={`flex-grow ${
-        pathname !== "/" ? "pt-[112px]" : ""
+        pathname !== "/" ? "pt-[64px] lg:pt-[106px]" : ""
       }`}
     >
       {children}

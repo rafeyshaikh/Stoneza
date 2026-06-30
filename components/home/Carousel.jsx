@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { PiCaretLeftThin, PiCaretRightThin } from "react-icons/pi";
+import ImageWithLoader from "../common/Loader";
 
 import Container from "@/components/common/Container";
 
@@ -122,7 +123,7 @@ function ProductCard({ item }) {
               transition={{ duration: 0.2 }}
               className="absolute inset-0"
             >
-              <Image
+              <ImageWithLoader
                 src={hovered ? (item.hoverImage ? item.hoverImage : item.image ) : item.image}
                 alt={item.title}
                 fill
@@ -135,14 +136,7 @@ function ProductCard({ item }) {
 
           { item.hasOwnProperty("soldOut") && !item.soldOut && (
             <div
-              className="
-                absolute bottom-0 left-0 right-0 z-20
-                translate-y-full opacity-0
-                transition-all duration-300
-                group-hover:translate-y-0
-                group-hover:opacity-100
-                flex items-center bg-white
-                py-2
+              className="absolute bottom-0 left-0 right-0 z-20 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 flex items-center bg-white py-2
               "
             >
               <button
@@ -176,11 +170,11 @@ function ProductCard({ item }) {
 
         <div className="pt-5 text-center">
           <h3 className={` ${item.titleStyle ? item.titleStyle : 'font-body'} "text-[15px]  text-[#393938]`}>
-            {item.title}{item.titleStyle ? " >" : ''}
+            {item.title || item.name }{item.titleStyle ? " >" : ''}
           </h3>
 
           <p className="mt-1 text-[14px] font-body text-[#6a6a6a]">
-            {item.price && item.price}
+            ₹{item.price && item.price}
           </p>
         </div>
       </Link>

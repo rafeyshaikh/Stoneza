@@ -5,39 +5,56 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
-  const [view, setView] = useState("phone"); // "phone" | "email"
+  const [view, setView] = useState("email"); // "phone" | "email"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useAuth();
 
-  const handleGetOtp = async () => {
-    if (phone.length !== 10 || !/^\d+$/.test(phone)) {
-      setError("Enter a valid 10-digit mobile number.");
-      return;
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      toast.success(data.message);
+
+      setUser(data.user);
+      router.push("/");
+    } catch (error) {
+      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
-    setError("");
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    alert(`OTP sent to +91 ${phone}`);
   };
-
-  const handleEmailLogin = async () => {
-    if (!email || !password) {
-      setError("Please fill in all fields.");
-      return;
-    }
-    setError("");
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    alert(`Logging in as ${email}`);
-  };
-
   return (
     <div className="min-h-screen bg-[#eae8e2] flex flex-col items-center justify-start pt-[72px] px-4 pb-10 font-body">
       <div className="w-full max-w-[420px]">
@@ -103,16 +120,16 @@ export default function LoginPage() {
 
             {/* ── Login with Email/Password ── */}
             <div className="flex items-center justify-center mb-6">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setView("email");
-                setError("");
-              }}
-              className="px-4 h-[52px] bg-white border-[1.5px] border-[#c8c3bd] rounded-lg text-[14px] font-normal text-[#2a2a2a] shadow-none cursor-pointer hover:bg-white"
-            >
-              Login with Email/Password
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setView("email");
+                  setError("");
+                }}
+                className="px-4 h-[52px] bg-white border-[1.5px] border-[#c8c3bd] rounded-lg text-[14px] font-normal text-[#2a2a2a] shadow-none cursor-pointer hover:bg-white"
+              >
+                Login with Email/Password
+              </Button>
             </div>
           </>
         ) : (
@@ -130,25 +147,44 @@ export default function LoginPage() {
             />
 
             {/* Password + Forgot Password */}
-            <div className="relative mb-4">
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => {
-                  setError("");
-                  setPassword(e.target.value);
-                }}
-                onKeyDown={(e) => e.key === "Enter" && handleEmailLogin()}
-                className="w-full h-[54px] border border-[#d4cfc9] rounded-none px-5 pr-36 text-base shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
+            {/* Password */}
+            <div className="mb-4">
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => {
+                    setError("");
+                    setPassword(e.target.value);
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  className="w-full h-[54px] border border-[#d4cfc9] rounded-none px-5 pr-14 text-base shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                />
 
-              <button
-                type="button"
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[14px] text-[#6e7885] hover:underline"
-              >
-                Forgot password?
-              </button>
+                {/* Eye Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6f6f6f] hover:text-black transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+
+              {/* Forgot Password */}
+              <div className="flex justify-end mt-2">
+                <button
+                  type="button"
+                  className="text-[13px] text-[#6e7885] hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
             </div>
 
             {error && (
@@ -157,7 +193,7 @@ export default function LoginPage() {
 
             {/* Login Button */}
             <Button
-              onClick={handleEmailLogin}
+              onClick={handleLogin}
               disabled={loading}
               className="w-full h-[58px] bg-[#665b54] hover:bg-[#5a4f48] text-white tracking-[4px] text-[12px] font-heading rounded-none mb-8 font-normal"
             >
@@ -172,15 +208,14 @@ export default function LoginPage() {
                 register.
               </p>
 
-              <button
+              {/* <button
                 onClick={() => {
-                  setView("phone");
                   setError("");
                 }}
                 className="text-[14px] text-[#2c2c2c] cursor-pointer"
               >
                 Create one
-              </button>
+              </button> */}
             </div>
 
             {/* Divider */}
@@ -194,16 +229,12 @@ export default function LoginPage() {
 
             {/* Phone Login */}
             <div className="flex items-center justify-center mb-6">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setView("phone");
-                setError("");
-              }}
-              className="px-4 h-[56px] bg-white border border-[#c8c3bd] rounded-md text-[14px] text-[#1f1f1f] hover:bg-white cursor-pointer shadow-none"
-            >
-              Login/Register with Phone Number
-            </Button>
+              <Link
+                href="/auth/register"
+                className="px-4 h-[56px] bg-white border border-[#c8c3bd] rounded-md text-[14px] text-[#1f1f1f] hover:bg-white cursor-pointer shadow-none text-center flex items-center justify-center"
+              >
+                Register with Email/Password
+              </Link>
             </div>
           </>
         )}

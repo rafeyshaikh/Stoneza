@@ -21,7 +21,7 @@ export default function Home() {
       <HeroSection />
       <Carousel title="SHOP. GIFT. STYLE." data={shopGiftStyleData} />
       <LargeShop />
-      <BigBanner />
+      <BigBanner src={"/assets/hero/Big_Banner_Ethereal_Forms.jpg"} alt={"Ethereal"} title={"Onde Éternelle"} button={"Home Decor"} height={800}/>
       <Carousel title={"What's New"} data={whatsNewData} />
       <ThreeBanner />
       <Carousel title={"COLLECTIONS"} data={collectionData} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -34,22 +34,59 @@ const heroItems = [
     title: "Jardin",
     type: "Leather",
     image: "/assets/hero/HomePage-Slider-6.webp",
-  }
+  },
 ];
 
 export default function HeroSection() {
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setActiveSlide((prev) => (prev + 1) % heroItems.length);
+      nextSlide();
     }, 10000);
 
     return () => clearTimeout(timer);
   }, [activeSlide]);
+  const nextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % heroItems.length);
+  };
+
+  const prevSlide = () => {
+    setActiveSlide((prev) => (prev === 0 ? heroItems.length - 1 : prev - 1));
+  };
+
+  const handleTouchStart = (e) => {
+  touchStartX.current = e.touches[0].clientX;
+  touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const distance = touchStartX.current - touchEndX.current;
+
+    // Swipe Left → Next
+    if (distance > 10) {
+      nextSlide();
+    }
+
+    // Swipe Right → Previous
+    if (distance < -10) {
+      prevSlide();
+    }
+  };
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section
+      className="relative h-screen overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Slides */}
 
       {heroItems.map((item, index) => (

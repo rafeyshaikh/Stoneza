@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PiCaretLeftLight } from "react-icons/pi";
 import { useState } from "react";
+import ImageWithLoader from "../common/Loader";
 
 const largeShopData = [
   {
@@ -115,11 +116,11 @@ export default function LargeShop() {
             {largeShopData.map((item, index) => (
               <div
                 key={index}
-                className={`relative w-[160px] lg:w-[220px] overflow-hidden group cursor-pointer
+                className={`relative w-[160px] h-[160px] lg:w-[220px] lg:h-[220px] overflow-hidden group cursor-pointer
                 ${currentIndex === index ? "opacity-100" : "hidden pointer-events-none "}`}
               >
                 {/* Main Image */}
-                <Image
+                <ImageWithLoader
                   src={item.image}
                   alt={item.title}
                   width={300}

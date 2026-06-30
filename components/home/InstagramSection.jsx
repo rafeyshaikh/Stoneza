@@ -55,26 +55,13 @@ export default function InstagramSection() {
                 src={post.image}
                 alt={`Instagram ${post.id}`}
                 fill
-                className="
-                  object-cover
-                  transition-transform
-                  duration-500
-                  group-hover:scale-110
-                "
+                className=" object-cover transition-transform duration-500 group-hover:scale-110"
               />
 
               {/* HOVER OVERLAY */}
 
               <div
-                className="
-                  absolute inset-0
-                  flex items-center justify-center
-                  bg-black/0
-                  opacity-0
-                  transition-all duration-300
-                  group-hover:bg-black/30
-                  group-hover:opacity-100
-                "
+                className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/30 group-hover:opacity-100"
               >
                 <FaInstagram className="text-4xl text-white" />
               </div>
@@ -127,16 +114,7 @@ export default function InstagramSection() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.96 }}
               transition={{ duration: 0.25 }}
-              className="
-              flex
-              h-[700px]
-              w-[1050px]
-              max-w-[92vw]
-              bg-white
-              overflow-hidden
-              rounded-[24px]
-              shadow-2xl
-              "
+              className=" flex h-[700px] w-[1050px] max-w-[92vw] bg-white overflow-hidden rounded-[24px] shadow-2xl"
             >
               {/* LEFT IMAGE */}
 
