@@ -97,6 +97,10 @@ input[type="password"]::-webkit-credentials-auto-fill-button,
 input[type="password"]::-webkit-textfield-decoration-container {
   display: none !important;
 }
+input[type="email"]::-webkit-credentials-auto-fill-button,
+input[type="email"]::-webkit-textfield-decoration-container {
+  display: none !important;
+}
 
 /* Custom Font Utilities */
 
