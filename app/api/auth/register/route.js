@@ -22,9 +22,9 @@ export async function POST(request) {
     if (!validationResult.success) {
       return response(
         false,
-        401,
-        "Invalid or Missing input Field ",
-        validationResult.error,
+        400,
+        "Invalid or missing input fields",
+        validationResult.error.flatten(),
       );
     }
 
@@ -38,7 +38,7 @@ export async function POST(request) {
         false,
         409,
         "User with this email already exists",
-        validationResult.error,
+        {},
       );
     }
 
@@ -53,18 +53,39 @@ export async function POST(request) {
       .setProtectedHeader({ alg: "HS256" })
       .sign(secret);
 
-    await sendMail({
-      subject: "Email Verification request from Stoneza",
-      receiver: email,
-      body: emailVerificationLink(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/verify-email/${token}`,
-      ),
-    });
+    try {
+      await sendMail({
+        subject: "Email Verification request from Stoneza",
+        receiver: email,
+        body: emailVerificationLink(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/auth/verify-email/${token}`,
+        ),
+      });
+    } catch (mailError) {
+      console.error("Verification email send failed:", mailError);
+
+      return response(
+        true,
+        201,
+        "User created, but verification email could not be sent. Please retry.",
+        {
+          email: newUser.email,
+          verificationEmailSent: false,
+        },
+      );
+    }
+
     return response(true, 201, "User created successfully", {
       email: newUser.email,
+      verificationEmailSent: true,
     });
   } catch (error) {
     console.error("Error in register route:", error);
+
+    if (error?.code === 11000) {
+      return response(false, 409, "User with this email already exists");
+    }
+
     return response(false, 500, "Internal Server Error");
   }
 }

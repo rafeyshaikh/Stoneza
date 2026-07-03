@@ -1,11 +1,17 @@
 "use client";
-import { PiCaretDown } from "react-icons/pi";
-import { BiSolidGrid, BiSolidGridAlt } from "react-icons/bi";
-import Carousel from "@/components/home/Carousel";
 
-import BigBanner from "@/components/home/BigBanner";
 import Image from "next/image";
 import { useState, use, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+
+import CollectionCTA from "@/components/common/CollectionCTA";
+import BigBanner from "@/components/home/BigBanner";
+import Carousel from "@/components/home/Carousel";
+
+import { PiCaretDown } from "react-icons/pi";
+import { BiSolidGrid, BiSolidGridAlt } from "react-icons/bi";
+
+
 
 export default function CollectionPage({ params }) {
   const data = [
@@ -226,11 +232,64 @@ export default function CollectionPage({ params }) {
       href: "/",
     },
   ];
+  const subCategories=[
+    {
+      id:1,
+      name:"Sculpture Fountains",
+      image:"/assets/small_banners3/Small_Banner_9.webp",
+      href:"/"
+    },
+    {
+      id:2,
+      name:"Stone Boulder",
+      image:"/assets/small_banners3/Small_Banner_9.webp",
+      href:"/"
+    },
+    {
+      id:3,
+      name:"Stone Lamps",
+      image:"/assets/small_banners3/Small_Banner_9.webp",
+      href:"/"
+    },
+    {
+      id:4,
+      name:"Stone Planters",
+      image:"/assets/small_banners3/Small_Banner_9.webp",
+      href:"/"
+    },
+    {
+      id:5,
+      name:"Stone Benches",
+      image:"/assets/small_banners3/Small_Banner_9.webp",
+      href:"/"
+    },
+    {
+      id:6,
+      name:"Stone Seating Sets",
+      image:"/assets/small_banners3/Small_Banner_9.webp",
+      href:"/"
+    }
+  ];
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handleViewAll = () => {
+    if (categoryLevel !== "1") return;
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("categoryLevel", "3");
+
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const [hoveredId, setHoveredId] = useState(null);
   const [gridSizeLarge, setGridSizeLarge] = useState(true);
 
   const { slug } = use(params);
+  const { categoryLevel: categoryLevel } = searchParams.get("categoryLevel") ? { categoryLevel: searchParams.get("categoryLevel") } : { categoryLevel: "1" };
+  const sliceLength = categoryLevel === "1" ? 8 : data.length;
 
   useEffect(() => {}, [gridSizeLarge]);
 
@@ -243,7 +302,7 @@ export default function CollectionPage({ params }) {
         button={null}
         height={575}
       />
-      <div className="sticky top-[63px] lg:top-[106px] h-14 w-full border border-[#cbc9c4] bg-[#eae8e2] z-10 flex justify-between">
+      <div className="sticky top-[63px] lg:top-[106px] h-14 w-full border border-[#cbc9c4] bg-[#eae8e2] z-100 flex justify-between">
         <div className="border-r h-full w-35 border-[#cbc9c4] flex items-center justify-center gap-2">
           <BiSolidGridAlt
             className={` ${gridSizeLarge ? "opacity-50 text-[25px]" : "opacity-100 text-[26px]"} cursor-pointer`}
@@ -264,11 +323,10 @@ export default function CollectionPage({ params }) {
           </button>
         </div>
       </div>
-
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${gridSizeLarge ? "lg:grid-cols-4" : "lg:grid-cols-2"} gap-6 p-10 justify-items-center`}
-        >
-        {data.slice(0, 8).map((item) => (
+      >
+        {data.slice(0, sliceLength).map((item) => (
           <ProductItem
             key={item.id}
             item={item}
@@ -276,30 +334,33 @@ export default function CollectionPage({ params }) {
             hoveredId={hoveredId}
           />
         ))}
+      </div>
+      {categoryLevel === "1" && (
+        <div>
+          <div className="flex justify-center items-center">
+        <button className="mb-10 rounded-lg border border-[#cbc9c4] bg-[#eae8e2] px-6 py-3 uppercase font-heading tracking-[2px] text-[12px] font-medium cursor-pointer text-center flex justify-center items-center gap-2 hover:scale-[1.02] hover:border-black transition-all" onClick={handleViewAll}>
+          View All
+          <PiCaretDown className="text-2md" />
+        </button>
       </div>
       <div className="col-span-full">
-        <Carousel title="" data={data.slice(8, 17)} />
-      </div>
-      <div
-        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${gridSizeLarge ? "lg:grid-cols-4" : "lg:grid-cols-2"} gap-6 p-10 justify-items-center`}
-        >
-        {data.slice(17, data.length+1).map((item) => (
-          <ProductItem
-            key={item.id}
-            item={item}
-            setHoveredId={setHoveredId}
-            hoveredId={hoveredId}
-          />
-        ))}
+        <Carousel title="Sub Categories" data={subCategories} />
       </div>
       <BigBanner
         src="/assets/hero/Big_Banner_Ethereal_Forms.jpg"
         title={slug}
         alt={slug}
         button={null}
-        height={800
-
-        }/>
+        height={800}
+      />
+      <CollectionCTA
+        title="Ready to Elevate Your Living Space?"
+        description="Discover premium stone surfaces, handcrafted décor, and timeless designs curated to bring elegance into every home."
+        buttonText="EXPLORE COLLECTION"
+        buttonLink="/collections"
+      />
+        </div>
+      )}
     </div>
   );
 }

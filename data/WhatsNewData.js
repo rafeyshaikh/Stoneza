@@ -4,7 +4,7 @@ export const whatsNewData = [
   {
     id: 1,
     title: "Vases & Planter",
-    price: "₹ 4,950",
+    price: "4,950",
     image: "/assets/small_banners3/Small_Banner_1.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_1_hover.webp",
     href: "/products/test-1",
@@ -14,7 +14,7 @@ export const whatsNewData = [
   {
     id: 2,
     title: "Serving",
-    price: "₹ 6,900",
+    price: "6,900",
     image: "/assets/small_banners3/Small_Banner_2.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_2_hover.webp",
     href: "/products/test-2",
@@ -24,7 +24,7 @@ export const whatsNewData = [
   {
     id: 3,
     title: "Decor Object",
-    price: "₹ 5,490",
+    price: "5,490",
     image: "/assets/small_banners3/Small_Banner_3.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_3_hover.webp",
     href: "/products/test-3",
@@ -34,7 +34,7 @@ export const whatsNewData = [
   {
     id: 4,
     title: "Luxury Decor",
-    price: "₹ 14,900",
+    price: "14,900",
     image: "/assets/small_banners3/Small_Banner_4.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_4_hover.webp",
     href: "/products/test-4",
@@ -43,7 +43,7 @@ export const whatsNewData = [
   {
     id: 5,
     title: "Vases & Planter",
-    price: "₹ 4,950",
+    price: "4,950",
     image: "/assets/small_banners3/Small_Banner_5.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_5_hover.webp",
     href: "/products/test-1",
@@ -53,7 +53,7 @@ export const whatsNewData = [
   {
     id: 6,
     title: "Serving",
-    price: "₹ 6,900",
+    price: "6,900",
     image: "/assets/small_banners3/Small_Banner_6.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_6_hover.webp",
     href: "/products/test-2",
@@ -62,7 +62,7 @@ export const whatsNewData = [
   {
     id: 7,
     title: "Decor Object",
-    price: "₹ 5,490",
+    price: "5,490",
     image: "/assets/small_banners3/Small_Banner_7.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_7_hover.webp",
     href: "/products/test-3",
@@ -71,7 +71,7 @@ export const whatsNewData = [
   {
     id: 8,
     title: "Luxury Decor",
-    price: "₹ 14,900",
+    price: "14,900",
     image: "/assets/small_banners3/Small_Banner_8.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_8_hover.webp",
     href: "/products/test-4",
@@ -80,7 +80,7 @@ export const whatsNewData = [
   {
     id: 9,
     title: "Vases & Planter",
-    price: "₹ 4,950",
+    price: "4,950",
     image: "/assets/small_banners3/Small_Banner_9.webp",
     hoverImage: "/assets/small_banners3/Small_Banner_9_hover.webp",
     href: "/products/test-1",

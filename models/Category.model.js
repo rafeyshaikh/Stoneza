@@ -14,11 +14,12 @@ const categorySchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     image: {
-      type: String,
-      default: "",
+      url: String,
+      publicId: String,
     },
 
     description: {
@@ -45,17 +46,22 @@ const categorySchema = new mongoose.Schema(
     seo: {
       metaTitle: String,
       metaDescription: String,
+      keywords: [String],
       ogImage: String,
       canonicalUrl: String,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+      index: true,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Category =
-  mongoose.models.Category ||
-  mongoose.model("Category", categorySchema);
+  mongoose.models.Category || mongoose.model("Category", categorySchema);
 
 export default Category;

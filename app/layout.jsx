@@ -7,9 +7,7 @@ import {
 } from "@/lib/fonts";
 
 import Providers from "@/context";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import PageWrapper from "@/components/common/PageWrapper";
+import AppChrome from "@/components/common/AppChrome";
 
 export const metadata = {
   title: "Stoneza",
@@ -29,13 +27,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col bg-[#EAE8E2]">
         <Providers>
-        <Header />
-
-        <PageWrapper>
-          {children}
-        </PageWrapper>
-
-        <Footer />
+          <AppChrome>{children}</AppChrome>
         </Providers>
         <Toaster
           position="top-right"

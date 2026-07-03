@@ -19,12 +19,13 @@ import { PiBagSimpleThin } from "react-icons/pi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { PiXBold } from "react-icons/pi";
 import { PiCaretDownThin } from "react-icons/pi";
+import { RiAdminLine } from "react-icons/ri";
 
 export default function Header() {
   const [activeMenu, setActiveMenu] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, userRole } = useAuth();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
@@ -119,7 +120,16 @@ export default function Header() {
             className="absolute right-20 top-1/2 hidden -translate-y-1/2 lg:block"
           >
             <PiUserLight className="text-2xl" />
+
           </Link>
+
+          {/* ADMIN DASHBOARD */}
+          {userRole === "admin" && (
+            <Link href="/admin"
+              className="absolute right-28 top-1/2 hidden -translate-y-1/2 lg:block border px-2">
+              Admin Dashboard
+            </Link>
+          )}
 
           {/* SEARCH */}
 

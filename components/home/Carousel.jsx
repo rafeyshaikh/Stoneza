@@ -174,7 +174,7 @@ function ProductCard({ item }) {
           </h3>
 
           <p className="mt-1 text-[14px] font-body text-[#6a6a6a]">
-            ₹{item.price && item.price}
+            {item.price && `₹${item.price}`}
           </p>
         </div>
       </Link>

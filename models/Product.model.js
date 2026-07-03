@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     description: {
@@ -32,10 +33,10 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
-    discountPrice: {
-      type: Number,
+    deletedAt: {
+      type: Date,
       default: null,
-      min: 0,
+      index: true,
     },
 
     sku: {
@@ -58,15 +59,15 @@ const productSchema = new mongoose.Schema(
 
     images: [
       {
-        type: String,
+        url: String,
+        publicId: String,
       },
     ],
 
     hoverImage: {
-      type: String,
-      default: "",
+      url: String,
+      publicId: String,
     },
-
     tags: [
       {
         type: String,
@@ -94,22 +95,38 @@ const productSchema = new mongoose.Schema(
       default: "published",
     },
 
-    // SEO
     seo: {
       metaTitle: String,
       metaDescription: String,
+      keywords: [String],
       ogImage: String,
       canonicalUrl: String,
     },
 
-    deletedAt: {
-      type: Date,
+    discountPrice: {
+      type: Number,
       default: null,
+      min: 0,
+      validate: {
+        validator: function (value) {
+          return value === null || value <= this.price;
+        },
+        message: "Discount price cannot exceed original price",
+      },
+    },
+    dimensions: {
+      length: Number,
+      width: Number,
+      height: Number,
+    },
+    weight: {
+      type: Number,
+      default: 0,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.models.Product ||

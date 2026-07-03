@@ -1,0 +1,487 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
+import ImageUploader from "@/components/admin/products/ImageUploader";
+import ProductSeoForm from "@/components/admin/products/ProductSeoForm";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import MultipleImageUploader from "./MultipleImageUploader";
+
+const getEmptyForm = () => ({
+  name: "",
+  description: "",
+  shortDescription: "",
+
+  categoryLevel1: "",
+  categoryLevel2: "",
+  categoryLevel3: "",
+
+  price: "",
+  discountPrice: "",
+  stock: 0,
+  weight: 0,
+
+  dimensions: {
+    length: "",
+    width: "",
+    height: "",
+  },
+
+  tags: [],
+
+  isFeatured: false,
+  isBestSeller: false,
+  isNewArrival: false,
+
+  status: "published",
+
+  seo: {
+    metaTitle: "",
+    metaDescription: "",
+    keywords: "",
+    canonicalUrl: "",
+    ogImage: "",
+  },
+});
+
+function parentIdOf(category) {
+  if (!category?.parentCategory) return null;
+  return typeof category.parentCategory === "object"
+    ? category.parentCategory._id
+    : category.parentCategory;
+}
+
+export default function ProductForm({ categories = [] }) {
+  const [formData, setFormData] = useState(getEmptyForm());
+  const [productImages, setProductImages] = useState([]);
+  const [hoverImage, setHoverImage] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const level1Categories = useMemo(() => {
+    return categories.filter((category) => !parentIdOf(category));
+  }, [categories]);
+
+  const level2Categories = useMemo(() => {
+    if (!formData.categoryLevel1) return [];
+    return categories.filter(
+      (category) => parentIdOf(category) === formData.categoryLevel1,
+    );
+  }, [categories, formData.categoryLevel1]);
+
+  const level3Categories = useMemo(() => {
+    if (!formData.categoryLevel2) return [];
+    return categories.filter(
+      (category) => parentIdOf(category) === formData.categoryLevel2,
+    );
+  }, [categories, formData.categoryLevel2]);
+
+  const handleChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleDimensionChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      dimensions: {
+        ...prev.dimensions,
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleSeoChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      seo: {
+        ...prev.seo,
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleLevel1Change = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      categoryLevel1: value,
+      categoryLevel2: "",
+      categoryLevel3: "",
+    }));
+  };
+
+  const handleLevel2Change = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      categoryLevel2: value,
+      categoryLevel3: "",
+    }));
+  };
+
+  function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onloadend = () => resolve(reader.result);
+
+    reader.onerror = () =>
+      reject(new Error("Could not read selected file"));
+
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadImage(file, folder = "products") {
+  const base64 = await fileToBase64(file);
+
+  const response = await fetch("/api/admin/upload", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      image: base64,
+      folder,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.message || "Image upload failed");
+  }
+
+  return data.data;
+}
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    setSubmitting(true);
+
+    const uploadedImages = await Promise.all(
+      productImages.map((file) =>
+        uploadImage(file, "products"),
+      ),
+    );
+
+    let uploadedHoverImage = null;
+
+    if (hoverImage) {
+      uploadedHoverImage = await uploadImage(
+        hoverImage,
+        "products/hover",
+      );
+    }
+
+    const finalCategory =
+      formData.categoryLevel3 ||
+      formData.categoryLevel2 ||
+      formData.categoryLevel1;
+
+    const payload = {
+      ...formData,
+
+      category: finalCategory,
+
+      images: uploadedImages,
+
+      hoverImage: uploadedHoverImage,
+
+      seo: {
+        ...formData.seo,
+
+        keywords: formData.seo.keywords
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+      },
+    };
+
+    delete payload.categoryLevel1;
+    delete payload.categoryLevel2;
+    delete payload.categoryLevel3;
+
+    const response = await fetch("/api/admin/products", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    console.log("Product saved:", data);
+
+    toast.success("Product saved successfully");
+    setFormData(getEmptyForm());
+    setProductImages(null);
+    setHoverImage(null);
+  } catch (error) {
+    toast.error(error.message || "Failed to save product");
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">Basic Information</h3>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field label="Product Name">
+            <Input
+              value={formData.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Top Category">
+            <CategorySelect
+              value={formData.categoryLevel1}
+              categories={level1Categories}
+              onChange={handleLevel1Change}
+            />
+          </Field>
+
+          <Field label="Second Category">
+            <CategorySelect
+              value={formData.categoryLevel2}
+              categories={level2Categories}
+              onChange={handleLevel2Change}
+              disabled={!formData.categoryLevel1}
+            />
+          </Field>
+
+          <Field label="Final Category">
+            <CategorySelect
+              value={formData.categoryLevel3}
+              categories={level3Categories}
+              onChange={(value) => handleChange("categoryLevel3", value)}
+              disabled={!formData.categoryLevel2}
+            />
+          </Field>
+
+          <Field label="Description" className="md:col-span-2">
+            <Textarea
+              rows={5}
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Short Description" className="md:col-span-2">
+            <Textarea
+              rows={3}
+              value={formData.shortDescription}
+              onChange={(e) => handleChange("shortDescription", e.target.value)}
+            />
+          </Field>
+          <Field label="Tags (comma-separated)" className="md:col-span-2">
+            <Input
+              value={formData.tags.join(", ")}
+              onChange={(e) => handleChange("tags", e.target.value.split(", ").map((tag) => tag.trim()))}
+            />
+          </Field>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">Pricing & Inventory</h3>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field label="Price">
+            <Input
+              type="number"
+              value={formData.price}
+              onChange={(e) => handleChange("price", Number(e.target.value))}
+            />
+          </Field>
+
+          <Field label="Discount Price">
+            <Input
+              type="number"
+              value={formData.discountPrice}
+              onChange={(e) =>
+                handleChange("discountPrice", Number(e.target.value))
+              }
+            />
+          </Field>
+
+          <Field label="Stock">
+            <Input
+              type="number"
+              value={formData.stock}
+              onChange={(e) => handleChange("stock", Number(e.target.value))}
+            />
+          </Field>
+
+          <Field label="Weight">
+            <Input
+              type="number"
+              value={formData.weight}
+              onChange={(e) => handleChange("weight", Number(e.target.value))}
+            />
+          </Field>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">Dimensions</h3>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          <Input
+            placeholder="Length"
+            value={formData.dimensions.length}
+            onChange={(e) => handleDimensionChange("length", e.target.value)}
+          />
+
+          <Input
+            placeholder="Width"
+            value={formData.dimensions.width}
+            onChange={(e) => handleDimensionChange("width", e.target.value)}
+          />
+
+          <Input
+            placeholder="Height"
+            value={formData.dimensions.height}
+            onChange={(e) => handleDimensionChange("height", e.target.value)}
+          />
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">Product Images</h3>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field label="Main Image">
+            <MultipleImageUploader
+              files={productImages}
+              onFilesChange={setProductImages}
+            />
+          </Field>
+
+          <Field label="Hover Image">
+            <ImageUploader
+              file={hoverImage}
+              existingImage={null}
+              onFileSelect={setHoverImage}
+              onRemove={() => setHoverImage(null)}
+              hint="Shown on card hover. Uploads on save."
+            />
+          </Field>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">SEO Settings</h3>
+        <ProductSeoForm seo={formData.seo} onChange={handleSeoChange} />
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">Product Settings</h3>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <SwitchField
+            label="Featured Product"
+            checked={formData.isFeatured}
+            onChange={(value) => handleChange("isFeatured", value)}
+          />
+
+          <SwitchField
+            label="Best Seller"
+            checked={formData.isBestSeller}
+            onChange={(value) => handleChange("isBestSeller", value)}
+          />
+
+          <SwitchField
+            label="New Arrival"
+            checked={formData.isNewArrival}
+            onChange={(value) => handleChange("isNewArrival", value)}
+          />
+
+          <SwitchField
+            label="Published"
+            checked={formData.status === "published"}
+            onChange={(value) =>
+              handleChange("status", value ? "published" : "draft")
+            }
+          />
+        </div>
+      </section>
+
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="rounded-lg border border-stone-900 bg-stone-900 px-5 py-2 text-white transition-colors hover:bg-stone-800 disabled:opacity-60 dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+        >
+          {submitting ? "Saving..." : "Save Product"}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function Field({ label, children, className = "" }) {
+  return (
+    <div className={`flex flex-col gap-2 ${className}`}>
+      <Label>{label}</Label>
+      {children}
+    </div>
+  );
+}
+
+function SwitchField({ label, checked, onChange }) {
+  return (
+    <div className="flex items-center gap-3">
+      <Switch checked={checked} onCheckedChange={onChange} />
+      <span className="text-sm text-stone-600 dark:text-stone-300">
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function CategorySelect({ categories, value, onChange, disabled = false }) {
+  return (
+    <Select value={value} onValueChange={onChange} disabled={disabled}>
+      <SelectTrigger className="min-w-[220px] w-full">
+        <SelectValue placeholder="Select Category" />
+      </SelectTrigger>
+
+      <SelectContent className="z-50 border border-stone-200 bg-white shadow-lg dark:border-stone-800 dark:bg-stone-900">
+        {categories.map((category) => (
+          <SelectItem key={category._id} value={category._id}>
+            {category.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
