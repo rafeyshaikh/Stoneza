@@ -8,9 +8,9 @@ import { Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-const router = useRouter();
 
 export default function BlogsTable({ blogs = [] }) {
+  const router = useRouter();
   async function handleDelete(id) {
     const confirmed = window.confirm(
       "Are you sure you want to delete this blog?",
