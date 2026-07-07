@@ -6,18 +6,7 @@ import { UploadCloud, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-/**
- * Local-only image picker. Does NOT upload to Cloudinary.
- *
- * - `file`         currently selected File object (if the user just picked one)
- * - `existingImage` { url, publicId } already saved on the record (edit mode)
- * - `onFileSelect`  called with the raw File when the user picks something
- * - `onRemove`      called when the user clears the selection/existing image
- * - `uploading`     true while the PARENT form is uploading on submit
- *
- * The actual Cloudinary upload happens in the parent's handleSubmit, so the
- * image is only ever persisted if the whole form is actually saved.
- */
+
 export default function ImageUploader({
   file = null,
   existingImage = null,

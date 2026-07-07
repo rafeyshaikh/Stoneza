@@ -1,4 +1,4 @@
-import OrderStatusBadge from "@/components/admin/orders/OrderStatusBadge";
+import OrderStatusBadge from "@/components/admin/enquiries/EnquiryStatusBadge";
 
 export default function RecentOrders({ orders = [] }) {
   return (

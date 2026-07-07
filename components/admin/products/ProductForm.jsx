@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 import {
   Select,
@@ -40,7 +41,14 @@ const getEmptyForm = () => ({
     height: "",
   },
 
-  tags: [],
+  images: [],
+
+  hoverImage: {
+    url: "",
+    publicId: "",
+  },
+
+  tags: "",
 
   isFeatured: false,
   isBestSeller: false,
@@ -64,8 +72,73 @@ function parentIdOf(category) {
     : category.parentCategory;
 }
 
-export default function ProductForm({ categories = [] }) {
-  const [formData, setFormData] = useState(getEmptyForm());
+export default function ProductForm({
+  categories = [],
+  initialData = null,
+  isEdit = false,
+}) {
+  const [formData, setFormData] = useState(() => {
+    if (!initialData) return getEmptyForm();
+
+    return {
+      name: initialData.name || "",
+
+      description: initialData.description || "",
+
+      shortDescription: initialData.shortDescription || "",
+
+      categoryLevel1: initialData.categoryLevel1 || "",
+      categoryLevel2: initialData.categoryLevel2 || "",
+      categoryLevel3: initialData.categoryLevel3 || "",
+
+      price: initialData.price || "",
+
+      discountPrice: initialData.discountPrice || "",
+
+      stock: initialData.stock || 0,
+
+      sku: initialData.sku || "",
+
+      images: initialData.images || [],
+
+      hoverImage: initialData.hoverImage || {
+        url: "",
+        publicId: "",
+      },
+
+      tags: initialData.tags?.join(", ") || "",
+
+      isFeatured: initialData.isFeatured || false,
+
+      isBestSeller: initialData.isBestSeller || false,
+
+      isNewArrival: initialData.isNewArrival || false,
+
+      status: initialData.status || "published",
+
+      dimensions: {
+        length: initialData.dimensions?.length || "",
+
+        width: initialData.dimensions?.width || "",
+
+        height: initialData.dimensions?.height || "",
+      },
+
+      weight: initialData.weight || 0,
+
+      seo: {
+        metaTitle: initialData.seo?.metaTitle || "",
+
+        metaDescription: initialData.seo?.metaDescription || "",
+
+        keywords: initialData.seo?.keywords?.join(", ") || "",
+
+        canonicalUrl: initialData.seo?.canonicalUrl || "",
+
+        ogImage: initialData.seo?.ogImage || "",
+      },
+    };
+  });
   const [productImages, setProductImages] = useState([]);
   const [hoverImage, setHoverImage] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -133,120 +206,139 @@ export default function ProductForm({ categories = [] }) {
   };
 
   function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-    reader.onloadend = () => resolve(reader.result);
+      reader.onloadend = () => resolve(reader.result);
 
-    reader.onerror = () =>
-      reject(new Error("Could not read selected file"));
+      reader.onerror = () => reject(new Error("Could not read selected file"));
 
-    reader.readAsDataURL(file);
-  });
-}
-
-async function uploadImage(file, folder = "products") {
-  const base64 = await fileToBase64(file);
-
-  const response = await fetch("/api/admin/upload", {
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      image: base64,
-      folder,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!data.success) {
-    throw new Error(data.message || "Image upload failed");
+      reader.readAsDataURL(file);
+    });
   }
 
-  return data.data;
-}
+  async function uploadImage(file, folder = "products") {
+    const base64 = await fileToBase64(file);
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    setSubmitting(true);
-
-    const uploadedImages = await Promise.all(
-      productImages.map((file) =>
-        uploadImage(file, "products"),
-      ),
-    );
-
-    let uploadedHoverImage = null;
-
-    if (hoverImage) {
-      uploadedHoverImage = await uploadImage(
-        hoverImage,
-        "products/hover",
-      );
-    }
-
-    const finalCategory =
-      formData.categoryLevel3 ||
-      formData.categoryLevel2 ||
-      formData.categoryLevel1;
-
-    const payload = {
-      ...formData,
-
-      category: finalCategory,
-
-      images: uploadedImages,
-
-      hoverImage: uploadedHoverImage,
-
-      seo: {
-        ...formData.seo,
-
-        keywords: formData.seo.keywords
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
-      },
-    };
-
-    delete payload.categoryLevel1;
-    delete payload.categoryLevel2;
-    delete payload.categoryLevel3;
-
-    const response = await fetch("/api/admin/products", {
+    const response = await fetch("/api/admin/upload", {
       method: "POST",
 
       headers: {
         "Content-Type": "application/json",
       },
 
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        image: base64,
+        folder,
+      }),
     });
 
     const data = await response.json();
 
     if (!data.success) {
-      throw new Error(data.message);
+      throw new Error(data.message || "Image upload failed");
     }
 
-    console.log("Product saved:", data);
-
-    toast.success("Product saved successfully");
-    setFormData(getEmptyForm());
-    setProductImages(null);
-    setHoverImage(null);
-  } catch (error) {
-    toast.error(error.message || "Failed to save product");
-  } finally {
-    setSubmitting(false);
+    return data.data;
   }
-};
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setSubmitting(true);
+
+      let uploadedImages = [...(formData.images || [])];
+
+      if (productImages.length) {
+        const newImages = await Promise.all(
+          productImages.map((file) => uploadImage(file, "products")),
+        );
+
+        uploadedImages = [...uploadedImages, ...newImages];
+      }
+
+      let uploadedHoverImage = formData.hoverImage || {
+        url: "",
+        publicId: "",
+      };
+
+      if (hoverImage) {
+        uploadedHoverImage = await uploadImage(hoverImage, "products/hover");
+      }
+
+      const finalCategory =
+        formData.categoryLevel3 ||
+        formData.categoryLevel2 ||
+        formData.categoryLevel1;
+
+      const payload = {
+        ...formData,
+
+        category: finalCategory,
+
+        images: uploadedImages,
+
+        hoverImage: uploadedHoverImage,
+
+        tags: formData.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean),
+
+        seo: {
+          ...formData.seo,
+
+          keywords: formData.seo.keywords
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean),
+        },
+      };
+
+      delete payload.categoryLevel1;
+      delete payload.categoryLevel2;
+      delete payload.categoryLevel3;
+
+      const response = await fetch(
+        isEdit
+          ? `/api/admin/products/${initialData._id}`
+          : "/api/admin/products",
+        {
+          method: isEdit ? "PATCH" : "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify(payload),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      console.log("Product saved:", data);
+
+      toast.success(
+        isEdit
+          ? "Product updated successfully"
+          : "Product created successfully",
+      );
+      if (!isEdit) {
+        setFormData(getEmptyForm());
+        setProductImages([]);
+        setHoverImage(null);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to save product");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -304,8 +396,8 @@ async function uploadImage(file, folder = "products") {
           </Field>
           <Field label="Tags (comma-separated)" className="md:col-span-2">
             <Input
-              value={formData.tags.join(", ")}
-              onChange={(e) => handleChange("tags", e.target.value.split(", ").map((tag) => tag.trim()))}
+              value={formData.tags}
+              onChange={(e) => handleChange("tags", e.target.value)}
             />
           </Field>
         </div>
@@ -382,16 +474,33 @@ async function uploadImage(file, folder = "products") {
           <Field label="Main Image">
             <MultipleImageUploader
               files={productImages}
+              existingImages={formData.images}
               onFilesChange={setProductImages}
+              onExistingImagesChange={(images) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  images,
+                }))
+              }
             />
           </Field>
 
           <Field label="Hover Image">
             <ImageUploader
               file={hoverImage}
-              existingImage={null}
+              existingImage={formData.hoverImage}
               onFileSelect={setHoverImage}
-              onRemove={() => setHoverImage(null)}
+              onRemove={() => {
+                setHoverImage(null);
+
+                setFormData((prev) => ({
+                  ...prev,
+                  hoverImage: {
+                    url: "",
+                    publicId: "",
+                  },
+                }));
+              }}
               hint="Shown on card hover. Uploads on save."
             />
           </Field>
@@ -441,7 +550,13 @@ async function uploadImage(file, folder = "products") {
           disabled={submitting}
           className="rounded-lg border border-stone-900 bg-stone-900 px-5 py-2 text-white transition-colors hover:bg-stone-800 disabled:opacity-60 dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
         >
-          {submitting ? "Saving..." : "Save Product"}
+          {submitting
+            ? isEdit
+              ? "Updating..."
+              : "Saving..."
+            : isEdit
+              ? "Update Product"
+              : "Save Product"}
         </Button>
       </div>
     </form>
@@ -475,7 +590,14 @@ function CategorySelect({ categories, value, onChange, disabled = false }) {
         <SelectValue placeholder="Select Category" />
       </SelectTrigger>
 
-      <SelectContent className="z-50 border border-stone-200 bg-white shadow-lg dark:border-stone-800 dark:bg-stone-900">
+      <SelectContent
+        className="z-50 border border-stone-200 bg-white shadow-lg dark:border-stone-800 dark:bg-stone-900"
+        position="popper"
+        side="bottom"
+        align="start"
+        avoidCollisions={false}
+        sideOffset={4}
+      >
         {categories.map((category) => (
           <SelectItem key={category._id} value={category._id}>
             {category.name}

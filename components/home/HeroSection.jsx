@@ -2,38 +2,45 @@
 
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 
 const heroItems = [
   {
-    title: "Le' Floret",
-    type: "Dinnerware",
+    eyebrow: "FOR RESORTS · HOTELS · TOWNSHIPS · ARCHITECTS",
+    headingNormal: "Stone that makes a space",
+    headingAccent: "unforgettable.",
+    paragraph:
+      "Quarry-direct sandstone, granite, limestone and basalt — engineered, finished and delivered to spec for India's most ambitious hospitality and architectural projects.",
+    primaryButtonText: "Request a Bulk Quote",
+    primaryButtonLink: "/quote",
+    secondaryButtonText: "Order Material Samples",
+    secondaryButtonLink: "/samples",
     image: "/assets/hero/HomePage-Slider-1.webp",
   },
   {
-    title: "L'arte Del Movimento",
-    type: "Platters & Bowls",
+    eyebrow: "FOR RESORTS · HOTELS · TOWNSHIPS · ARCHITECTS",
+    headingNormal: "Crafted surfaces for spaces that",
+    headingAccent: "endure.",
+    paragraph:
+      "From poolside decks to grand facades, our natural stone is cut, finished and delivered to exact architectural specification.",
+    primaryButtonText: "Request a Bulk Quote",
+    primaryButtonLink: "/quote",
+    secondaryButtonText: "Order Material Samples",
+    secondaryButtonLink: "/samples",
     image: "/assets/hero/HomePage-Slider-2.webp",
   },
   {
-    title: "Eredità Fiorita",
-    type: "Cushion Covers",
+    eyebrow: "FOR RESORTS · HOTELS · TOWNSHIPS · ARCHITECTS",
+    headingNormal: "Natural stone, engineered for",
+    headingAccent: "scale.",
+    paragraph:
+      "Quarry-direct sourcing and precision finishing, built for large-format hospitality and township developments.",
+    primaryButtonText: "Request a Bulk Quote",
+    primaryButtonLink: "/quote",
+    secondaryButtonText: "Order Material Samples",
+    secondaryButtonLink: "/samples",
     image: "/assets/hero/HomePage-Slider-3.webp",
-  },
-  {
-    title: "Lumière Voilée",
-    type: "Furniture",
-    image: "/assets/hero/HomePage-Slider-4.webp",
-  },
-  {
-    title: "Jardin Majestueux",
-    type: "Leather",
-    image: "/assets/hero/HomePage-Slider-5.webp",
-  },
-  {
-    title: "Jardin",
-    type: "Leather",
-    image: "/assets/hero/HomePage-Slider-6.webp",
   },
 ];
 
@@ -49,6 +56,7 @@ export default function HeroSection() {
 
     return () => clearTimeout(timer);
   }, [activeSlide]);
+
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % heroItems.length);
   };
@@ -58,8 +66,8 @@ export default function HeroSection() {
   };
 
   const handleTouchStart = (e) => {
-  touchStartX.current = e.touches[0].clientX;
-  touchEndX.current = e.touches[0].clientX;
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e) => {
@@ -80,9 +88,11 @@ export default function HeroSection() {
     }
   };
 
+  const current = heroItems[activeSlide];
+
   return (
     <section
-      className="relative h-screen overflow-hidden"
+      className="relative h-screen overflow-hidden bg-[#2a2118]"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -91,11 +101,11 @@ export default function HeroSection() {
 
       {heroItems.map((item, index) => (
         <motion.div
-          key={item.title}
+          key={item.image}
           className="absolute inset-0"
           initial={false}
           animate={{
-            opacity: activeSlide === index ? 1 : 1,
+            opacity: activeSlide === index ? 1 : 0,
             scale: activeSlide === index ? 1 : 1.08,
           }}
           transition={{
@@ -104,7 +114,7 @@ export default function HeroSection() {
               ease: "easeInOut",
             },
             scale: {
-              duration: 1,
+              duration: 8,
               ease: "linear",
             },
           }}
@@ -115,58 +125,79 @@ export default function HeroSection() {
         >
           <Image
             src={item.image}
-            alt={item.title}
+            alt={item.headingNormal}
             fill
             priority={index === 0}
             className="object-cover"
           />
+
+          {/* Dark gradient overlay for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/10" />
+          <div className="absolute inset-0 bg-black/20" />
         </motion.div>
       ))}
 
       {/* Content */}
-      <div
-        className={`absolute ${heroItems[activeSlide].title === "Le' Floret" ? "left-9 bottom-18 text-left" : "inset-0 text-center"} z-10 flex flex-col items-center justify-center px-6 text-white`}
-      >
+      <div className="absolute inset-0 z-10 flex items-center px-6 sm:px-10 lg:px-20">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={`content-${activeSlide}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className={` ${heroItems[activeSlide].title === "Le' Floret" ? "text-left" : "flex flex-col items-center"}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-2xl text-left"
           >
-            <motion.h1
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 60 }}
-              transition={{
-                duration: 0.8,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className={`font-heading font-display text-[52px] font-light tracking-wide md:text-[48px] ${heroItems[activeSlide].title === "Le' Floret" ? "ml-2" : "ml-0"}`}
-            >
-              {heroItems[activeSlide].title}
-            </motion.h1>
+            {/* Eyebrow */}
+            <p className="font-heading text-xs font-medium uppercase tracking-[4px] text-[#c9a877] sm:text-sm sm:tracking-[6px]">
+              {current.eyebrow}
+            </p>
 
-            <motion.button className="mt-6 border border-white px-8 py-3 font-heading text-[11px] font-medium uppercase tracking-[0.3em] transition-all duration-300 hover:bg-white hover:text-black">
-              {heroItems[activeSlide].type}
-            </motion.button>
+            {/* Heading */}
+            <h1 className="mt-6 font-heading text-[40px] font-normal leading-[1.15] text-white sm:text-[52px] lg:text-[64px]">
+              {current.headingNormal}{" "}
+              <em className="font-serif italic text-[#c9a877]">
+                {current.headingAccent}
+              </em>
+            </h1>
+
+            {/* Paragraph */}
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
+              {current.paragraph}
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <Link
+                href={current.primaryButtonLink}
+                className="bg-[#f2ede4] px-8 py-4 text-sm font-semibold uppercase tracking-wide text-stone-900 transition hover:bg-white"
+              >
+                {current.primaryButtonText}
+              </Link>
+
+              <Link
+                href={current.secondaryButtonLink}
+                className="border border-white/70 px-8 py-4 text-sm font-semibold uppercase tracking-wide text-white transition hover:border-white hover:bg-white/10"
+              >
+                {current.secondaryButtonText}
+              </Link>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Dots */}
-      <div className="absolute bottom-8 right-[-2] z-20 flex -translate-x-1/2 gap-3">
+      <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3">
         {heroItems.map((_, index) => (
           <button
             key={index}
+            aria-label={`Go to slide ${index + 1}`}
             onClick={() => {
               if (index !== activeSlide) {
                 setActiveSlide(index);
               }
             }}
-            className={`h-[10px] w-[10px] rounded-full transition-all border-2 duration-300 ${
+            className={`h-[10px] w-[10px] rounded-full border-2 transition-all duration-300 ${
               activeSlide === index ? "bg-white border-white" : "border-white"
             }`}
           />

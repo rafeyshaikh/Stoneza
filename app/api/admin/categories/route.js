@@ -42,7 +42,7 @@ export async function POST(request) {
 
     const {
       name,
-      image,
+      bannerImage,
       description = "",
       parentCategory = null,
       sortOrder = 0,
@@ -83,7 +83,8 @@ export async function POST(request) {
       return response(false, 409, "Slug already exists");
     }
 
-    // Parent category validation
+    let categoryLevel = 1;
+
     if (parentCategory) {
       const parent = await Category.findOne({
         _id: parentCategory,
@@ -93,29 +94,38 @@ export async function POST(request) {
       if (!parent) {
         return response(false, 404, "Parent category not found");
       }
+
+      categoryLevel = parent.categoryLevel + 1;
+
+      if (categoryLevel > 3) {
+        return response(false, 400, "Maximum category depth is 3 levels");
+      }
     }
 
     const category = await Category.create({
       name: normalizedName,
+
       slug,
-      image,
+
+      bannerImage,
+
+      categoryLevel,
+
       description,
+
       parentCategory,
+
       sortOrder,
+
       isActive,
+
       seo,
     });
 
-    return response(
-      true,
-      201,
-      "Category created successfully",
-      category
-    );
+    return response(true, 201, "Category created successfully", category);
   } catch (error) {
     console.error("Create category error:", error);
 
     return response(false, 500, "Internal Server Error");
   }
 }
-    

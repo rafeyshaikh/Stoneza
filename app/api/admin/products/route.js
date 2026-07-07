@@ -23,11 +23,11 @@ export async function POST(req) {
       name,
       description,
       shortDescription,
-      price,
       discountPrice,
       stock,
       category,
-
+      price,
+      
       images,
       hoverImage,
 
@@ -92,11 +92,7 @@ export async function POST(req) {
     });
 
     if (hasChildren) {
-      return response(
-        false,
-        400,
-        "Please select a final category"
-      );
+      return response(false, 400, "Please select a final category");
     }
 
     const product = await Product.create({
@@ -110,11 +106,13 @@ export async function POST(req) {
 
       shortDescription,
 
-      price: Number(price),
+      price,
 
       discountPrice: discountPrice || null,
 
       stock: Number(stock) || 0,
+
+      tags: tags || [],
 
       category,
 
@@ -137,12 +135,7 @@ export async function POST(req) {
       weight: Number(weight) || 0,
     });
 
-    return response(
-      true,
-      201,
-      "Product created successfully",
-      product
-    );
+    return response(true, 201, "Product created successfully", product);
   } catch (error) {
     console.error("Admin product create error:", error);
 
@@ -162,17 +155,84 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get("page") || "1");
     const limit = Number(searchParams.get("limit") || "10");
+
     const query = searchParams.get("query") || "";
+
+    const category = searchParams.get("category") || "";
+
+    const status = searchParams.get("status") || "";
+
+    const sort = searchParams.get("sort") || "newest";
 
     const filter = {
       deletedAt: null,
-      $or: [{ name: { $regex: query, $options: "i" } }, { slug: { $regex: query, $options: "i" } }],
     };
+
+    if (query) {
+      filter.$or = [
+        {
+          name: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
+          slug: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
+          sku: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    if (category) {
+      filter.category = category;
+    }
+
+    if (status) {
+      filter.status = status;
+    }
+
+    let sortOption = {
+      createdAt: -1,
+    };
+
+    switch (sort) {
+      case "oldest":
+        sortOption = {
+          createdAt: 1,
+        };
+        break;
+
+      case "price-low":
+        sortOption = {
+          price: 1,
+        };
+        break;
+
+      case "price-high":
+        sortOption = {
+          price: -1,
+        };
+        break;
+
+      case "name":
+        sortOption = {
+          name: 1,
+        };
+        break;
+    }
 
     const [products, total] = await Promise.all([
       Product.find(filter)
         .populate("category", "name")
-        .sort({ createdAt: -1 })
+        .sort(sortOption)
         .skip((page - 1) * limit)
         .limit(limit)
         .lean(),
@@ -210,7 +270,10 @@ export async function DELETE(req) {
       return response(false, 400, "No product IDs provided");
     }
 
-    await Product.updateMany({ _id: { $in: ids } }, { $set: { deletedAt: new Date() } });
+    await Product.updateMany(
+      { _id: { $in: ids } },
+      { $set: { deletedAt: new Date() } },
+    );
 
     return response(true, 200, "Products deleted");
   } catch (error) {

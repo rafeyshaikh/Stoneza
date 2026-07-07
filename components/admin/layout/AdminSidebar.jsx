@@ -12,6 +12,7 @@ import {
   FileText,
   Search,
   Settings,
+  NotebookPen
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -20,11 +21,12 @@ const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Grid2X2 },
-  { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
+  { label: "Enquiries", href: "/admin/enquiries", icon: ShoppingBag },
   { label: "Customers", href: "/admin/customers", icon: Users },
   { label: "Reviews", href: "/admin/reviews", icon: Star },
   { label: "Homepage CMS", href: "/admin/cms/homepage", icon: FileText },
   { label: "Pages CMS", href: "/admin/cms/pages", icon: FileText },
+  { label: "Blog CMS", href: "/admin/cms/blogs", icon: NotebookPen },
   { label: "SEO", href: "/admin/seo", icon: Search },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
@@ -33,7 +35,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex lg:w-72 lg:flex-col border-r border-stone-300/60 bg-stone-100/70 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/70">
+    <aside className="hidden lg:flex lg:w-72 lg:flex-col border-r border-stone-300/60 bg-stone-100/70 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/70 lg:sticky lg:top-0 lg:h-screen">
       <div className="flex h-16 items-center border-b border-stone-300/60 px-6 dark:border-stone-800">
         <div className="space-y-0.5">
           <p className="font-heading text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-100">

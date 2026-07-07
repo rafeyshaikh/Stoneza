@@ -7,17 +7,35 @@ import { connectDB } from "@/lib/databaseConnection";
 export default async function NewCategoryPage() {
   await connectDB();
   const parentCategories = (
-    await Category.find({ deletedAt: null })
-      .select("name sortOrder parentCategory")
-      .populate("parentCategory", "name")
-      .sort({ sortOrder: 1 })
+    await Category.find({
+      deletedAt: null,
+      categoryLevel: {
+        $lt: 3,
+      },
+    })
+      .select("name sortOrder parentCategory categoryLevel")
+      .populate("parentCategory", "name categoryLevel")
+      .sort({
+        categoryLevel: 1,
+        sortOrder: 1,
+        createdAt: 1,
+      })
       .lean()
   ).map((cat) => ({
     _id: cat._id.toString(),
+
     name: cat.name,
+
+    categoryLevel: cat.categoryLevel,
+
     sortOrder: cat.sortOrder,
+
     parentCategory: cat.parentCategory
-      ? { ...cat.parentCategory, _id: cat.parentCategory._id.toString() }
+      ? {
+          ...cat.parentCategory,
+
+          _id: cat.parentCategory._id.toString(),
+        }
       : null,
   }));
 

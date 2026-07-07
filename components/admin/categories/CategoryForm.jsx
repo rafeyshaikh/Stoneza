@@ -19,21 +19,44 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
-
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Could not read the selected file"));
+    reader.onerror = () =>
+      reject(new Error("Could not read the selected file"));
     reader.readAsDataURL(file);
   });
 }
 
-// Pulled out so both the initial useState call and the post-save reset use
-// the exact same shape — one source of truth for "empty form".
+async function uploadImage(file, folder = "categories") {
+  const base64 = await fileToBase64(file);
+
+  const response = await fetch("/api/admin/upload", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      image: base64,
+      folder,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.message || "Image upload failed");
+  }
+
+  return data.data;
+}
+
 const EMPTY_FORM = {
   name: "",
+
   description: "",
 
   parentCategory: "none",
@@ -42,12 +65,13 @@ const EMPTY_FORM = {
 
   isActive: true,
 
-  // Existing/uploaded image data — only ever populated with a real
-  // Cloudinary url/publicId, either from an edit-mode record or after
-  // a successful upload on submit.
-  image: {
-    url: "",
-    publicId: "",
+  bannerImage: {
+    square: {
+      url: "",
+      publicId: "",
+    },
+
+    wide: [],
   },
 
   seo: {
@@ -59,12 +83,55 @@ const EMPTY_FORM = {
   },
 };
 
-export default function CategoryForm({ parentCategories = [] }) {
-  const [formData, setFormData] = useState(EMPTY_FORM);
+export default function CategoryForm({
+  parentCategories = [],
+  initialData = null,
+  isEdit = false,
+}) {
+  const [formData, setFormData] = useState(() => {
+    if (!initialData) return EMPTY_FORM;
 
-  // Locally selected file that hasn't been uploaded anywhere yet.
-  const [imageFile, setImageFile] = useState(null);
-  const [uploadingImage, setUploadingImage] = useState(false);
+    return {
+      name: initialData.name || "",
+
+      description: initialData.description || "",
+
+      parentCategory: initialData.parentCategory || "none",
+
+      sortOrder: initialData.sortOrder || 0,
+
+      isActive:
+        initialData.isActive === undefined ? true : initialData.isActive,
+
+      bannerImage: {
+        square: initialData.bannerImage?.square || {
+          url: "",
+          publicId: "",
+        },
+
+        wide: initialData.bannerImage?.wide || [],
+      },
+
+      seo: {
+        metaTitle: initialData.seo?.metaTitle || "",
+
+        metaDescription: initialData.seo?.metaDescription || "",
+
+        keywords: initialData.seo?.keywords?.join(", ") || "",
+
+        canonicalUrl: initialData.seo?.canonicalUrl || "",
+
+        ogImage: initialData.seo?.ogImage || "",
+      },
+    };
+  });
+  const [squareBannerFile, setSquareBannerFile] = useState(null);
+
+  const [wideBanner1File, setWideBanner1File] = useState(null);
+
+  const [wideBanner2File, setWideBanner2File] = useState(null);
+
+  const [uploadingImages, setUploadingImages] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
@@ -85,18 +152,6 @@ export default function CategoryForm({ parentCategories = [] }) {
     }));
   };
 
-  const handleImageSelect = (file) => {
-    setImageFile(file);
-  };
-
-  const handleImageRemove = () => {
-    setImageFile(null);
-    setFormData((prev) => ({
-      ...prev,
-      image: { url: "", publicId: "" },
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError("");
@@ -104,38 +159,42 @@ export default function CategoryForm({ parentCategories = [] }) {
     try {
       setSubmitting(true);
 
-      // Start from whatever image data already exists (edit mode, or empty).
-      let imageData = formData.image;
+      setUploadingImages(true);
 
-      // Only talk to Cloudinary if the user actually picked a new file.
-      if (imageFile) {
-        setUploadingImage(true);
+      let squareBanner = formData.bannerImage.square;
 
-        const base64 = await fileToBase64(imageFile);
-
-        const uploadRes = await fetch("/api/admin/upload", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            image: base64,
-            folder: "categories",
-          }),
-        });
-
-        const uploadData = await uploadRes.json();
-
-        if (!uploadData.success) {
-          throw new Error(uploadData.message || "Image upload failed");
-        }
-
-        imageData = uploadData.data;
-        setUploadingImage(false);
+      if (squareBannerFile) {
+        squareBanner = await uploadImage(squareBannerFile, "categories/square");
       }
+
+      const wideBanners = [];
+
+      if (wideBanner1File) {
+        const uploaded = await uploadImage(wideBanner1File, "categories/wide");
+
+        wideBanners.push(uploaded);
+      } else if (formData.bannerImage.wide?.[0]) {
+        wideBanners.push(formData.bannerImage.wide[0]);
+      }
+
+      if (wideBanner2File) {
+        const uploaded = await uploadImage(wideBanner2File, "categories/wide");
+
+        wideBanners.push(uploaded);
+      } else if (formData.bannerImage.wide?.[1]) {
+        wideBanners.push(formData.bannerImage.wide[1]);
+      }
+
+      setUploadingImages(false);
 
       const payload = {
         ...formData,
 
-        image: imageData,
+        bannerImage: {
+          square: squareBanner,
+
+          wide: wideBanners,
+        },
 
         parentCategory:
           formData.parentCategory === "none" ? null : formData.parentCategory,
@@ -150,13 +209,20 @@ export default function CategoryForm({ parentCategories = [] }) {
         },
       };
 
-      const response = await fetch("/api/admin/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        isEdit
+          ? `/api/admin/categories/${initialData._id}`
+          : "/api/admin/categories",
+        {
+          method: isEdit ? "PATCH" : "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+      );
 
       const data = await response.json();
 
@@ -164,15 +230,27 @@ export default function CategoryForm({ parentCategories = [] }) {
         throw new Error(data.message || "Failed to save category");
       }
 
-      toast.success("Category saved successfully");
-      setFormData(EMPTY_FORM);
-      setImageFile(null);
+      toast.success(
+        isEdit
+          ? "Category updated successfully"
+          : "Category created successfully",
+      );
+
+      if (!isEdit) {
+        setFormData(EMPTY_FORM);
+
+        setSquareBannerFile(null);
+
+        setWideBanner1File(null);
+
+        setWideBanner2File(null);
+      }
     } catch (error) {
       console.error(error);
       setSubmitError(error.message || "Something went wrong");
       toast.error(error.message || "Failed to save category");
     } finally {
-      setUploadingImage(false);
+      setUploadingImages(false);
       setSubmitting(false);
     }
   };
@@ -219,9 +297,7 @@ export default function CategoryForm({ parentCategories = [] }) {
             <div className="flex h-10 items-center gap-3">
               <Switch
                 checked={formData.isActive}
-                onCheckedChange={(checked) =>
-                  handleChange("isActive", checked)
-                }
+                onCheckedChange={(checked) => handleChange("isActive", checked)}
               />
               <span className="text-sm text-stone-600 dark:text-stone-300">
                 {formData.isActive ? "Active" : "Inactive"}
@@ -245,19 +321,85 @@ export default function CategoryForm({ parentCategories = [] }) {
         </div>
       </section>
 
-      {/* Category Image */}
+      {/* Category Banners */}
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
         <h3 className="mb-5 text-lg font-semibold text-stone-900 dark:text-stone-100">
-          Category Image
+          Category Banners
         </h3>
-        <ImageUploader
-          file={imageFile}
-          existingImage={formData.image}
-          onFileSelect={handleImageSelect}
-          onRemove={handleImageRemove}
-          uploading={uploadingImage}
-          hint="Image uploads to Cloudinary only when you save the category."
-        />
+
+        <div className="space-y-6">
+          <Field label="Square Banner (1000 × 1000)">
+            <ImageUploader
+              file={squareBannerFile}
+              existingImage={formData.bannerImage.square}
+              onFileSelect={setSquareBannerFile}
+              onRemove={() => {
+                setSquareBannerFile(null);
+
+                setFormData((prev) => ({
+                  ...prev,
+
+                  bannerImage: {
+                    ...prev.bannerImage,
+
+                    square: {
+                      url: "",
+                      publicId: "",
+                    },
+                  },
+                }));
+              }}
+              uploading={uploadingImages}
+              hint="Used in category cards and collection sections."
+            />
+          </Field>
+
+          <Field label="Wide Banner 1 (2200 × 640)">
+            <ImageUploader
+              file={wideBanner1File}
+              existingImage={formData.bannerImage.wide?.[0]}
+              onFileSelect={setWideBanner1File}
+              onRemove={() => {
+                setWideBanner1File(null);
+
+                setFormData((prev) => ({
+                  ...prev,
+
+                  bannerImage: {
+                    ...prev.bannerImage,
+
+                    wide: [prev.bannerImage.wide?.[1] || null].filter(Boolean),
+                  },
+                }));
+              }}
+              uploading={uploadingImages}
+              hint="Desktop hero banner."
+            />
+          </Field>
+
+          <Field label="Wide Banner 2 (2200 × 640)">
+            <ImageUploader
+              file={wideBanner2File}
+              existingImage={formData.bannerImage.wide?.[1]}
+              onFileSelect={setWideBanner2File}
+              onRemove={() => {
+                setWideBanner2File(null);
+
+                setFormData((prev) => ({
+                  ...prev,
+
+                  bannerImage: {
+                    ...prev.bannerImage,
+
+                    wide: [prev.bannerImage.wide?.[0] || null].filter(Boolean),
+                  },
+                }));
+              }}
+              uploading={uploadingImages}
+              hint="Alternative banner for homepage or campaigns."
+            />
+          </Field>
+        </div>
       </section>
 
       {/* SEO Settings */}
@@ -290,9 +432,7 @@ export default function CategoryForm({ parentCategories = [] }) {
               id="canonical-url"
               placeholder="https://example.com/category-slug"
               value={formData.seo.canonicalUrl}
-              onChange={(e) =>
-                handleSeoChange("canonicalUrl", e.target.value)
-              }
+              onChange={(e) => handleSeoChange("canonicalUrl", e.target.value)}
             />
           </Field>
 
@@ -324,9 +464,7 @@ export default function CategoryForm({ parentCategories = [] }) {
       </section>
 
       {submitError && (
-        <p className="text-sm text-red-600 dark:text-red-400">
-          {submitError}
-        </p>
+        <p className="text-sm text-red-600 dark:text-red-400">{submitError}</p>
       )}
 
       <div className="flex justify-end">
@@ -335,11 +473,15 @@ export default function CategoryForm({ parentCategories = [] }) {
           disabled={submitting}
           className="rounded-lg border border-stone-900 bg-stone-900 px-5 py-2 text-white transition-colors hover:bg-stone-800 disabled:opacity-60 dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
         >
-          {uploadingImage
-            ? "Uploading image..."
+          {uploadingImages
+            ? "Uploading banners..."
             : submitting
-              ? "Saving..."
-              : "Save Category"}
+              ? isEdit
+                ? "Updating..."
+                : "Saving..."
+              : isEdit
+                ? "Update Category"
+                : "Save Category"}
         </Button>
       </div>
     </form>
@@ -367,7 +509,14 @@ function ParentCategorySelect({ categories, value, onChange }) {
         <SelectValue placeholder="Select parent category" />
       </SelectTrigger>
 
-      <SelectContent className="z-50 border border-stone-200 bg-white shadow-lg dark:border-stone-800 dark:bg-stone-900">
+      <SelectContent
+        className="z-50 border border-stone-200 bg-white shadow-lg dark:border-stone-800 dark:bg-stone-900"
+        position="popper"
+        side="bottom"
+        align="start"
+        avoidCollisions={false}
+        sideOffset={4}
+      >
         <SelectItem value="none">No Parent (Main Category)</SelectItem>
 
         {categories.map((category) => (

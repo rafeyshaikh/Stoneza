@@ -10,6 +10,7 @@ export default function MultipleImageUploader({
   files = [],
   existingImages = [],
   onFilesChange,
+  onExistingImagesChange,
   uploading = false,
   hint = "Images will upload to Cloudinary when you save the product.",
 }) {
@@ -18,33 +19,27 @@ export default function MultipleImageUploader({
   const [previewImages, setPreviewImages] = useState([]);
 
   useEffect(() => {
-    if (files.length > 0) {
-      const objectUrls = files.map((file) => ({
-        url: URL.createObjectURL(file),
-        isLocal: true,
-      }));
+    const existing = existingImages.map((image) => ({
+      url: image.url,
+      publicId: image.publicId,
+      isLocal: false,
+    }));
 
-      setPreviewImages(objectUrls);
+    const local = files.map((file) => ({
+      url: URL.createObjectURL(file),
+      file,
+      isLocal: true,
+    }));
 
-      return () => {
-        objectUrls.forEach((image) =>
-          URL.revokeObjectURL(image.url)
-        );
-      };
-    }
+    setPreviewImages([...existing, ...local]);
 
-    setPreviewImages(
-      existingImages.map((image) => ({
-        url: image.url,
-        isLocal: false,
-      }))
-    );
+    return () => {
+      local.forEach((image) => URL.revokeObjectURL(image.url));
+    };
   }, [files, existingImages]);
 
   const handlePick = (event) => {
-    const selectedFiles = Array.from(
-      event.target.files || []
-    );
+    const selectedFiles = Array.from(event.target.files || []);
 
     if (!selectedFiles.length) return;
 
@@ -54,9 +49,19 @@ export default function MultipleImageUploader({
   };
 
   const removeImage = (index) => {
-    const updatedFiles = files.filter(
-      (_, i) => i !== index
-    );
+    const existingCount = existingImages.length;
+
+    if (index < existingCount) {
+      const updatedExisting = existingImages.filter((_, i) => i !== index);
+
+      onExistingImagesChange(updatedExisting);
+
+      return;
+    }
+
+    const localIndex = index - existingCount;
+
+    const updatedFiles = files.filter((_, i) => i !== localIndex);
 
     onFilesChange(updatedFiles);
   };
@@ -69,9 +74,7 @@ export default function MultipleImageUploader({
             Product Images
           </h4>
 
-          <p className="mt-1 text-sm text-stone-500">
-            {hint}
-          </p>
+          <p className="mt-1 text-sm text-stone-500">{hint}</p>
 
           <p className="mt-2 text-xs text-stone-400">
             First image becomes the product thumbnail.
@@ -94,7 +97,6 @@ export default function MultipleImageUploader({
           onClick={() => inputRef.current?.click()}
         >
           <UploadCloud className="size-4" />
-
           Add Images
         </Button>
       </div>
@@ -103,7 +105,7 @@ export default function MultipleImageUploader({
         <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
           {previewImages.map((image, index) => (
             <div
-              key={`${image.url}-${index}`}
+              key={image.publicId || image.url}
               className="relative aspect-square overflow-hidden rounded-xl border"
             >
               <Image
@@ -117,7 +119,6 @@ export default function MultipleImageUploader({
               {index === 0 && (
                 <div className="absolute left-2 top-2 flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs text-white">
                   <Star className="size-3 fill-white" />
-
                   Thumbnail
                 </div>
               )}

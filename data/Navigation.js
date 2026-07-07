@@ -2,6 +2,7 @@ export const navItems = [
   {
     title: "Landscape & Outdoor Living",
     active: true,
+    slug: "landscape-outdoor-living",
     categories: [
       {
         title: "Outdoor Artistry Series",
@@ -11,6 +12,7 @@ export const navItems = [
           "Stone Lamps",
           "Stone Planters",
         ],
+        slug: "outdoor-artistry-series",
       },
       {
         title: "Stone Furniture & Seating",
@@ -18,28 +20,27 @@ export const navItems = [
           "Stone Benches",
           "Stone Seating Sets",
         ],
+        slug: "stone-furniture-seating",
       },
       {
         title: "Pathway Elements",
         links: ["Gravels", "Pebles", "Stepping Stones", "Steps",],
+        slug: "pathway-elements",
       },
     ],
     images: [
       {
         title: "Sculpture Fountains",
+        slug: "sculpture-fountains",
         image:
           "/assets/nav-banners/Nav_Banner1_linen.jpg",
       },
-      // {
-      //   title: "Cushions",
-      //   image:
-      //     "/assets/nav-banners/Nav_Banner2_linen.jpg",
-      // },
     ],
   },
 
   {
     title: "Flooring & Paving Surfaces",
+    slug: "flooring-paving-surfaces",
     categories: [
       {
         title: "Paving Surfaces",
@@ -47,6 +48,7 @@ export const navItems = [
           "Crazy Paving",
           "Paving Tiles",
           "Pebble Tiles",],
+        slug: "paving-surfaces",
       },
       {
         title: "Poolside Collection",
@@ -54,6 +56,7 @@ export const navItems = [
           "Pool Copings",
           "Pool Tiles",
         ],
+        slug: "poolside-collection",
       },
       {
         title: "Signature Stone Flooring",
@@ -63,6 +66,7 @@ export const navItems = [
           "Kota Blue",
           "Kota Brown",
         ],
+        slug: "signature-stone-flooring",
       },
     ],
     images: [
@@ -75,6 +79,7 @@ export const navItems = [
   },
   {
     title: "Decor",
+    slug: "decor",
     categories: [
       {
         title: "Home Décor",
@@ -122,6 +127,7 @@ export const navItems = [
 
   {
     title: "Leather",
+    slug: "leather",
     categories: [
       {
         title: "Categories",
@@ -166,6 +172,7 @@ export const navItems = [
 
   {
     title: "Candleware",
+    slug: "candleware",
     categories: [
       {
         title: "Categories",
@@ -196,6 +203,7 @@ export const navItems = [
 
   {
     title: "Lighting",
+    slug: "lighting",
     categories: [
       {
         title: "Categories",
@@ -218,6 +226,7 @@ export const navItems = [
 
   {
     title: "Furniture",
+    slug: "furniture",
     categories: [
       {
         title: "Categories",
@@ -248,6 +257,7 @@ export const navItems = [
 
   {
     title: "Gifting",
+    slug: "gifting",
     categories: [
       {
         title: "By Occasion",

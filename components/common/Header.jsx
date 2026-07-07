@@ -115,39 +115,30 @@ export default function Header() {
 
           {/* USER */}
 
-          <Link
+          {/* <Link
             href={isLoggedIn ? "/profile" : "/auth/login"}
             className="absolute right-20 top-1/2 hidden -translate-y-1/2 lg:block"
           >
             <PiUserLight className="text-2xl" />
 
-          </Link>
+          </Link> */}
 
-          {/* ADMIN DASHBOARD */}
-          {userRole === "admin" && (
+          {/* {userRole === "admin" && (
             <Link href="/admin"
               className="absolute right-28 top-1/2 hidden -translate-y-1/2 lg:block border px-2">
               Admin Dashboard
             </Link>
-          )}
+          )} */}
 
           {/* SEARCH */}
 
           <Link
             href="/search"
-            className="absolute right-12 top-1/2 -translate-y-1/2 lg:right-10"
+            className="absolute right-0 top-1/2 -translate-y-1/2 lg:right-10"
             >
             <CiSearch className="text-2xl" />
           </Link>
 
-          {/* CART */}
-
-          <Link
-            href="/cart"
-            className="absolute right-0 top-1/2 -translate-y-1/2"
-            >
-            <PiBagSimpleThin className="text-2xl" />
-          </Link>
         </div>
 
         {/* Navigation */}
@@ -169,7 +160,7 @@ export default function Header() {
                     }
                   >
                     <Link
-                      href={item.href || "#"}
+                      href={`/collections/${item.slug}?categoryLevel=1`||"#"}
                       className="relative block"
                     >
                       {item.title}

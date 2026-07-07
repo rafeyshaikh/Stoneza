@@ -53,7 +53,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/pages/about-us"
-                  className="transition-colors hover:text-[#b39463]"
+                  className="transition-colors cursor-pointer"
                 >
                   About Us
                 </Link>
@@ -62,7 +62,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/pages/contact"
-                  className="transition-colors hover:text-[#b39463]"
+                  className="transition-colors cursor-pointer"
                 >
                   Contact Us
                 </Link>
@@ -71,7 +71,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/pages/loyalty"
-                  className="transition-colors hover:text-[#b39463]"
+                  className="transition-colors cursor-pointer"
                 >
                   Loyalty Program
                 </Link>
@@ -80,7 +80,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/pages/business-expansion"
-                  className="transition-colors hover:text-[#b39463]"
+                  className="transition-colors cursor-pointer"
                 >
                   Business Expansion Enquiry
                 </Link>
@@ -88,8 +88,8 @@ export default function Footer() {
 
               <li>
                 <Link
-                  href="/blogs/news"
-                  className="transition-colors hover:text-[#b39463]"
+                  href="/blogs"
+                  className="transition-colors cursor-pointer"
                 >
                   Blogs
                 </Link>
@@ -107,7 +107,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/pages/shipping-policy"
-                  className="transition-colors hover:text-[#b39463]"
+                  className="transition-colors cursor-pointer"
                 >
                   Shipping Policy
                 </Link>
@@ -116,7 +116,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/pages/return-policy-1"
-                  className="transition-colors hover:text-[#b39463]"
+                  className="transition-colors cursor-pointer"
                 >
                   Return & Refunds
                 </Link>
@@ -125,7 +125,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/pages/terms-of-use"
-                  className="transition-colors hover:text-[#b39463]"
+                  className="transition-colors cursor-pointer"
                 >
                   Terms of Use
                 </Link>

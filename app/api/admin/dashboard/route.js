@@ -4,7 +4,7 @@ import { response } from "@/lib/helperFunction";
 import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
 import User from "@/models/User.model";
-import Order from "@/models/Order.model";
+import Enquiry from "@/models/Enquiry.model";
 
 export async function GET() {
   try {
@@ -18,23 +18,19 @@ export async function GET() {
     const [
       totalProducts,
       totalCategories,
-      totalOrders,
+      totalEnquiries,
       totalCustomers,
       revenueAggregation,
-      recentOrders,
+      recentEnquiries,
       recentCustomers,
       lowStockProducts,
       outOfStockProducts,
     ] = await Promise.all([
       Product.countDocuments({ deletedAt: null }),
       Category.countDocuments({ deletedAt: null }),
-      Order.countDocuments({}),
+      Enquiry.countDocuments({}),
       User.countDocuments({ role: { $in: ["user", "customer"] }, deletedAt: null }),
-      Order.aggregate([
-        { $match: { status: { $in: ["Paid", "Processing", "Shipped", "Delivered"] } } },
-        { $group: { _id: null, totalRevenue: { $sum: "$totalAmount" } } },
-      ]),
-      Order.find({}).sort({ createdAt: -1 }).limit(8).lean(),
+      Enquiry.find({}).sort({ createdAt: -1 }).limit(8).lean(),
       User.find({ role: { $in: ["user", "customer"] }, deletedAt: null }).sort({ createdAt: -1 }).limit(8).lean(),
       Product.find({ deletedAt: null, stock: { $gt: 0, $lte: 10 } }).select("name sku stock").sort({ stock: 1 }).limit(8).lean(),
       Product.find({ deletedAt: null, stock: 0 }).select("name sku stock").sort({ updatedAt: -1 }).limit(8).lean(),
@@ -43,10 +39,10 @@ export async function GET() {
     return response(true, 200, "Dashboard data fetched", {
       totalProducts,
       totalCategories,
-      totalOrders,
+      totalEnquiries,
       totalRevenue: revenueAggregation[0]?.totalRevenue || 0,
       totalCustomers,
-      recentOrders,
+      recentEnquiries,
       recentCustomers,
       lowStockProducts,
       outOfStockProducts,

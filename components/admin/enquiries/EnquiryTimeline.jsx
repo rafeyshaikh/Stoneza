@@ -1,11 +1,11 @@
 const timelineSteps = ["Pending", "Paid", "Processing", "Shipped", "Delivered"];
 
-export default function OrderTimeline({ status = "Pending" }) {
+export default function EnquiryTimeline({ status = "Pending" }) {
   const currentIndex = timelineSteps.findIndex((item) => item === status);
 
   return (
     <div className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 shadow-sm dark:border-stone-800 dark:bg-stone-950/70">
-      <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">Order Timeline</h3>
+      <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">Enquiry Timeline</h3>
       <ol className="mt-4 space-y-3">
         {timelineSteps.map((step, index) => {
           const completed = index <= currentIndex;

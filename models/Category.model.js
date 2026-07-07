@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
 
+const imageSchema = new mongoose.Schema(
+  {
+    url: String,
+    publicId: String,
+  },
+  { _id: false }
+);
+
 const categorySchema = new mongoose.Schema(
   {
     name: {
@@ -17,9 +25,26 @@ const categorySchema = new mongoose.Schema(
       index: true,
     },
 
-    image: {
-      url: String,
-      publicId: String,
+    bannerImage: {
+      square: imageSchema,
+
+      wide: {
+        type: [imageSchema],
+        validate: {
+          validator: (value) => value.length <= 2,
+          message: "Maximum 2 wide banners are allowed",
+        },
+        default: [],
+      },
+    },
+
+    categoryLevel: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 3,
+      default: 1,
+      index: true,
     },
 
     description: {
@@ -50,6 +75,7 @@ const categorySchema = new mongoose.Schema(
       ogImage: String,
       canonicalUrl: String,
     },
+
     deletedAt: {
       type: Date,
       default: null,
@@ -58,10 +84,11 @@ const categorySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const Category =
-  mongoose.models.Category || mongoose.model("Category", categorySchema);
+  mongoose.models.Category ||
+  mongoose.model("Category", categorySchema);
 
 export default Category;

@@ -7,7 +7,7 @@ const statusClassMap = {
   Cancelled: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
 };
 
-export default function OrderStatusBadge({ status = "Pending" }) {
+export default function EnquiryStatusBadge({ status = "Pending" }) {
   return (
     <span className={`rounded-full px-2 py-1 text-xs font-semibold ${statusClassMap[status] || statusClassMap.Pending}`}>
       {status}

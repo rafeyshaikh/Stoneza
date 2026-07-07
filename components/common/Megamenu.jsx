@@ -16,15 +16,15 @@ export default function MegaMenu({ item }) {
                 key={section.title}
                 className="min-w-[190px]"
               >
-                <p className="mb-4 text-[13px] uppercase tracking-[0.24em] text-[#393938] font-heading font-medium">
+                <a className=" text-[13px] uppercase tracking-[0.24em] text-[#393938] font-heading font-medium" href={`/collections/${section.slug}?categoryLevel=2`||"#"}>
                   {section.title}
-                </p>
+                </a>
 
-                <ul className="space-y-2.5">
+                <ul className="space-y-2.5 mt-4">
                   {section.links.map((link) => (
-                    <li key={link}>
+                    <li key={link.slug}>
                       <a
-                        href="#"
+                        href={`/collections/${link.slug}?categoryLevel=3`||"#"}
                         className="text-[14px] text-[#393938] font-body transition-colors hover:text-[#231c15]"
                       >
                         {link}

@@ -11,8 +11,6 @@ import Carousel from "@/components/home/Carousel";
 import { PiCaretDown } from "react-icons/pi";
 import { BiSolidGrid, BiSolidGridAlt } from "react-icons/bi";
 
-
-
 export default function CollectionPage({ params }) {
   const data = [
     {
@@ -22,7 +20,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_1.webp",
       imageHover: "/assets/small_banners3/Small_Banner_1_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 2,
@@ -31,7 +29,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_2.webp",
       imageHover: "/assets/small_banners3/Small_Banner_2_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 3,
@@ -40,7 +38,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_3.webp",
       imageHover: "/assets/small_banners3/Small_Banner_3_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 4,
@@ -49,7 +47,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_4.webp",
       imageHover: "/assets/small_banners3/Small_Banner_4_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 5,
@@ -58,7 +56,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_5.webp",
       imageHover: "/assets/small_banners3/Small_Banner_5_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 6,
@@ -67,7 +65,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_6.webp",
       imageHover: "/assets/small_banners3/Small_Banner_6_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 7,
@@ -76,7 +74,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_7.webp",
       imageHover: "/assets/small_banners3/Small_Banner_7_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 8,
@@ -85,7 +83,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_8.webp",
       imageHover: "/assets/small_banners3/Small_Banner_8_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 9,
@@ -94,7 +92,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_9.webp",
       imageHover: "/assets/small_banners3/Small_Banner_9_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 10,
@@ -103,7 +101,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_1.webp",
       imageHover: "/assets/small_banners3/Small_Banner_1_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 11,
@@ -112,7 +110,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_2.webp",
       imageHover: "/assets/small_banners3/Small_Banner_2_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 12,
@@ -121,7 +119,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_3.webp",
       imageHover: "/assets/small_banners3/Small_Banner_3_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 13,
@@ -130,7 +128,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_4.webp",
       imageHover: "/assets/small_banners3/Small_Banner_4_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 14,
@@ -139,7 +137,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_5.webp",
       imageHover: "/assets/small_banners3/Small_Banner_5_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 15,
@@ -148,7 +146,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_6.webp",
       imageHover: "/assets/small_banners3/Small_Banner_6_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 16,
@@ -157,7 +155,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_7.webp",
       imageHover: "/assets/small_banners3/Small_Banner_7_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 17,
@@ -166,7 +164,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_8.webp",
       imageHover: "/assets/small_banners3/Small_Banner_8_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 18,
@@ -175,7 +173,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_3.webp",
       imageHover: "/assets/small_banners3/Small_Banner_4_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 19,
@@ -184,7 +182,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_1.webp",
       imageHover: "/assets/small_banners3/Small_Banner_1_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 20,
@@ -193,7 +191,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_3.webp",
       imageHover: "/assets/small_banners3/Small_Banner_4_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 21,
@@ -202,7 +200,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_1.webp",
       imageHover: "/assets/small_banners3/Small_Banner_1_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 22,
@@ -211,7 +209,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_3.webp",
       imageHover: "/assets/small_banners3/Small_Banner_4_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
     {
       id: 23,
@@ -220,7 +218,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_1.webp",
       imageHover: "/assets/small_banners3/Small_Banner_1_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "ruban-wall-ascent",
     },
     {
       id: 24,
@@ -229,7 +227,7 @@ export default function CollectionPage({ params }) {
       image: "/assets/small_banners3/Small_Banner_3.webp",
       imageHover: "/assets/small_banners3/Small_Banner_4_hover.webp",
       soldOut: false,
-      href: "/",
+      slug: "pillow",
     },
   ];
   const subCategories=[
@@ -270,13 +268,11 @@ export default function CollectionPage({ params }) {
       href:"/"
     }
   ];
-
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  const router = useRouter();
   const handleViewAll = () => {
-    if (categoryLevel !== "1") return;
+    if (categoryLevel !== "1" && categoryLevel !== "2") return;
 
     const params = new URLSearchParams(searchParams.toString());
     params.set("categoryLevel", "3");
@@ -288,8 +284,9 @@ export default function CollectionPage({ params }) {
   const [gridSizeLarge, setGridSizeLarge] = useState(true);
 
   const { slug } = use(params);
+  console.log("slug", slug);
   const { categoryLevel: categoryLevel } = searchParams.get("categoryLevel") ? { categoryLevel: searchParams.get("categoryLevel") } : { categoryLevel: "1" };
-  const sliceLength = categoryLevel === "1" ? 8 : data.length;
+  const sliceLength = categoryLevel === "1" || categoryLevel === "2" ? 8 : data.length;
 
   useEffect(() => {}, [gridSizeLarge]);
 
@@ -332,10 +329,11 @@ export default function CollectionPage({ params }) {
             item={item}
             setHoveredId={setHoveredId}
             hoveredId={hoveredId}
+            slug={slug}
           />
         ))}
       </div>
-      {categoryLevel === "1" && (
+      {categoryLevel === "1" || categoryLevel === "2" && (
         <div>
           <div className="flex justify-center items-center">
         <button className="mb-10 rounded-lg border border-[#cbc9c4] bg-[#eae8e2] px-6 py-3 uppercase font-heading tracking-[2px] text-[12px] font-medium cursor-pointer text-center flex justify-center items-center gap-2 hover:scale-[1.02] hover:border-black transition-all" onClick={handleViewAll}>
@@ -365,9 +363,12 @@ export default function CollectionPage({ params }) {
   );
 }
 
-function ProductItem({ item, setHoveredId, hoveredId }) {
+function ProductItem({ item, setHoveredId, hoveredId, slug }) {
+  const router = useRouter();
   return (
-    <div key={item.id} className="w-full h-auto">
+    <div key={item.id} className="w-full h-auto" onClick={() => {
+      router.push(`/collections/${slug}/products/${item.slug}`);
+    }}>
       <div className="flex flex-col items-center">
         <div
           className="group relative mb-5 w-full h-full aspect-square bg-[#F4F1EB]"

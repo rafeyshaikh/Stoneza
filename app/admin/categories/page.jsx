@@ -7,7 +7,7 @@ import { connectDB } from "@/lib/databaseConnection";
 
 export default async function AdminCategoriesPage() {
   await connectDB();
-  const categories = await Category.find({ deletedAt: null }).populate("parentCategory", "name").sort({ sortOrder: 1 }).lean();
+  const categories = await Category.find({ deletedAt: null }).populate("parentCategory", "name categoryLevel").sort({ sortOrder: 1 }).lean();
 
   return (
     <>

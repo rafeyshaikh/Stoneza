@@ -14,12 +14,13 @@ import Image from "next/image";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import Review from "@/components/home/Review";
 import InstagramSection from "@/components/home/InstagramSection";
+import EnquiryForm from "@/components/common/EnquiryForm";
 
 export default function Home() {
   return (
     <div>
       <HeroSection />
-      <Carousel title="SHOP. GIFT. STYLE." data={shopGiftStyleData} />
+      <Carousel title="Main Categories" data={shopGiftStyleData} itemsPerView={4}/>
       <LargeShop />
       <BigBanner src={"/assets/hero/Big_Banner_Ethereal_Forms.jpg"} alt={"Ethereal"} title={"Onde Éternelle"} button={"Home Decor"} height={800}/>
       <Carousel title={"What's New"} data={whatsNewData} />
@@ -77,6 +78,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <EnquiryForm />
       <WhyChooseUs />
       <Review />
       <div className="my-14 md:my-20 px-4">

@@ -11,10 +11,10 @@ import LowStockTable from "@/components/admin/dashboard/LowStockTable";
 const defaultStats = {
   totalProducts: 0,
   totalCategories: 0,
-  totalOrders: 0,
+  totalEnquiries: 0,
   totalRevenue: 0,
   totalCustomers: 0,
-  recentOrders: [],
+  recentEnquiries: [],
   recentCustomers: [],
   lowStockProducts: [],
   outOfStockProducts: [],
@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <StatsCard label="Total Products" value={stats.totalProducts} />
         <StatsCard label="Total Categories" value={stats.totalCategories} />
-        <StatsCard label="Total Orders" value={stats.totalOrders} />
+        <StatsCard label="Total Enquiries" value={stats.totalEnquiries} />
         <StatsCard label="Total Revenue" value={`INR ${Number(stats.totalRevenue).toLocaleString("en-IN")}`} />
         <StatsCard label="Total Customers" value={stats.totalCustomers} />
       </div>
@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
-        <RecentOrders orders={stats.recentOrders} />
+        <RecentOrders orders={stats.recentEnquiries} />
         <div className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 shadow-sm dark:border-stone-800 dark:bg-stone-950/70">
           <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">Recent Customers</h3>
           <ul className="mt-4 space-y-3">
