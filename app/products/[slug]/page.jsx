@@ -12,8 +12,8 @@ import RecentlyViewed from "@/components/product/RecentlyViewed";
 import StickyEnquiryNow from "@/components/product/StickyEnquiryNow";
 import EnquiryForm from "@/components/common/EnquiryForm";
 
-export default function ProductPage({ params }) {
-  const { productSlug } = use(params);
+export default function ProductDetailPage({ params }) {
+  const { slug } = use(params);
 
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ export default function ProductPage({ params }) {
   useEffect(() => {
     async function loadProduct() {
       try {
-        const res = await fetch(`/api/public/products/${productSlug}`);
+        const res = await fetch(`/api/public/products/${slug}`);
         const data = await res.json();
         if (data.success && data.data) {
           setProductData(data.data);
@@ -34,14 +34,13 @@ export default function ProductPage({ params }) {
       }
     }
     loadProduct();
-  }, [productSlug]);
+  }, [slug]);
 
   // Default Mock Product for fallbacks / previews
   const mockProduct = {
     name: "Travertine Stone Fountain",
     slug: "travertine-stone-fountain",
     price: 34999,
-    discountPrice: 29999,
     sku: "STN-FNT-001",
     shortDescription:
       "A refined expression of elegance, this set features delicately illustrated floral motifs set against soft blue and blush pink tones, accented with intricate detailing. The graceful silhouettes and coordinated saucers create a harmonious visual appeal. Perfect for tea or coffee service, it adds a touch of timeless sophistication to elevated dining and intimate gatherings.",
@@ -72,34 +71,29 @@ and timeless appeal.
 
   const activeProduct = productData
     ? {
-      name: productData.name,
-      slug: productData.slug,
-      price: productData.price || 0,
-      discountPrice: productData.discountPrice || null,
-      sku: productData.sku || "N/A",
-      shortDescription: productData.shortDescription || "",
-      description: productData.description || "",
-      stoneDetails: productData.stoneDetails || {},
-      specifications: productData.specifications || [],
-      shippingInfo:
-        productData.shippingInfo ||
-        "Delivery within 7–10 business days. Installation support available.",
-      careInstructions:
-        productData.careInstructions ||
-        "Clean with neutral stone cleansers. Seal periodically.",
-      images: productData.images?.length
-        ? productData.images.map((img) => img.url)
-        : ["/assets/small_banners3/Small_Banner_1.webp"],
-    }
+        name: productData.name,
+        slug: productData.slug,
+        price: productData.price || 0,
+        sku: productData.sku || "N/A",
+        shortDescription: productData.shortDescription || "",
+        description: productData.description || "",
+        stoneDetails: productData.stoneDetails || {},
+        specifications: productData.specifications || [],
+        shippingInfo:
+          productData.shippingInfo ||
+          "Delivery within 7–10 business days. Installation support available.",
+        careInstructions:
+          productData.careInstructions ||
+          "Clean with neutral stone cleansers. Seal periodically.",
+        images: productData.images?.length
+          ? productData.images.map((img) => img.url)
+          : ["/assets/small_banners3/Small_Banner_1.webp"],
+      }
     : mockProduct;
 
   const breadcrumbs = [
     { label: "Home", href: "/" },
-    { label: "Collections", href: "/collections" },
-    {
-      label: productData?.category?.name || "Fountains",
-      href: `/collections/${productData?.category?.slug || "fountains"}`,
-    },
+    { label: "Products", href: "/products" },
     { label: activeProduct.name },
   ];
 
@@ -193,7 +187,7 @@ and timeless appeal.
         </div>
       </section>
 
-      {/* Technical Specs, Applications & Final CTA */}
+      {/* Product Details Specs & Shipping */}
       <ProductTabs
         product={activeProduct}
         onEnquireClick={() => setShowEnquiryModal(true)}

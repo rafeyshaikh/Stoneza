@@ -1,144 +1,143 @@
 "use client";
 
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Check } from "lucide-react";
 
-const tabClass = `
-  relative
-  rounded-none
-  bg-transparent
-  px-0
-  py-5
-  mr-12
-  text-[17px]
-  font-medium
-  text-[#8A8178]
-  transition-colors
-  duration-300
-  hover:text-[#2E2A27]
-  data-[state=active]:border-b-2
-  data-[state=active]:border-[#2E2A27]
-  data-[state=active]:text-[#2E2A27]
+export default function ProductTabs({ product, onEnquireClick }) {
+  const details = product.stoneDetails || {};
 
-  after:absolute
-  after:left-0
-  after:bottom-0
-  after:h-px
-  after:w-0
-  after:bg-[#2E2A27]
-  after:transition-all
-  after:duration-300
+  // Formulate key-value specs pairs from actual MongoDB stoneDetails structure
+  const specsLeft = [
+    { label: "Stone type", value: details.stoneType || "Natural quarried stone" },
+    { label: "Product form", value: details.productForm || "Loose panels / crated" },
+    { label: "Calibrated thickness", value: details.calibratedThickness || "N/A" },
+    { label: "Face texture", value: details.faceTexture || "N/A" },
+    { label: "Corner pieces", value: details.cornerPieces || "N/A" },
+    { label: "Coverage", value: details.coveragePerUnit || "N/A" },
+  ];
 
-  data-[state=active]:after:w-full
-`;
+  const specsRight = [
+    { label: "Water absorption", value: details.waterAbsorption || "Low porosity" },
+    { label: "Density", value: details.density ? `${details.density} kg/m³` : "N/A" },
+    { label: "Weather resistant", value: details.weatherResistance || "Yes — exterior grade" },
+    { label: "Application", value: details.application || "Façades & accent walls" },
+    { label: "Installation", value: details.installationMethod || "Adhesive / substrate" },
+    { label: "Minimum order (MOQ)", value: details.moq || "Project-based" },
+  ];
 
-export default function ProductTabs({ product }) {
   return (
-    <section className="border-t border-[#ECE7E1] py-24">
-      <div className="mx-auto max-w-[1280px] px-5">
-        <Tabs
-          defaultValue="description"
-          className="w-full"
-        >
-          {/* Tabs */}
-          <TabsList className="h-auto w-full justify-start rounded-none border-b border-[#ECE7E1] bg-transparent p-0">
-            <TabsTrigger
-              value="description"
-              className={tabClass}
-            >
-              Description
-            </TabsTrigger>
+    <div className="max-w-[1240px] mx-auto px-6 md:px-8 py-8 divide-y divide-stone-300/40">
+      {/* Specifications Section */}
+      <section className="py-12">
+        <h2 className="font-serif font-light text-3xl md:text-4xl text-[#1c1714] mb-2">
+          Technical specifications
+        </h2>
+        <p className="text-sm text-[#3a322c] mb-10 max-w-2xl leading-relaxed">
+          The numbers your architect and site engineer need before they spec it. Custom sizing, thickness and finishes are available on custom project orders.
+        </p>
 
-            <TabsTrigger
-              value="specifications"
-              className={tabClass}
-            >
-              Specifications
-            </TabsTrigger>
-
-            <TabsTrigger
-              value="shipping"
-              className={tabClass}
-            >
-              Shipping
-            </TabsTrigger>
-
-            <TabsTrigger
-              value="care"
-              className={tabClass}
-            >
-              Care Instructions
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Description */}
-          <TabsContent
-            value="description"
-            className="pt-14"
-          >
-            <div className="max-w-4xl">
-              <p className="whitespace-pre-line text-[16px] leading-[2] text-[#5F5954]">
-                {product.description}
-              </p>
-            </div>
-          </TabsContent>
-
-          {/* Specifications */}
-          <TabsContent
-            value="specifications"
-            className="pt-14"
-          >
-            <div className="max-w-4xl overflow-hidden rounded-sm border border-[#ECE7E1]">
-              {product.specifications?.map((item, index) => (
-                <div
-                  key={item.label}
-                  className={`grid md:grid-cols-[240px_1fr] ${
-                    index !== product.specifications.length - 1
-                      ? "border-b border-[#ECE7E1]"
-                      : ""
-                  }`}
-                >
-                  <div className="bg-[#FAF8F5] px-8 py-6 text-[#2E2A27] font-medium">
-                    {item.label}
-                  </div>
-
-                  <div className="px-8 py-6 text-[#5F5954] leading-8">
-                    {item.value}
-                  </div>
-                </div>
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16">
+          {/* Left Table */}
+          <table className="w-full text-sm">
+            <tbody>
+              {specsLeft.map((item) => (
+                <tr key={item.label} className="border-b border-stone-300/40">
+                  <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
+                  <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
+                </tr>
               ))}
-            </div>
-          </TabsContent>
+            </tbody>
+          </table>
 
-          {/* Shipping */}
-          <TabsContent
-            value="shipping"
-            className="pt-14"
-          >
-            <div className="max-w-4xl">
-              <p className="text-[16px] leading-[2] text-[#5F5954]">
-                {product.shippingInfo}
-              </p>
-            </div>
-          </TabsContent>
+          {/* Right Table */}
+          <table className="w-full text-sm">
+            <tbody>
+              {specsRight.map((item) => (
+                <tr key={item.label} className="border-b border-stone-300/40">
+                  <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
+                  <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-          {/* Care */}
-          <TabsContent
-            value="care"
-            className="pt-14"
+      {/* Detailed Description */}
+      {product.description && (
+        <section className="py-12">
+          <h2 className="font-serif font-light text-3xl md:text-4xl text-[#1c1714] mb-4">
+            Product Story & Overview
+          </h2>
+          <div className="whitespace-pre-line text-sm md:text-base text-[#3a322c] leading-relaxed max-w-4xl">
+            {product.description}
+          </div>
+        </section>
+      )}
+
+      {/* Applications Section */}
+      <section className="py-12">
+        <h2 className="font-serif font-light text-3xl md:text-4xl text-[#1c1714] mb-2">
+          Where it works best
+        </h2>
+        <p className="text-sm text-[#3a322c] mb-10 max-w-2xl leading-relaxed">
+          Specified across luxury hospitality, modern residential estates, and landscape elevations.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
+            <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
+              01
+            </span>
+            <h4 className="font-serif text-lg font-medium text-[#1c1714]">Entrance façades</h4>
+            <p className="text-xs text-[#3a322c] leading-relaxed">Grand arrival elevations that define premium design.</p>
+          </div>
+
+          <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
+            <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
+              02
+            </span>
+            <h4 className="font-serif text-lg font-medium text-[#1c1714]">Pool deck cladding</h4>
+            <p className="text-xs text-[#3a322c] leading-relaxed">Rich organic textures and low porosity around wet areas.</p>
+          </div>
+
+          <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
+            <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
+              03
+            </span>
+            <h4 className="font-serif text-lg font-medium text-[#1c1714]">Interior accent walls</h4>
+            <p className="text-xs text-[#3a322c] leading-relaxed">Lobbies, hospitality lounges, and architectural columns.</p>
+          </div>
+
+          <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
+            <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
+              04
+            </span>
+            <h4 className="font-serif text-lg font-medium text-[#1c1714]">Villa elevations</h4>
+            <p className="text-xs text-[#3a322c] leading-relaxed">Timeless, weathered aesthetics that age with nobility.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Final Project CTA Section */}
+      <section className="py-12">
+        <div className="bg-gradient-to-br from-[#2a231e] to-[#1c1714] text-[#e9e0d2] rounded-lg p-10 md:p-14 text-center shadow-xl">
+          <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#c8a980]">
+            Start your project
+          </span>
+          <h2 className="font-serif font-light text-3xl md:text-5xl text-white mt-4 mb-4">
+            Get {product.name} priced for <em className="italic text-[#c8a980]">your</em> project.
+          </h2>
+          <p className="text-sm text-stone-300 max-w-xl mx-auto leading-relaxed mb-8">
+            Tell us your expected quantity and delivery site. A Stoneza consultant will calculate quarry-direct pricing, custom lead times, and arrange physical samples.
+          </p>
+          <button
+            onClick={onEnquireClick}
+            className="h-12 px-8 bg-[#c8a980] hover:bg-white text-[#1c1714] text-xs tracking-[3px] font-bold uppercase transition-all duration-300 rounded shadow-md cursor-pointer"
           >
-            <div className="max-w-4xl">
-              <p className="text-[16px] leading-[2] text-[#5F5954]">
-                {product.careInstructions}
-              </p>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </section>
+            Request a Quote
+          </button>
+        </div>
+      </section>
+    </div>
   );
 }

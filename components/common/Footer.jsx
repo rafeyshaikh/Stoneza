@@ -124,7 +124,7 @@ export default function Footer() {
 
               <li>
                 <Link
-                  href="/pages/terms-of-use"
+                  href="/pages/terms-and-conditions"
                   className="transition-colors cursor-pointer"
                 >
                   Terms of Use

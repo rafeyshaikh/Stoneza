@@ -57,7 +57,6 @@ export async function PATCH(request, { params }) {
       description,
       shortDescription,
       price,
-      discountPrice,
       stock,
       category,
 
@@ -76,6 +75,7 @@ export async function PATCH(request, { params }) {
 
       dimensions,
       weight,
+      stoneDetails,
     } = body;
 
     const product = await Product.findOne({
@@ -95,8 +95,12 @@ export async function PATCH(request, { params }) {
       return response(false, 400, "Description is required");
     }
 
-    if (!price || Number(price) <= 0) {
+    if (price !== undefined && price !== null && price !== "" && Number(price) <= 0) {
       return response(false, 400, "Valid price is required");
+    }
+
+    if (!stoneDetails || !stoneDetails.stoneType?.trim()) {
+      return response(false, 400, "Stone Type is required");
     }
 
     if (!category) {
@@ -144,8 +148,7 @@ export async function PATCH(request, { params }) {
     product.description = description.trim();
     product.shortDescription = shortDescription;
 
-    product.price = Number(price);
-    product.discountPrice = discountPrice || null;
+    product.price = price ? Number(price) : undefined;
 
     product.stock = Number(stock) || 0;
 
@@ -175,6 +178,26 @@ export async function PATCH(request, { params }) {
     product.dimensions = dimensions;
 
     product.weight = Number(weight) || 0;
+
+    product.stoneDetails = {
+      stoneType: stoneDetails.stoneType.trim(),
+      productForm: stoneDetails.productForm?.trim() || "",
+      calibratedThickness: stoneDetails.calibratedThickness?.trim() || "",
+      faceTexture: stoneDetails.faceTexture?.trim() || "",
+      cornerPieces: stoneDetails.cornerPieces?.trim() || "",
+      coveragePerUnit: stoneDetails.coveragePerUnit?.trim() || "",
+      waterAbsorption: stoneDetails.waterAbsorption?.trim() || "",
+      density: stoneDetails.density ? Number(stoneDetails.density) : null,
+      weatherResistance: stoneDetails.weatherResistance?.trim() || "",
+      application: stoneDetails.application?.trim() || "",
+      installationMethod: stoneDetails.installationMethod?.trim() || "",
+      moq: stoneDetails.moq?.trim() || "Project-based — ask us",
+      weightPerSqM: stoneDetails.weightPerSqM?.trim() || "",
+      groutRecommendation: stoneDetails.groutRecommendation?.trim() || "",
+      sealerRequirement: stoneDetails.sealerRequirement?.trim() || "",
+      leadTime: stoneDetails.leadTime?.trim() || "",
+      sampleAvailable: typeof stoneDetails.sampleAvailable === "boolean" ? stoneDetails.sampleAvailable : true,
+    };
 
     await product.save();
 

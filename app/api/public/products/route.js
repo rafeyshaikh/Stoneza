@@ -134,6 +134,7 @@ export async function GET(request) {
           isBestSeller
           isNewArrival
           category
+          price
         `,
         )
         .populate("category", "_id name slug categoryLevel")
@@ -157,6 +158,8 @@ export async function GET(request) {
       hoverImage: product.hoverImage || null,
 
       category: product.category,
+
+      price: product.price || null,
 
       badges: [
         ...(product.isFeatured ? ["Featured"] : []),

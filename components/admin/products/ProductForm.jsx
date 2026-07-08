@@ -31,7 +31,6 @@ const getEmptyForm = () => ({
   categoryLevel3: "",
 
   price: "",
-  discountPrice: "",
   stock: 0,
   weight: 0,
 
@@ -55,6 +54,26 @@ const getEmptyForm = () => ({
   isNewArrival: false,
 
   status: "published",
+
+  stoneDetails: {
+    stoneType: "",
+    productForm: "",
+    calibratedThickness: "",
+    faceTexture: "",
+    cornerPieces: "",
+    coveragePerUnit: "",
+    waterAbsorption: "",
+    density: "",
+    weatherResistance: "",
+    application: "",
+    installationMethod: "",
+    moq: "Project-based — ask us",
+    weightPerSqM: "",
+    groutRecommendation: "",
+    sealerRequirement: "",
+    leadTime: "",
+    sampleAvailable: true,
+  },
 
   seo: {
     metaTitle: "",
@@ -93,8 +112,6 @@ export default function ProductForm({
 
       price: initialData.price || "",
 
-      discountPrice: initialData.discountPrice || "",
-
       stock: initialData.stock || 0,
 
       sku: initialData.sku || "",
@@ -115,6 +132,26 @@ export default function ProductForm({
       isNewArrival: initialData.isNewArrival || false,
 
       status: initialData.status || "published",
+
+      stoneDetails: {
+        stoneType: initialData.stoneDetails?.stoneType || "",
+        productForm: initialData.stoneDetails?.productForm || "",
+        calibratedThickness: initialData.stoneDetails?.calibratedThickness || "",
+        faceTexture: initialData.stoneDetails?.faceTexture || "",
+        cornerPieces: initialData.stoneDetails?.cornerPieces || "",
+        coveragePerUnit: initialData.stoneDetails?.coveragePerUnit || "",
+        waterAbsorption: initialData.stoneDetails?.waterAbsorption || "",
+        density: initialData.stoneDetails?.density || "",
+        weatherResistance: initialData.stoneDetails?.weatherResistance || "",
+        application: initialData.stoneDetails?.application || "",
+        installationMethod: initialData.stoneDetails?.installationMethod || "",
+        moq: initialData.stoneDetails?.moq || "Project-based — ask us",
+        weightPerSqM: initialData.stoneDetails?.weightPerSqM || "",
+        groutRecommendation: initialData.stoneDetails?.groutRecommendation || "",
+        sealerRequirement: initialData.stoneDetails?.sealerRequirement || "",
+        leadTime: initialData.stoneDetails?.leadTime || "",
+        sampleAvailable: initialData.stoneDetails?.sampleAvailable !== undefined ? initialData.stoneDetails?.sampleAvailable : true,
+      },
 
       dimensions: {
         length: initialData.dimensions?.length || "",
@@ -165,6 +202,16 @@ export default function ProductForm({
     setFormData((prev) => ({
       ...prev,
       [key]: value,
+    }));
+  };
+
+  const handleStoneChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      stoneDetails: {
+        ...prev.stoneDetails,
+        [key]: value,
+      },
     }));
   };
 
@@ -346,14 +393,14 @@ export default function ProductForm({
         <h3 className="mb-5 text-lg font-semibold">Basic Information</h3>
 
         <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Product Name">
+          <Field label="Product Name *">
             <Input
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
             />
           </Field>
 
-          <Field label="Top Category">
+          <Field label="Top Category *">
             <CategorySelect
               value={formData.categoryLevel1}
               categories={level1Categories}
@@ -370,7 +417,7 @@ export default function ProductForm({
             />
           </Field>
 
-          <Field label="Final Category">
+          <Field label="Final Category *">
             <CategorySelect
               value={formData.categoryLevel3}
               categories={level3Categories}
@@ -379,7 +426,7 @@ export default function ProductForm({
             />
           </Field>
 
-          <Field label="Description" className="md:col-span-2">
+          <Field label="Description *" className="md:col-span-2">
             <Textarea
               rows={5}
               value={formData.description}
@@ -412,16 +459,6 @@ export default function ProductForm({
               type="number"
               value={formData.price}
               onChange={(e) => handleChange("price", Number(e.target.value))}
-            />
-          </Field>
-
-          <Field label="Discount Price">
-            <Input
-              type="number"
-              value={formData.discountPrice}
-              onChange={(e) =>
-                handleChange("discountPrice", Number(e.target.value))
-              }
             />
           </Field>
 
@@ -464,6 +501,150 @@ export default function ProductForm({
             value={formData.dimensions.height}
             onChange={(e) => handleDimensionChange("height", e.target.value)}
           />
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">Stone & Tiles Specifications</h3>
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field label="Stone Type *">
+            <Input
+              placeholder="e.g. Natural quartzitic sandstone"
+              value={formData.stoneDetails.stoneType}
+              onChange={(e) => handleStoneChange("stoneType", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Product Form">
+            <Input
+              placeholder="e.g. Loose rubble panels, crated"
+              value={formData.stoneDetails.productForm}
+              onChange={(e) => handleStoneChange("productForm", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Calibrated Thickness">
+            <Input
+              placeholder="e.g. 20–30 mm (calibrated back)"
+              value={formData.stoneDetails.calibratedThickness}
+              onChange={(e) => handleStoneChange("calibratedThickness", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Face Texture">
+            <Input
+              placeholder="e.g. Natural split / antique"
+              value={formData.stoneDetails.faceTexture}
+              onChange={(e) => handleStoneChange("faceTexture", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Corner Pieces">
+            <Input
+              placeholder="e.g. L-shaped, pre-fabricated"
+              value={formData.stoneDetails.cornerPieces}
+              onChange={(e) => handleStoneChange("cornerPieces", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Coverage Per Unit">
+            <Input
+              placeholder="e.g. ~0.5 sq m per box (indicative)"
+              value={formData.stoneDetails.coveragePerUnit}
+              onChange={(e) => handleStoneChange("coveragePerUnit", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Water Absorption">
+            <Input
+              placeholder="e.g. < 1% (low porosity)"
+              value={formData.stoneDetails.waterAbsorption}
+              onChange={(e) => handleStoneChange("waterAbsorption", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Density (kg/m³)">
+            <Input
+              type="number"
+              placeholder="e.g. 2400"
+              value={formData.stoneDetails.density}
+              onChange={(e) => handleStoneChange("density", e.target.value ? Number(e.target.value) : "")}
+            />
+          </Field>
+
+          <Field label="Weather Resistance">
+            <Input
+              placeholder="e.g. Yes — exterior grade"
+              value={formData.stoneDetails.weatherResistance}
+              onChange={(e) => handleStoneChange("weatherResistance", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Application">
+            <Input
+              placeholder="e.g. Interior & exterior walls"
+              value={formData.stoneDetails.application}
+              onChange={(e) => handleStoneChange("application", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Installation Method">
+            <Input
+              placeholder="e.g. Adhesive on prepared substrate"
+              value={formData.stoneDetails.installationMethod}
+              onChange={(e) => handleStoneChange("installationMethod", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Minimum Order Quantity (MOQ)">
+            <Input
+              placeholder="e.g. Project-based — ask us"
+              value={formData.stoneDetails.moq}
+              onChange={(e) => handleStoneChange("moq", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Weight per sq m">
+            <Input
+              placeholder="e.g. ~75 kg/sq m"
+              value={formData.stoneDetails.weightPerSqM}
+              onChange={(e) => handleStoneChange("weightPerSqM", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Grout Recommendation">
+            <Input
+              placeholder="e.g. Dry-stacked or 10-15mm joint"
+              value={formData.stoneDetails.groutRecommendation}
+              onChange={(e) => handleStoneChange("groutRecommendation", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Sealing Requirements">
+            <Input
+              placeholder="e.g. Impregnating penetrating sealer recommended"
+              value={formData.stoneDetails.sealerRequirement}
+              onChange={(e) => handleStoneChange("sealerRequirement", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Lead Time">
+            <Input
+              placeholder="e.g. In stock or 6-8 weeks custom"
+              value={formData.stoneDetails.leadTime}
+              onChange={(e) => handleStoneChange("leadTime", e.target.value)}
+            />
+          </Field>
+
+          <div className="flex items-center gap-3 mt-4 md:col-span-2">
+            <Switch
+              checked={formData.stoneDetails.sampleAvailable}
+              onCheckedChange={(checked) => handleStoneChange("sampleAvailable", checked)}
+            />
+            <span className="text-sm text-stone-600 dark:text-stone-300">
+              Physical Sample Available
+            </span>
+          </div>
         </div>
       </section>
 
@@ -564,9 +745,15 @@ export default function ProductForm({
 }
 
 function Field({ label, children, className = "" }) {
+  const isRequired = label.endsWith("*");
+  const cleanLabel = isRequired ? label.slice(0, -1).trim() : label;
+
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      <Label>{label}</Label>
+      <Label>
+        {cleanLabel}
+        {isRequired && <span className="text-red-500 ml-1 font-semibold">*</span>}
+      </Label>
       {children}
     </div>
   );

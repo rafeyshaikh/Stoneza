@@ -1,6 +1,6 @@
-const timelineSteps = ["Pending", "Paid", "Processing", "Shipped", "Delivered"];
+const timelineSteps = ["new", "contacted", "in-progress", "converted", "closed"];
 
-export default function EnquiryTimeline({ status = "Pending" }) {
+export default function EnquiryTimeline({ status = "new" }) {
   const currentIndex = timelineSteps.findIndex((item) => item === status);
 
   return (

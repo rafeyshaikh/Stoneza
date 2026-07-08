@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Package,
   Grid2X2,
-  ShoppingBag,
   Users,
   Star,
   FileText,
@@ -14,6 +13,7 @@ import {
   Settings,
   NotebookPen
 } from "lucide-react";
+import { BiSolidCommentDetail } from "react-icons/bi";
 
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,7 @@ const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Grid2X2 },
-  { label: "Enquiries", href: "/admin/enquiries", icon: ShoppingBag },
+  { label: "Enquiries", href: "/admin/enquiries", icon: BiSolidCommentDetail },
   { label: "Customers", href: "/admin/customers", icon: Users },
   { label: "Reviews", href: "/admin/reviews", icon: Star },
   { label: "Homepage CMS", href: "/admin/cms/homepage", icon: FileText },

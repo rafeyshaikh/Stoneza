@@ -85,7 +85,7 @@ const largeShopData = [
   }
 ];
 
-export default function LargeShop() {
+export default function FeaturedProducts() {
   const [currentIndex, setCurrentIndex] = useState(0);
   return (
     <section className="w-full py-10 px-4 lg:px-12">
@@ -150,12 +150,11 @@ export default function LargeShop() {
           {/* Text Content */}
           <div className="max-w-md text-center">
             <h2 className="font-display text-[32px] text-[#6B6765] mb-6">
-              Occasional Gifting
+              Featured Products
             </h2>
 
             <p className="font-body text-[14px] leading-7 text-[#1c1b1b] mb-8 text-left">
-              For every occasion, gift moments wrapped in warmth, wonder,
-              and timeless elegance.
+              Discover Our Handpicked Collection of Best-Selling Items. Perfect for Adding a Touch of Elegance to Your Home.
             </p>
 
             <button className="border border-[#6B6765] px-8 py-3 text-sm tracking-[0.15em] uppercase text-[#6B6765] transition-all duration-300 hover:bg-[#6B6765] hover:text-white">

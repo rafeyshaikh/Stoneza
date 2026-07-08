@@ -1,29 +1,42 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import ImageWithLoader from "@/components/common/Loader";
 
 export default function ProductGallery({ images }) {
-  const [selectedImage, setSelectedImage] = useState(images[0]);
+  const [selectedImage, setSelectedImage] = useState(images?.[0] || "");
+
+  useEffect(() => {
+    if (images && images.length > 0) {
+      setSelectedImage(images[0]);
+    }
+  }, [images]);
+
+  if (!images || images.length === 0) {
+    return (
+      <div className="relative aspect-[4/3] bg-stone-100 rounded-lg flex items-center justify-center text-stone-400">
+        No Images Available
+      </div>
+    );
+  }
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col lg:flex-row lg:items-start gap-4 w-full">
       {/* Thumbnails */}
-      <div className="flex flex-col gap-3">
+      <div className="order-2 lg:order-1 grid grid-cols-4 lg:flex lg:flex-col gap-3 lg:w-24 shrink-0">
         {images.map((image, index) => (
           <button
             key={index}
             onClick={() => setSelectedImage(image)}
-            className={`relative h-24 w-24 overflow-hidden border transition ${
+            className={`relative aspect-square w-full overflow-hidden rounded border-2 transition cursor-pointer ${
               selectedImage === image
-                ? "border-[#665b54]"
-                : "border-gray-200"
+                ? "border-[#9a4a2e]"
+                : "border-transparent hover:border-stone-300"
             }`}
           >
             <ImageWithLoader
               src={image}
-              alt=""
+              alt={`Product gallery thumb ${index + 1}`}
               fill
               className="object-cover"
             />
@@ -32,12 +45,12 @@ export default function ProductGallery({ images }) {
       </div>
 
       {/* Main Image */}
-      <div className="relative flex-1 aspect-square bg-[#f8f6f3] overflow-hidden">
+      <div className="order-1 lg:order-2 relative w-full lg:flex-1 lg:min-w-0 aspect-square self-start bg-stone-100/50 rounded-lg overflow-hidden border border-stone-200">
         <ImageWithLoader
           src={selectedImage}
-          alt=""
+          alt="Product gallery main"
           fill
-          className="object-cover hover:scale-105 transition duration-500"
+          className="object-cover transition-transform duration-500 hover:scale-[1.03]"
         />
       </div>
     </div>

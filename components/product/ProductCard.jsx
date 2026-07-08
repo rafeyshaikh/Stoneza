@@ -10,7 +10,7 @@ export default function ProductCard({ product }) {
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-[#f8f6f3]">
         <ImageWithLoader
-          src={product.image}
+          src={product.image || product.images?.[0]?.url || "/assets/small_banners3/Small_Banner_1.webp"}
           alt={product.name}
           fill
           className="object-cover transition duration-500 group-hover:scale-105"
@@ -24,7 +24,7 @@ export default function ProductCard({ product }) {
         </h3>
 
         <p className="mt-2 text-[16px] font-medium text-[#665b54]">
-          ₹{product.price.toLocaleString()}
+          {product.price ? `₹${product.price.toLocaleString()}` : "Price on Request"}
         </p>
       </div>
     </Link>

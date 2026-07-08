@@ -22,7 +22,7 @@ export default function ImageWithLoader({
               initial={{ width: "0%" }}
               animate={{ width: ["0%", "100%", "0%"] }}
               transition={{
-                duration: 1.2,
+                duration: 1.8,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}

@@ -203,5 +203,16 @@ input[type="email"]::-webkit-textfield-decoration-container {
   border-left: 4px solid #d6d3d1;
   padding-left: 30px;
   font-style: italic;
-  color: #57534e;
+}
+
+/* Hide spin-buttons / counter on number inputs with class .no-spinner */
+.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

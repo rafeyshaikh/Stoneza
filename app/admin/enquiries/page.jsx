@@ -7,7 +7,7 @@ import { connectDB } from "@/lib/databaseConnection";
 
 export default async function AdminEnquiriesPage() {
   await connectDB();
-  const enquiries = await Enquiry.find({}).sort({ createdAt: -1 }).limit(100).lean();
+  const enquiries = await Enquiry.find({}).sort({ createdAt: -1 }).limit(10).lean();
 
   return (
     <>

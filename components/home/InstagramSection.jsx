@@ -39,7 +39,7 @@ export default function InstagramSection() {
         {/* HEADING */}
 
         <h2 className="mb-12 text-center font-display text-[28px] uppercase tracking-[6px] text-[#1C1B1B]">
-          Address Insta
+          Stoneza Insta
         </h2>
 
         {/* GRID */}

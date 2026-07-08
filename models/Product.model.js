@@ -102,17 +102,6 @@ const productSchema = new mongoose.Schema(
       canonicalUrl: String,
     },
 
-    discountPrice: {
-      type: Number,
-      default: null,
-      min: 0,
-      validate: {
-        validator: function (value) {
-          return value === null || value <= this.price;
-        },
-        message: "Discount price cannot exceed original price",
-      },
-    },
     dimensions: {
       length: Number,
       width: Number,
@@ -121,6 +110,91 @@ const productSchema = new mongoose.Schema(
     weight: {
       type: Number,
       default: 0,
+    },
+    stoneDetails: {
+      stoneType: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      productForm: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      calibratedThickness: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      faceTexture: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      cornerPieces: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      coveragePerUnit: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      waterAbsorption: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      density: {
+        type: Number,
+        default: null,
+      },
+      weatherResistance: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      application: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      installationMethod: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      moq: {
+        type: String,
+        trim: true,
+        default: "Project-based — ask us",
+      },
+      weightPerSqM: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      groutRecommendation: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      sealerRequirement: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      leadTime: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      sampleAvailable: {
+        type: Boolean,
+        default: true,
+      },
     },
   },
   {
