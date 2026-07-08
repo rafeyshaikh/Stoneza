@@ -1,8 +1,11 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ProductTabs({ product, onEnquireClick }) {
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(true); // Open by default
   const details = product.stoneDetails || {};
 
   // Formulate key-value specs pairs from actual MongoDB stoneDetails structure
@@ -26,7 +29,8 @@ export default function ProductTabs({ product, onEnquireClick }) {
 
   return (
     <div className="max-w-[1240px] mx-auto px-6 md:px-8 py-8 divide-y divide-stone-300/40">
-      {/* Specifications Section */}
+      
+      {/* 1. Specifications Section (Expanded) */}
       <section className="py-12">
         <h2 className="font-serif font-light text-3xl md:text-4xl text-[#1c1714] mb-2">
           Technical specifications
@@ -62,19 +66,41 @@ export default function ProductTabs({ product, onEnquireClick }) {
         </div>
       </section>
 
-      {/* Detailed Description */}
+      {/* 2. Detailed Description (Accordion UI) */}
       {product.description && (
-        <section className="py-12">
-          <h2 className="font-serif font-light text-3xl md:text-4xl text-[#1c1714] mb-4">
-            Product Story & Overview
-          </h2>
-          <div className="whitespace-pre-line text-sm md:text-base text-[#3a322c] leading-relaxed max-w-4xl">
-            {product.description}
-          </div>
-        </section>
+        <div className="py-6">
+          <button
+            onClick={() => setIsDescriptionOpen((prev) => !prev)}
+            className="flex w-full items-center justify-between py-4 text-left font-serif font-light text-3xl md:text-4xl text-[#1c1714] outline-none group cursor-pointer"
+          >
+            <span>Product Story & Overview</span>
+            <ChevronDown
+              className={`size-8 text-stone-500 transition-transform duration-300 ${
+                isDescriptionOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          
+          <AnimatePresence initial={false}>
+            {isDescriptionOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div 
+                  className="pt-2 pb-6 text-sm md:text-base text-[#3a322c] leading-relaxed w-full prose dark:prose-invert prose-stone max-w-none"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       )}
 
-      {/* Applications Section */}
+      {/* 3. Applications Section (Expanded) */}
       <section className="py-12">
         <h2 className="font-serif font-light text-3xl md:text-4xl text-[#1c1714] mb-2">
           Where it works best
@@ -118,7 +144,7 @@ export default function ProductTabs({ product, onEnquireClick }) {
         </div>
       </section>
 
-      {/* Final Project CTA Section */}
+      {/* 4. Final Project CTA Section (Expanded) */}
       <section className="py-12">
         <div className="bg-gradient-to-br from-[#2a231e] to-[#1c1714] text-[#e9e0d2] rounded-lg p-10 md:p-14 text-center shadow-xl">
           <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#c8a980]">

@@ -10,15 +10,7 @@ import ImageWithLoader from "../common/Loader";
 
 import Container from "@/components/common/Container";
 
-const SLIDE_WIDTH_CLASSES = {
-  3: "md:min-w-1/2 lg:min-w-1/3",
-  4: "md:min-w-1/2 lg:min-w-1/4",
-};
-
 export default function Carousel({ title, data, itemsPerView = 3 }) {
-  const slideWidthClass =
-    SLIDE_WIDTH_CLASSES[itemsPerView] || SLIDE_WIDTH_CLASSES[3];
-
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
@@ -88,7 +80,10 @@ export default function Carousel({ title, data, itemsPerView = 3 }) {
               {data.map((item) => (
                 <div
                   key={item.id}
-                  className={`min-w-full px-3 ${slideWidthClass}`}
+                  className="px-3 flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_var(--slide-width)]"
+                  style={{
+                    "--slide-width": `${100 / itemsPerView}%`
+                  }}
                 >
                   <ProductCard item={item} />
                 </div>

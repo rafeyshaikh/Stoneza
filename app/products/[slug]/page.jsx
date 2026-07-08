@@ -73,7 +73,7 @@ and timeless appeal.
     ? {
         name: productData.name,
         slug: productData.slug,
-        price: productData.price || 0,
+        price: productData.price || null,
         sku: productData.sku || "N/A",
         shortDescription: productData.shortDescription || "",
         description: productData.description || "",
@@ -228,6 +228,8 @@ and timeless appeal.
           </div>
         </div>
       )}
+
+      <StickyEnquiryNow product={activeProduct} />
     </>
   );
 }

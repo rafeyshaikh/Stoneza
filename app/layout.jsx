@@ -8,13 +8,16 @@ import {
 
 import Providers from "@/context";
 import AppChrome from "@/components/common/AppChrome";
+import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 
 export const metadata = {
   title: "Stoneza",
   description: "Created by Adarsh Agrahari",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const categories = await getCategoriesForLayout();
+
   return (
     <html
       lang="en"
@@ -26,7 +29,7 @@ export default function RootLayout({ children }) {
       `}
     >
       <body className="min-h-full flex flex-col bg-[#EAE8E2]">
-        <Providers>
+        <Providers initialCategories={categories}>
           <AppChrome>{children}</AppChrome>
         </Providers>
         <Toaster

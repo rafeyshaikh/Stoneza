@@ -193,6 +193,8 @@ export async function GET(request, { params }) {
 
           bannerImage: category.bannerImage,
 
+          categoryLevel: category.categoryLevel,
+
           seo: category.seo,
         },
 

@@ -154,17 +154,13 @@ export async function PATCH(request, { params }) {
 
     product.category = category;
 
+    const oldImageIds = (product.images || []).map(img => img.publicId).filter(Boolean);
     product.images = images;
 
     const oldHoverPublicId = product.hoverImage?.publicId;
 
     product.hoverImage = hoverImage;
 
-    await product.save();
-
-    if (oldHoverPublicId && oldHoverPublicId !== hoverImage?.publicId) {
-      await cloudinary.uploader.destroy(oldHoverPublicId);
-    }
     product.tags = tags || [];
 
     product.isFeatured = isFeatured;
@@ -201,14 +197,23 @@ export async function PATCH(request, { params }) {
 
     await product.save();
 
-    const removedImages = product.images.filter(
-      (oldImage) =>
-        !images.some((newImage) => newImage.publicId === oldImage.publicId),
-    );
+    if (oldHoverPublicId && oldHoverPublicId !== hoverImage?.publicId) {
+      try {
+        await cloudinary.uploader.destroy(oldHoverPublicId);
+      } catch (err) {
+        console.error("Failed to delete old hover image:", err);
+      }
+    }
 
-    for (const image of removedImages) {
-      if (image.publicId) {
-        await cloudinary.uploader.destroy(image.publicId);
+    // Compare and delete removed images from Cloudinary
+    const newImageIds = new Set((images || []).map(img => img.publicId).filter(Boolean));
+    for (const oldId of oldImageIds) {
+      if (!newImageIds.has(oldId)) {
+        try {
+          await cloudinary.uploader.destroy(oldId);
+        } catch (err) {
+          console.error(`Failed to delete old product image ${oldId} from Cloudinary:`, err);
+        }
       }
     }
 

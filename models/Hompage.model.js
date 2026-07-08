@@ -27,14 +27,6 @@ const heroSlideSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const collectionSchema = new mongoose.Schema(
-  {
-    title: String,
-    image: imageSchema,
-    link: String,
-  },
-  { _id: false }
-);
 
 const testimonialSchema = new mongoose.Schema(
   {
@@ -47,7 +39,7 @@ const testimonialSchema = new mongoose.Schema(
 
 const instagramPostSchema = new mongoose.Schema(
   {
-    image: imageSchema,
+    images: [imageSchema],
     link: String,
     caption: String,
   },
@@ -58,18 +50,12 @@ const homepageSchema = new mongoose.Schema(
   {
     heroSlides: [heroSlideSchema],
 
-    featuredCollections: [collectionSchema],
-
     newArrivalsTitle: String,
 
     testimonials: [testimonialSchema],
 
     instagramPosts: [instagramPostSchema],
 
-    processSection: {
-      title: String,
-      description: String,
-    },
   },
   {
     timestamps: true,

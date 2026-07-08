@@ -1,4 +1,3 @@
-import react from "react";
 import { Button } from "@/components/ui/button";
 import HeroSection from "@/components/home/HeroSection";
 import Container from "@/components/common/Container";
@@ -17,16 +16,48 @@ import InstagramSection from "@/components/home/InstagramSection";
 import EnquiryForm from "@/components/common/EnquiryForm";
 import Link from "next/link";
 
-export default function Home() {
+import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
+
+export default async function Home() {
+  const categories = await getCategoriesForLayout();
+
+  const mainCategoryData = categories.length > 0
+    ? categories.map((cat, idx) => ({
+        id: cat.slug || idx,
+        title: cat.title,
+        titleStyle: "font-body uppercase tracking-[2px]",
+        image: cat.squareImage || "/assets/placeholder.jpg",
+        href: `/collections/${cat.slug}`,
+      }))
+    : [];
+
+  const subCategoryData = categories.reduce((acc, cat) => {
+    if (Array.isArray(cat.categories)) {
+      const mappedSubs = cat.categories.map((sub, idx) => ({
+        id: sub.slug || `${cat.slug}-sub-${idx}`,
+        title: sub.title,
+        titleStyle: "font-body uppercase tracking-[2px]",
+        image: sub.squareImage || "/assets/placeholder.jpg",
+        href: `/collections/${sub.slug}`,
+      }));
+      acc.push(...mappedSubs);
+    }
+    return acc;
+  }, []);
+
   return (
     <div>
       <HeroSection />
-      <Carousel title="Main Categories" data={shopGiftStyleData} itemsPerView={4} />
+      {mainCategoryData.length > 0 && (
+        <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
+      )}
       <FeaturedProducts />
       <BigBanner src={"/assets/hero/Big_Banner_Ethereal_Forms.jpg"} alt={"Ethereal"} title={"Onde Éternelle"} button={"Home Decor"} height={800} />
       <Carousel title={"What's New"} data={whatsNewData} />
       <ThreeBanner />
-      <Carousel title={"COLLECTIONS"} data={collectionData} />
+      {subCategoryData.length > 0 && (
+        <Carousel title="Sub Categories" data={subCategoryData}  />
+      )}
       <EnquiryForm />
       {/* <ShopTheLook /> */}
       <div className="mt-10 flex flex-col gap-12 px-4 py-15 lg:flex-row lg:justify-center lg:gap-15">

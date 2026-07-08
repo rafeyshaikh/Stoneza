@@ -1,5 +1,8 @@
 "use client";
 
+import { redirectToWhatsApp } from "@/lib/whatsapp";
+import { FaWhatsapp } from "react-icons/fa6";
+
 export default function ProductInfo({ product, onEnquireClick }) {
   return (
     <div className="max-w-[550px]">
@@ -36,22 +39,17 @@ export default function ProductInfo({ product, onEnquireClick }) {
 
       {/* Description */}
       <p className="text-[15.5px] text-[#3a322c] leading-relaxed mb-6 max-w-prose">
-        {product.shortDescription || product.description}
+        {product.shortDescription}
       </p>
 
       {/* Action Buttons */}
       <div className="flex gap-4 flex-wrap mb-6">
         <button
-          onClick={onEnquireClick}
-          className="flex-1 min-w-[200px] h-[54px] bg-[#1c1714] hover:bg-[#9a4a2e] text-[#f4efe7] hover:text-white text-xs tracking-[3px] uppercase font-bold transition-all duration-300 rounded shadow-sm cursor-pointer"
+          onClick={() => redirectToWhatsApp(product)}
+          className="flex-1 min-w-[200px] h-[54px] bg-[#1c1714] hover:bg-[#25D366] text-[#f4efe7] hover:text-white text-sm tracking-[3px] uppercase transition-all duration-300 rounded shadow-sm cursor-pointer flex items-center justify-center gap-2 font-body"
         >
-          Request Project Pricing
-        </button>
-        <button
-          onClick={onEnquireClick}
-          className="flex-1 min-w-[200px] h-[54px] border border-[#1c1714] hover:bg-[#1c1714] text-[#1c1714] hover:text-[#f4efe7] text-xs tracking-[3px] uppercase font-bold transition-all duration-300 rounded cursor-pointer"
-        >
-          Order a Free Sample
+          <FaWhatsapp size={25} />
+          Enquiry Now
         </button>
       </div>
 

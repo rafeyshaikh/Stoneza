@@ -1,6 +1,9 @@
 "use client";
 
-export default function StickyAddToCart({ product, onEnquireClick }) {
+import { redirectToWhatsApp } from "@/lib/whatsapp";
+import { FaWhatsapp } from "react-icons/fa6";
+
+export default function StickyEnquiryNow({ product }) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e5e0da] p-4 lg:hidden shadow-lg">
       <div className="flex items-center justify-between gap-4">
@@ -21,9 +24,10 @@ export default function StickyAddToCart({ product, onEnquireClick }) {
 
         {/* Button */}
         <button
-          onClick={onEnquireClick}
-          className="flex-1 h-[50px] bg-[#665b54] hover:bg-[#544a43] text-white text-xs tracking-[3px] uppercase font-semibold transition-colors duration-300 cursor-pointer"
+          onClick={() => redirectToWhatsApp(product)}
+          className="flex-1 h-[50px] bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs tracking-[3px] uppercase transition-all duration-300 rounded shadow-sm cursor-pointer flex items-center justify-center gap-2 font-body"
         >
+          <FaWhatsapp size={25} />
           Enquire Now
         </button>
       </div>

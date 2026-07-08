@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import ProductSeoForm from "@/components/admin/products/ProductSeoForm";
+import TipTapEditor from "@/components/admin/editor/TipTapEditor";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -427,10 +428,10 @@ export default function ProductForm({
           </Field>
 
           <Field label="Description *" className="md:col-span-2">
-            <Textarea
-              rows={5}
+            <TipTapEditor
               value={formData.description}
-              onChange={(e) => handleChange("description", e.target.value)}
+              onChange={(value) => handleChange("description", value)}
+              placeholder="Write product description here..."
             />
           </Field>
 
@@ -458,7 +459,7 @@ export default function ProductForm({
             <Input
               type="number"
               value={formData.price}
-              onChange={(e) => handleChange("price", Number(e.target.value))}
+              onChange={(e) => handleChange("price", e.target.value === "" ? "" : Number(e.target.value))}
             />
           </Field>
 

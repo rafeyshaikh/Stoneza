@@ -33,18 +33,17 @@ export default function MegaMenu({ item }) {
                   key={section.title}
                   className="min-w-[190px]"
                 >
-                  <a className=" text-[13px] uppercase tracking-[0.24em] text-[#393938] font-heading font-medium" href={`/collections/${section.slug}?categoryLevel=2` || "#"}>
+                  <a className=" text-[13px] uppercase tracking-[0.24em] text-[#393938] font-heading font-medium" href={`/collections/${section.slug}`}>
                     {section.title}
                   </a>
 
                   <ul className="space-y-2.5 mt-4">
                     {section.links.map((link) => {
                       const linkName = typeof link === "string" ? link : (link.name || link.title);
-                      const linkSlug = typeof link === "string" ? link.toLowerCase().replace(/ /g, "-") : link.slug;
                       return (
-                        <li key={linkSlug}>
+                        <li key={link.slug}>
                           <a
-                            href={`/collections/${linkSlug}?categoryLevel=3`}
+                            href={`/collections/${link.slug}`}
                             className="text-[14px] text-[#393938] font-body transition-colors hover:text-[#231c15]"
                           >
                             {linkName}

@@ -45,13 +45,7 @@ export default function ProductPage({ params }) {
     sku: "STN-FNT-001",
     shortDescription:
       "A refined expression of elegance, this set features delicately illustrated floral motifs set against soft blue and blush pink tones, accented with intricate detailing. The graceful silhouettes and coordinated saucers create a harmonious visual appeal. Perfect for tea or coffee service, it adds a touch of timeless sophistication to elevated dining and intimate gatherings.",
-    description: `
-Crafted from premium natural travertine stone, this fountain brings
-sophistication and tranquility to outdoor living spaces.
-
-Every piece is handcrafted by skilled artisans, ensuring uniqueness
-and timeless appeal.
-  `,
+    description: "Crafted from premium natural travertine stone, this fountain brings sophistication and tranquility to outdoor living spaces. Every piece is handcrafted by skilled artisans, ensuring uniqueness and timeless appeal.",
     specifications: [
       { label: "Material", value: "Natural Travertine Stone" },
       { label: "Dimensions", value: "120 × 80 × 60 cm" },
@@ -74,16 +68,13 @@ and timeless appeal.
     ? {
       name: productData.name,
       slug: productData.slug,
-      price: productData.price || 0,
+      price: productData.price || null,
       discountPrice: productData.discountPrice || null,
       sku: productData.sku || "N/A",
       shortDescription: productData.shortDescription || "",
       description: productData.description || "",
       stoneDetails: productData.stoneDetails || {},
       specifications: productData.specifications || [],
-      shippingInfo:
-        productData.shippingInfo ||
-        "Delivery within 7–10 business days. Installation support available.",
       careInstructions:
         productData.careInstructions ||
         "Clean with neutral stone cleansers. Seal periodically.",
@@ -201,7 +192,7 @@ and timeless appeal.
 
       {/* Enquiry Modal */}
       {showEnquiryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1a1613]/80 backdrop-blur-md overflow-y-auto">
+        <div className="fixed inset-0 z-50 mt-[106px] flex items-center justify-center p-4 bg-[#1a1613]/80 backdrop-blur-md overflow-y-auto">
           {/* Backdrop Click Closes */}
           <div
             className="absolute inset-0"
@@ -234,6 +225,8 @@ and timeless appeal.
           </div>
         </div>
       )}
+
+      <StickyEnquiryNow product={activeProduct} />
     </>
   );
 }

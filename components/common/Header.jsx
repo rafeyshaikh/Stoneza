@@ -5,22 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import MegaMenu from "./Megamenu";
 import { useAuth } from "@/context/AuthContext";
+import { useCategories } from "@/context/CategoriesContext";
 
 import { useRef, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { PiUserLight } from "react-icons/pi";
 import { CiSearch } from "react-icons/ci";
-import { PiBagSimpleThin } from "react-icons/pi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { PiXBold } from "react-icons/pi";
 import { PiCaretDownThin } from "react-icons/pi";
-import { RiAdminLine } from "react-icons/ri";
 
 export default function Header() {
-  const [categories, setCategories] = useState([]);
+  const { categories, setCategories } = useCategories();
   const [activeMenu, setActiveMenu] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -45,62 +43,7 @@ export default function Header() {
     }, 300);
   };
 
-  useEffect(() => {
-    // 1. Try to load cached categories from localStorage for instant mount
-    try {
-      const cached = localStorage.getItem("stoneza_categories");
-      if (cached) {
-        setCategories(JSON.parse(cached));
-      }
-    } catch (e) {
-      console.warn("Failed to load cached categories:", e);
-    }
 
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch("/api/public/categories");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          const normalized = json.data.map((cat) => ({
-            title: cat.name,
-            slug: cat.slug,
-            categories: cat.children?.map((sub) => ({
-              title: sub.name,
-              slug: sub.slug,
-              links: sub.children?.map((third) => ({
-                name: third.name,
-                slug: third.slug
-              })) || []
-            })) || [],
-            images: (cat.wideBanners && cat.wideBanners.length > 0)
-              ? cat.wideBanners.slice(0, 2).map((img) => ({
-                title: "",
-                image: img.url
-              }))
-              : (cat.squareBanner?.url ? [
-                {
-                  title: "",
-                  image: cat.squareBanner.url
-                }
-              ] : [])
-          }));
-          
-          setCategories(normalized);
-
-          // 2. Cache updated categories list in localStorage
-          try {
-            localStorage.setItem("stoneza_categories", JSON.stringify(normalized));
-          } catch (e) {
-            console.warn("Failed to save categories cache:", e);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
 
   const displayNavItems = categories;
 
@@ -217,7 +160,7 @@ export default function Header() {
                       }
                     >
                       <Link
-                        href={`/collections/${item.slug}?categoryLevel=1` || "#"}
+                        href={`/collections/${item.slug}` || "#"}
                         className="relative block"
                       >
                         {item.title}

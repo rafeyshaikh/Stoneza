@@ -136,6 +136,36 @@ export async function PATCH(request, { params }) {
       }
     }
 
+    // Cloudinary cleanup of overwritten/deleted images
+    const oldSquareId = category.bannerImage?.square?.publicId;
+    const newSquareId = bannerImage?.square?.publicId;
+    if (oldSquareId && oldSquareId !== newSquareId) {
+      try {
+        await cloudinary.uploader.destroy(oldSquareId);
+      } catch (err) {
+        console.error("Failed to delete old square image from Cloudinary:", err);
+      }
+    }
+
+    const oldWideIds = (category.bannerImage?.wide || [])
+      .map(img => img?.publicId)
+      .filter(Boolean);
+    const newWideIds = new Set(
+      (bannerImage?.wide || [])
+        .map(img => img?.publicId)
+        .filter(Boolean)
+    );
+
+    for (const oldId of oldWideIds) {
+      if (!newWideIds.has(oldId)) {
+        try {
+          await cloudinary.uploader.destroy(oldId);
+        } catch (err) {
+          console.error(`Failed to delete old wide image ${oldId} from Cloudinary:`, err);
+        }
+      }
+    }
+
     category.name = normalizedName;
     category.slug = slug;
     category.bannerImage = bannerImage;
@@ -188,10 +218,22 @@ export async function DELETE(request, { params }) {
       return response(false, 400, "Delete child categories first");
     }
 
-    if (Array.isArray(category.bannerImage)) {
-      for (const image of category.bannerImage) {
+    if (category.bannerImage?.square?.publicId) {
+      try {
+        await cloudinary.uploader.destroy(category.bannerImage.square.publicId);
+      } catch (err) {
+        console.error("Failed to delete square image on delete:", err);
+      }
+    }
+
+    if (Array.isArray(category.bannerImage?.wide)) {
+      for (const image of category.bannerImage.wide) {
         if (image?.publicId) {
-          await cloudinary.uploader.destroy(image.publicId);
+          try {
+            await cloudinary.uploader.destroy(image.publicId);
+          } catch (err) {
+            console.error(`Failed to delete wide image ${image.publicId} on delete:`, err);
+          }
         }
       }
     }
