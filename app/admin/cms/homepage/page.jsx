@@ -18,9 +18,6 @@ export default function HomepageCmsPage() {
         <FeaturedCollectionsManager />
         <TestimonialsManager />
         <InstagramManager />
-        <NewArrivalsManager />
-        <OurProcessManager />
-        <ShopTheLookManager />
       </div>
     </>
   );

@@ -4,6 +4,8 @@ import { PUBLIC_CACHE_HEADERS } from "@/lib/cacheHeaders";
 
 import Category from "@/models/Category.model";
 
+export const revalidate = 3600; // Cache for 1 hour inside Next.js ISR
+
 export async function GET() {
   try {
     await connectDB();
@@ -40,6 +42,7 @@ export async function GET() {
             url: "",
             publicId: "",
           },
+          wideBanners: category.bannerImage?.wide || [],
         }),
 
         parentCategory: category.parentCategory?.toString() || null,
@@ -70,11 +73,7 @@ export async function GET() {
         "Categories fetched successfully", 
         tree, 
         {
-            /** To be used in the future if we want to cache the response for public categories
-        {
-            headers: PUBLIC_CACHE_HEADERS,
-        }
-         */
+          headers: PUBLIC_CACHE_HEADERS,
         }
     );
   } catch (error) {
