@@ -61,7 +61,7 @@ export default async function Home() {
       )}
       <FeaturedProducts products={safeFeatured} />
       <BigBanner src={"/assets/hero/Big_Banner_Ethereal_Forms.jpg"} alt={"Ethereal"} title={"Onde Éternelle"} button={"Home Decor"} height={800} />
-      <Carousel title={"What's New"} data={whatsNewData} />
+      <Carousel title={"What's New"} data={whatsNewData} button={true} />
       <ThreeBanner />
       {subCategoryData.length > 0 && (
         <Carousel title="Sub Categories" data={subCategoryData}  />
