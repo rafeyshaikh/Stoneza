@@ -6,7 +6,7 @@ import ProductDetailClient from "./ProductDetailClient";
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   await connectDB();
-  const product = await Product.findOne({ slug, deletedAt: null }).lean();
+  const product = await Product.findOne({ slug }).lean();
 
   if (!product) {
     return {
@@ -65,7 +65,6 @@ export default async function ProductDetailPage({ params }) {
 
   const product = await Product.findOne({
     slug,
-    deletedAt: null,
   }).lean();
 
   if (!product) {

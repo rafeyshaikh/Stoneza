@@ -11,7 +11,6 @@ export async function GET(request, { params }) {
 
     const product = await Product.findOne({
       slug,
-      deletedAt: null,
       status: "published",
     })
       .populate({

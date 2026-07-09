@@ -16,7 +16,6 @@ export default async function EditProductPage({ params }) {
 
   const product = await Product.findOne({
     _id: id,
-    deletedAt: null,
   }).lean();
 
   if (!product) {
@@ -65,7 +64,6 @@ export default async function EditProductPage({ params }) {
 
   const categories = (
     await Category.find({
-      deletedAt: null,
       isActive: true,
     })
       .select("name categoryLevel parentCategory")

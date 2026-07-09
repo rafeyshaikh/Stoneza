@@ -10,9 +10,7 @@ import { connectDB } from "@/lib/databaseConnection";
 export default async function NewProductPage() {
   await connectDB();
 
-  const categories = await Category.find({
-    deletedAt: null,
-  })
+  const categories = await Category.find({})
     .sort({ sortOrder: 1, createdAt: -1 })
     .lean();
 

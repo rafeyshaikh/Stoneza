@@ -73,7 +73,6 @@ export async function POST(req) {
 
     const existingProduct = await Product.findOne({
       slug,
-      deletedAt: null,
     });
 
     if (existingProduct) {
@@ -82,7 +81,6 @@ export async function POST(req) {
 
     const categoryExists = await Category.findOne({
       _id: category,
-      deletedAt: null,
     });
 
     if (!categoryExists) {
@@ -92,7 +90,6 @@ export async function POST(req) {
     // Must be a leaf category
     const hasChildren = await Category.exists({
       parentCategory: category,
-      deletedAt: null,
     });
 
     if (hasChildren) {
@@ -188,9 +185,7 @@ export async function GET(req) {
 
     const sort = searchParams.get("sort") || "newest";
 
-    const filter = {
-      deletedAt: null,
-    };
+    const filter = {};
 
     if (query) {
       filter.$or = [
@@ -294,9 +289,8 @@ export async function DELETE(req) {
       return response(false, 400, "No product IDs provided");
     }
 
-    await Product.updateMany(
+    await Product.deleteMany(
       { _id: { $in: ids } },
-      { $set: { deletedAt: new Date() } },
     );
 
     return response(true, 200, "Products deleted");

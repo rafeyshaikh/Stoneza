@@ -23,8 +23,8 @@ export async function GET() {
       activeEnquiries,
       totalBlogs,
     ] = await Promise.all([
-      Product.countDocuments({ deletedAt: null }),
-      Category.countDocuments({ deletedAt: null }),
+      Product.countDocuments({}),
+      Category.countDocuments({}),
       Enquiry.countDocuments({}),
       Enquiry.countDocuments({ status: "new" }),
       Enquiry.countDocuments({ status: { $in: ["contacted", "in-progress"] } }),

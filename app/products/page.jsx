@@ -12,7 +12,7 @@ export const metadata = {
 
 export default async function ProductsPage() {
   await connectDB();
-  const products = await Product.find({ deletedAt: null, status: "published" }).lean();
+  const products = await Product.find({ status: "published" }).lean();
 
   const safeProducts = JSON.parse(JSON.stringify(products));
 

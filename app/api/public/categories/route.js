@@ -1,17 +1,13 @@
 import { connectDB } from "@/lib/databaseConnection";
 import { response } from "@/lib/helperFunction";
-import { PUBLIC_CACHE_HEADERS } from "@/lib/cacheHeaders";
-
 import Category from "@/models/Category.model";
+import { unstable_cache } from "next/cache";
 
-export const revalidate = 3600; // Cache for 1 hour inside Next.js ISR
-
-export async function GET() {
-  try {
+const getCachedPublicCategories = unstable_cache(
+  async () => {
     await connectDB();
 
     const categories = await Category.find({
-      deletedAt: null,
       isActive: true,
     })
       .sort({
@@ -67,14 +63,24 @@ export async function GET() {
       }
     });
 
+    return tree;
+  },
+  ["public-categories-cache"],
+  {
+    revalidate: 86400, // 24 hours fallback
+    tags: ["public-categories"],
+  }
+);
+
+export async function GET() {
+  try {
+    const tree = await getCachedPublicCategories();
+
     return response(
         true,
         200, 
         "Categories fetched successfully", 
-        tree, 
-        {
-          headers: PUBLIC_CACHE_HEADERS,
-        }
+        tree
     );
   } catch (error) {
     console.error("Public categories error:", error);

@@ -27,7 +27,6 @@ export async function GET(request) {
     const newArrival = searchParams.get("newArrival") === "true";
 
     const filter = {
-      deletedAt: null,
       status: "published",
     };
 
@@ -70,7 +69,6 @@ export async function GET(request) {
     if (categorySlug) {
       const category = await Category.findOne({
         slug: categorySlug,
-        deletedAt: null,
         isActive: true,
       });
 

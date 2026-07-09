@@ -75,12 +75,6 @@ const categorySchema = new mongoose.Schema(
       ogImage: String,
       canonicalUrl: String,
     },
-
-    deletedAt: {
-      type: Date,
-      default: null,
-      index: true,
-    },
   },
   {
     timestamps: true,

@@ -9,8 +9,8 @@ import { connectDB } from "@/lib/databaseConnection";
 
 export default async function AdminProductsPage() {
   await connectDB();
-  const products = await Product.find({ deletedAt: null }).populate("category", "name").sort({ createdAt: -1 }).lean();
-  const categories = await Category.find({ categoryLevel: 3,deletedAt: null }).sort({ sortOrder: 1, createdAt: -1 }).lean();
+  const products = await Product.find({}).populate("category", "name").sort({ createdAt: -1 }).lean();
+  const categories = await Category.find({ categoryLevel: 3 }).sort({ sortOrder: 1, createdAt: -1 }).lean();
 
   return (
     <>

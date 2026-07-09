@@ -16,7 +16,7 @@ export async function GET() {
 
     await connectDB();
 
-    const categories = await Category.find({ deletedAt: null })
+    const categories = await Category.find({})
       .populate("parentCategory", "name")
       .sort({ sortOrder: 1, createdAt: -1 })
       .lean();
@@ -64,7 +64,6 @@ export async function POST(request) {
         $regex: `^${normalizedName}$`,
         $options: "i",
       },
-      deletedAt: null,
     });
 
     if (existingCategory) {
@@ -77,7 +76,6 @@ export async function POST(request) {
     // Extra safety for duplicate slugs
     const existingSlug = await Category.findOne({
       slug,
-      deletedAt: null,
     });
 
     if (existingSlug) {
@@ -89,7 +87,6 @@ export async function POST(request) {
     if (parentCategory) {
       const parent = await Category.findOne({
         _id: parentCategory,
-        deletedAt: null,
       });
 
       if (!parent) {
@@ -123,7 +120,9 @@ export async function POST(request) {
       seo,
     });
 
+    // Revalidate category tree cache
     revalidateTag("layout-categories");
+    revalidateTag("public-categories");
 
     return response(true, 201, "Category created successfully", category);
   } catch (error) {

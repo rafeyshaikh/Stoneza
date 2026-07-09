@@ -8,7 +8,7 @@ import { connectDB } from "@/lib/databaseConnection";
 export default async function CustomersPage() {
   await connectDB();
 
-  const users = await User.find({ role: { $in: ["user", "customer"] }, deletedAt: null }).sort({ createdAt: -1 }).lean();
+  const users = await User.find({ role: { $in: ["user", "customer"] } }).sort({ createdAt: -1 }).lean();
  
 
   return (

@@ -21,7 +21,7 @@ export async function GET() {
     const { payload } = await jwtVerify(token, secret);
 
     const user = await User.findById(payload.id).select(
-      "-password -deletedAt"
+      "-password"
     );
 
     if (!user) {

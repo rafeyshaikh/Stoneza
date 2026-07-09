@@ -32,12 +32,6 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
-    deletedAt: {
-      type: Date,
-      default: null,
-      index: true,
-    },
-
     sku: {
       type: String,
       unique: true,

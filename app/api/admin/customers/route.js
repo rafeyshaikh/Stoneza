@@ -12,7 +12,7 @@ export async function GET() {
 
     await connectDB();
 
-    const customers = await User.find({ role: { $in: ["user", "customer"] }, deletedAt: null })
+    const customers = await User.find({ role: { $in: ["user", "customer"] } })
       .select("name email createdAt address")
       .sort({ createdAt: -1 })
       .lean();

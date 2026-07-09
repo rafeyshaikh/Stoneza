@@ -14,7 +14,6 @@ export default async function EditCategoryPage({ params }) {
 
   const category = await Category.findOne({
     _id: id,
-    deletedAt: null,
   }).lean();
 
   if (!category) {
@@ -23,7 +22,6 @@ export default async function EditCategoryPage({ params }) {
 
   const parentCategories = (
     await Category.find({
-      deletedAt: null,
       categoryLevel: { $lt: 3 },
       _id: { $ne: id },
     })

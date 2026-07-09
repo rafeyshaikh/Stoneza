@@ -7,7 +7,7 @@ import CollectionProductDetailClient from "./CollectionProductDetailClient";
 export async function generateMetadata({ params }) {
   const { slug, productSlug } = await params;
   await connectDB();
-  const product = await Product.findOne({ slug: productSlug, deletedAt: null }).lean();
+  const product = await Product.findOne({ slug: productSlug }).lean();
 
   if (!product) {
     return {
@@ -66,7 +66,6 @@ export default async function ProductPage({ params }) {
 
   const product = await Product.findOne({
     slug: productSlug,
-    deletedAt: null,
   })
     .populate("category", "name slug")
     .lean();

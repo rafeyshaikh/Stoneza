@@ -21,7 +21,6 @@ export async function GET(request, { params }) {
 
     const product = await Product.findOne({
       _id: id,
-      deletedAt: null,
     })
       .populate("category", "name slug")
       .lean();
@@ -116,7 +115,6 @@ export async function PATCH(request, { params }) {
     const duplicate = await Product.findOne({
       _id: { $ne: id },
       slug,
-      deletedAt: null,
     });
 
     if (duplicate) {
@@ -125,7 +123,6 @@ export async function PATCH(request, { params }) {
 
     const categoryExists = await Category.findOne({
       _id: category,
-      deletedAt: null,
     });
 
     if (!categoryExists) {
@@ -134,7 +131,6 @@ export async function PATCH(request, { params }) {
 
     const hasChildren = await Category.exists({
       parentCategory: category,
-      deletedAt: null,
     });
 
     if (hasChildren) {
@@ -241,7 +237,6 @@ export async function DELETE(request, { params }) {
 
     const product = await Product.findOne({
       _id: id,
-      deletedAt: null,
     });
 
     if (!product) {

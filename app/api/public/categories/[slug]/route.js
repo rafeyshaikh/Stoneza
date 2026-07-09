@@ -29,7 +29,6 @@ export async function GET(request, { params }) {
 
     const category = await Category.findOne({
       slug,
-      deletedAt: null,
       isActive: true,
     }).lean();
 
@@ -40,7 +39,6 @@ export async function GET(request, { params }) {
     const subCategories = (
       await Category.find({
         parentCategory: category._id,
-        deletedAt: null,
         isActive: true,
       })
         .select(`
@@ -67,7 +65,6 @@ export async function GET(request, { params }) {
     const categoryIds = await getDescendantCategoryIds(category._id);
 
     const filter = {
-      deletedAt: null,
       status: "published",
 
       category: {

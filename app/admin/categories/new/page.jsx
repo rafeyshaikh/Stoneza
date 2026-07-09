@@ -8,7 +8,6 @@ export default async function NewCategoryPage() {
   await connectDB();
   const parentCategories = (
     await Category.find({
-      deletedAt: null,
       categoryLevel: {
         $lt: 3,
       },

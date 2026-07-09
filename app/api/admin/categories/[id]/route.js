@@ -10,7 +10,6 @@ import Category from "@/models/Category.model";
 async function updateChildrenLevels(parentId, level) {
   const children = await Category.find({
     parentCategory: parentId,
-    deletedAt: null,
   });
 
   for (const child of children) {
@@ -64,7 +63,6 @@ export async function PATCH(request, { params }) {
 
     const category = await Category.findOne({
       _id: id,
-      deletedAt: null,
     });
 
     if (!category) {
@@ -84,7 +82,6 @@ export async function PATCH(request, { params }) {
         $regex: `^${normalizedName}$`,
         $options: "i",
       },
-      deletedAt: null,
     });
 
     if (duplicate) {
@@ -96,7 +93,6 @@ export async function PATCH(request, { params }) {
     const duplicateSlug = await Category.findOne({
       _id: { $ne: id },
       slug,
-      deletedAt: null,
     });
 
     if (duplicateSlug) {
@@ -119,7 +115,6 @@ export async function PATCH(request, { params }) {
 
       const parent = await Category.findOne({
         _id: parentCategory,
-        deletedAt: null,
       });
 
       if (!parent) {
@@ -181,6 +176,7 @@ export async function PATCH(request, { params }) {
     await updateChildrenLevels(category._id, categoryLevel);
 
     revalidateTag("layout-categories");
+    revalidateTag("public-categories");
 
     return response(true, 200, "Category updated successfully", category);
   } catch (error) {
@@ -214,7 +210,6 @@ export async function DELETE(request, { params }) {
     // Prevent deleting category having children
     const hasChildren = await Category.exists({
       parentCategory: id,
-      deletedAt: null,
     });
 
     if (hasChildren) {
@@ -241,11 +236,10 @@ export async function DELETE(request, { params }) {
       }
     }
 
-    category.deletedAt = new Date();
-
-    await category.save();
+    await Category.findByIdAndDelete(id);
 
     revalidateTag("layout-categories");
+    revalidateTag("public-categories");
 
     return response(true, 200, "Category deleted successfully");
   } catch (error) {
