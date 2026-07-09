@@ -3,6 +3,7 @@ import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
 import { generateSlug } from "@/lib/generateSlug";
 
+import { revalidateTag } from "next/cache";
 import Category from "@/models/Category.model";
 
 export async function GET() {
@@ -121,6 +122,8 @@ export async function POST(request) {
 
       seo,
     });
+
+    revalidateTag("layout-categories");
 
     return response(true, 201, "Category created successfully", category);
   } catch (error) {

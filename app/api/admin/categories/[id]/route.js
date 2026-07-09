@@ -3,6 +3,7 @@ import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
 import { generateSlug } from "@/lib/generateSlug";
 import cloudinary from "@/lib/cloudinary";
+import { revalidateTag } from "next/cache";
 
 import Category from "@/models/Category.model";
 
@@ -179,6 +180,8 @@ export async function PATCH(request, { params }) {
     await category.save();
     await updateChildrenLevels(category._id, categoryLevel);
 
+    revalidateTag("layout-categories");
+
     return response(true, 200, "Category updated successfully", category);
   } catch (error) {
     console.error(error);
@@ -241,6 +244,8 @@ export async function DELETE(request, { params }) {
     category.deletedAt = new Date();
 
     await category.save();
+
+    revalidateTag("layout-categories");
 
     return response(true, 200, "Category deleted successfully");
   } catch (error) {
