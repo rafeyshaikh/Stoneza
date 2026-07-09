@@ -144,7 +144,9 @@ export default function ProductForm({
         waterAbsorption: initialData.stoneDetails?.waterAbsorption || "",
         density: initialData.stoneDetails?.density || "",
         weatherResistance: initialData.stoneDetails?.weatherResistance || "",
-        application: initialData.stoneDetails?.application || "",
+        application: Array.isArray(initialData.stoneDetails?.application)
+          ? initialData.stoneDetails.application.join(", ")
+          : initialData.stoneDetails?.application || "",
         installationMethod: initialData.stoneDetails?.installationMethod || "",
         moq: initialData.stoneDetails?.moq || "Project-based — ask us",
         weightPerSqM: initialData.stoneDetails?.weightPerSqM || "",
@@ -333,6 +335,16 @@ export default function ProductForm({
           .split(",")
           .map((tag) => tag.trim())
           .filter(Boolean),
+
+        stoneDetails: {
+          ...formData.stoneDetails,
+          application: formData.stoneDetails.application
+            ? formData.stoneDetails.application
+                .split(",")
+                .map((app) => app.trim())
+                .filter(Boolean)
+            : [],
+        },
 
         seo: {
           ...formData.seo,
@@ -581,9 +593,9 @@ export default function ProductForm({
             />
           </Field>
 
-          <Field label="Application">
+          <Field label="Applications (comma-separated)">
             <Input
-              placeholder="e.g. Interior & exterior walls"
+              placeholder="e.g. Interior walls, Exterior walls, Pool decks"
               value={formData.stoneDetails.application}
               onChange={(e) => handleStoneChange("application", e.target.value)}
             />

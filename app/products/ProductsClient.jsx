@@ -33,7 +33,7 @@ export default function ProductsClient({ products }) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search"
-          className="w-full h-full bg-transparent border-none outline-none focus:border-none text-[#1A1613] placeholder-[#B7AC9E] font-medium text-[12px] tracking-[2px] uppercase placeholder:text-[12px] placeholder:tracking-[2px] pl-8"
+          className="w-full h-full bg-transparent border-none outline-none focus:border-none text-[#1A1613] placeholder-[#B7AC9E] font-medium text-[12px] tracking-[2px] placeholder:uppercase placeholder:text-[12px] placeholder:tracking-[2px] pl-8"
           />
         </div>
         <div className="h-full flex">

@@ -70,7 +70,7 @@ export default function ProductInfo({ product, onEnquireClick }) {
         <div className="bg-stone-50 p-4">
           <span className="text-[10px] uppercase tracking-wider text-[#9a4a2e] font-bold block">Best for</span>
           <span className="font-serif text-base text-[#1c1714] mt-1 block">
-            {product.stoneDetails?.application || "Façades & feature walls"}
+            {(Array.isArray(product.stoneDetails?.application) ? product.stoneDetails.application.join(", ") : product.stoneDetails?.application) || "Façades & feature walls"}
           </span>
         </div>
         <div className="bg-stone-50 p-4">

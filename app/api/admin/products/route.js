@@ -146,7 +146,9 @@ export async function POST(req) {
         waterAbsorption: stoneDetails.waterAbsorption?.trim() || "",
         density: stoneDetails.density ? Number(stoneDetails.density) : null,
         weatherResistance: stoneDetails.weatherResistance?.trim() || "",
-        application: stoneDetails.application?.trim() || "",
+        application: Array.isArray(stoneDetails.application)
+          ? stoneDetails.application.map((app) => app.trim()).filter(Boolean)
+          : (stoneDetails.application?.split(",")?.map((app) => app.trim())?.filter(Boolean) || []),
         installationMethod: stoneDetails.installationMethod?.trim() || "",
         moq: stoneDetails.moq?.trim() || "Project-based — ask us",
         weightPerSqM: stoneDetails.weightPerSqM?.trim() || "",

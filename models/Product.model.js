@@ -156,11 +156,12 @@ const productSchema = new mongoose.Schema(
         trim: true,
         default: "",
       },
-      application: {
-        type: String,
-        trim: true,
-        default: "",
-      },
+      application: [
+        {
+          type: String,
+          trim: true,
+        },
+      ],
       installationMethod: {
         type: String,
         trim: true,
