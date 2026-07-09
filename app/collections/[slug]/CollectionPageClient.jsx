@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import CollectionCTA from "@/components/common/CollectionCTA";
 import BigBanner from "@/components/home/BigBanner";
 import Carousel from "@/components/home/Carousel";
+import ProductCard from "@/components/product/ProductCard";
 
 import { PiCaretDown } from "react-icons/pi";
 import { BiSolidGrid, BiSolidGridAlt } from "react-icons/bi";
@@ -81,7 +82,7 @@ export default function CollectionPageClient({ initialData, slug }) {
         className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${gridSizeLarge ? "lg:grid-cols-4" : "lg:grid-cols-2"} gap-6 p-10 justify-items-center`}
       >
         {mappedProducts.slice(0, sliceLength).map((item) => (
-          <ProductItem
+          <ProductCard
             key={item.id}
             item={item}
             setHoveredId={setHoveredId}
@@ -129,59 +130,4 @@ export default function CollectionPageClient({ initialData, slug }) {
   );
 }
 
-function ProductItem({ item, setHoveredId, hoveredId, slug }) {
-  const router = useRouter();
-  return (
-    <div key={item.id} className="w-full h-auto cursor-pointer" onClick={() => {
-      router.push(`/collections/${slug}/products/${item.slug}`);
-    }}>
-      <div className="flex flex-col items-center">
-        <div
-          className="group relative mb-5 w-full h-full aspect-square bg-[#F4F1EB]"
-          onMouseEnter={() => setHoveredId(item.id)}
-          onMouseLeave={() => setHoveredId(null)}
-        >
-          <Image
-            src={hoveredId === item.id ? item.imageHover : item.image}
-            alt={item.name}
-            fill
-            className="h-full w-full object-contain"
-          />
 
-          {!item.soldOut && hoveredId === item.id && (
-            <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center bg-white">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log("Add To Bag", item.id);
-                }}
-                className="w-full border-r border-[#cbc9c4] py-3 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer hover:bg-neutral-50 transition-colors"
-              >
-                Add To Bag
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log("Buy Now", item.id);
-                }}
-                className="w-full py-3 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer hover:bg-neutral-50 transition-colors"
-              >
-                Buy Now
-              </button>
-            </div>
-          )}
-        </div>
-
-        <h3 className="text-center font-body text-[14px] text-[#393938]">
-          {item.name}
-        </h3>
-        <p className="text-center font-body text-[14px] text-[#6a6a6a]">
-          ₹{item.price}
-        </p>
-      </div>
-    </div>
-  );
-}

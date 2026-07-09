@@ -1,232 +1,82 @@
-"use client";
+import { notFound } from "next/navigation";
+import { connectDB } from "@/lib/databaseConnection";
+import Product from "@/models/Product.model";
+import Category from "@/models/Category.model"; // Ensure Category model is loaded for populate
+import CollectionProductDetailClient from "./CollectionProductDetailClient";
 
-import { use, useState, useEffect } from "react";
-import { X } from "lucide-react";
-import Breadcrumbs from "@/components/product/Breadcrumbs";
-import ProductGallery from "@/components/product/ProductGallery";
-import ProductInfo from "@/components/product/ProductInfo";
-import ProductTabs from "@/components/product/ProductTabs";
-import ProductReviews from "@/components/product/ProductReviews";
-import RelatedProducts from "@/components/product/RelatedProducts";
-import RecentlyViewed from "@/components/product/RecentlyViewed";
-import StickyEnquiryNow from "@/components/product/StickyEnquiryNow";
-import EnquiryForm from "@/components/common/EnquiryForm";
+export async function generateMetadata({ params }) {
+  const { slug, productSlug } = await params;
+  await connectDB();
+  const product = await Product.findOne({ slug: productSlug, deletedAt: null }).lean();
 
-export default function ProductPage({ params }) {
-  const { productSlug } = use(params);
-
-  const [productData, setProductData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [showEnquiryModal, setShowEnquiryModal] = useState(false);
-
-  useEffect(() => {
-    async function loadProduct() {
-      try {
-        const res = await fetch(`/api/public/products/${productSlug}`);
-        const data = await res.json();
-        if (data.success && data.data) {
-          setProductData(data.data);
-        }
-      } catch (error) {
-        console.error("Failed to load product from API:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProduct();
-  }, [productSlug]);
-
-  // Default Mock Product for fallbacks / previews
-  const mockProduct = {
-    name: "Travertine Stone Fountain",
-    slug: "travertine-stone-fountain",
-    price: 34999,
-    discountPrice: 29999,
-    sku: "STN-FNT-001",
-    shortDescription:
-      "A refined expression of elegance, this set features delicately illustrated floral motifs set against soft blue and blush pink tones, accented with intricate detailing. The graceful silhouettes and coordinated saucers create a harmonious visual appeal. Perfect for tea or coffee service, it adds a touch of timeless sophistication to elevated dining and intimate gatherings.",
-    description: "Crafted from premium natural travertine stone, this fountain brings sophistication and tranquility to outdoor living spaces. Every piece is handcrafted by skilled artisans, ensuring uniqueness and timeless appeal.",
-    specifications: [
-      { label: "Material", value: "Natural Travertine Stone" },
-      { label: "Dimensions", value: "120 × 80 × 60 cm" },
-      { label: "Weight", value: "85 kg" },
-      { label: "Finish", value: "Polished" },
-    ],
-    shippingInfo:
-      "Delivery within 7–10 business days across India. Installation support available in selected cities.",
-    careInstructions:
-      "Clean with a soft cloth and avoid harsh chemicals. Seal periodically for long-lasting beauty.",
-    images: [
-      "/assets/small_banners3/Small_Banner_1.webp",
-      "/assets/small_banners3/Small_Banner_2.webp",
-      "/assets/small_banners3/Small_Banner_3.webp",
-      "/assets/small_banners3/Small_Banner_4.webp",
-    ],
-  };
-
-  const activeProduct = productData
-    ? {
-      name: productData.name,
-      slug: productData.slug,
-      price: productData.price || null,
-      discountPrice: productData.discountPrice || null,
-      sku: productData.sku || "N/A",
-      shortDescription: productData.shortDescription || "",
-      description: productData.description || "",
-      stoneDetails: productData.stoneDetails || {},
-      specifications: productData.specifications || [],
-      careInstructions:
-        productData.careInstructions ||
-        "Clean with neutral stone cleansers. Seal periodically.",
-      images: productData.images?.length
-        ? productData.images.map((img) => img.url)
-        : ["/assets/small_banners3/Small_Banner_1.webp"],
-    }
-    : mockProduct;
-
-  const breadcrumbs = [
-    { label: "Home", href: "/" },
-    { label: "Collections", href: "/collections" },
-    {
-      label: productData?.category?.name || "Fountains",
-      href: `/collections/${productData?.category?.slug || "fountains"}`,
-    },
-    { label: activeProduct.name },
-  ];
-
-  const relatedProducts = [
-    {
-      id: 1,
-      name: "Natural Stone Bench",
-      slug: "natural-stone-bench",
-      price: 18999,
-      image: "/assets/products/product1.jpg",
-    },
-    {
-      id: 2,
-      name: "Outdoor Marble Fountain",
-      slug: "outdoor-marble-fountain",
-      price: 25999,
-      image: "/assets/products/product2.jpg",
-    },
-    {
-      id: 3,
-      name: "Garden Stone Sculpture",
-      slug: "garden-stone-sculpture",
-      price: 14999,
-      image: "/assets/products/product3.jpg",
-    },
-    {
-      id: 4,
-      name: "Poolside Travertine Tile",
-      slug: "poolside-travertine-tile",
-      price: 9999,
-      image: "/assets/products/product4.jpg",
-    },
-  ];
-
-  const recentlyViewed = [
-    {
-      id: 1,
-      name: "Marble Garden Fountain",
-      slug: "marble-garden-fountain",
-      price: 24999,
-      image: "/assets/products/product1.jpg",
-    },
-    {
-      id: 2,
-      name: "Natural Stone Bench",
-      slug: "natural-stone-bench",
-      price: 18999,
-      image: "/assets/products/product2.jpg",
-    },
-    {
-      id: 3,
-      name: "Poolside Travertine Tiles",
-      slug: "poolside-travertine-tiles",
-      price: 9999,
-      image: "/assets/products/product3.jpg",
-    },
-    {
-      id: 4,
-      name: "Handcrafted Stone Sculpture",
-      slug: "stone-sculpture",
-      price: 15999,
-      image: "/assets/products/product4.jpg",
-    },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#EAE8E2]">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-stone-600 border-t-transparent" />
-      </div>
-    );
+  if (!product) {
+    return {
+      title: "Product Not Found | Stoneza",
+      description: "The requested stone product could not be found.",
+    };
   }
 
-  return (
-    <>
-      {/* Hero Section */}
-      <section className="py-10 bg-[#EAE8E2]">
-        <div className="max-w-[1400px] mx-auto px-4">
-          <div className="mb-8">
-            <Breadcrumbs items={breadcrumbs} />
-          </div>
+  // Load SEO from product schema or fallback to details
+  const title = product.seo?.metaTitle?.trim() || `${product.name} | Stoneza`;
+  const description =
+    product.seo?.metaDescription?.trim() ||
+    product.shortDescription?.trim() ||
+    (product.description?.replace(/<[^>]*>/g, "")?.slice(0, 160)?.trim() ||
+      "Explore premium natural stone products from Stoneza.");
 
-          <div className="grid lg:grid-cols-2 gap-16">
-            <ProductGallery images={activeProduct.images} />
+  const ogImage =
+    product.seo?.ogImage?.trim() ||
+    (product.images?.length ? product.images[0].url : "");
 
-            <ProductInfo
-              product={activeProduct}
-              onEnquireClick={() => setShowEnquiryModal(true)}
-            />
-          </div>
-        </div>
-      </section>
+  const canonicalUrl =
+    product.seo?.canonicalUrl?.trim() ||
+    `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/collections/${slug}/products/${productSlug}`;
 
-      {/* Technical Specs, Applications & Final CTA */}
-      <ProductTabs
-        product={activeProduct}
-        onEnquireClick={() => setShowEnquiryModal(true)}
-      />
+  const keywords =
+    product.seo?.keywords?.length
+      ? product.seo.keywords
+      : product.tags || [];
 
-      {/* Enquiry Modal */}
-      {showEnquiryModal && (
-        <div className="fixed inset-0 z-50 mt-[106px] flex items-center justify-center p-4 bg-[#1a1613]/80 backdrop-blur-md overflow-y-auto">
-          {/* Backdrop Click Closes */}
-          <div
-            className="absolute inset-0"
-            onClick={() => setShowEnquiryModal(false)}
-          />
+  return {
+    title,
+    description,
+    keywords: keywords.join(", "),
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      images: ogImage ? [{ url: ogImage }] : [],
+      url: canonicalUrl,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImage ? [ogImage] : [],
+    },
+  };
+}
 
-          <div className="relative bg-[#28221D] border border-[#4A413A] rounded-lg max-w-[600px] w-full p-6 md:p-8 z-10 shadow-2xl transition-all duration-300">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowEnquiryModal(false)}
-              className="absolute top-4 right-4 text-[#8A7F73] hover:text-[#EDE8E1] transition-colors cursor-pointer"
-            >
-              <X className="size-6" />
-            </button>
+export default async function ProductPage({ params }) {
+  const { productSlug } = await params;
+  await connectDB();
 
-            <div className="mb-6">
-              <h3 className="font-serif text-2xl text-[#F5F1EA]">
-                Request Quote & Info
-              </h3>
-              <p className="text-sm text-[#B7AC9E] mt-2">
-                Fill in the details below. A Stoneza consultant will contact you
-                with pricing, lead times and material samples.
-              </p>
-            </div>
+  const product = await Product.findOne({
+    slug: productSlug,
+    deletedAt: null,
+  })
+    .populate("category", "name slug")
+    .lean();
 
-            <EnquiryForm
-              compact
-              initialStoneType={activeProduct.name}
-            />
-          </div>
-        </div>
-      )}
+  if (!product) {
+    notFound();
+  }
 
-      <StickyEnquiryNow product={activeProduct} />
-    </>
-  );
+  // Serialize to pass to client component safely
+  const safeProduct = JSON.parse(JSON.stringify(product));
+
+  return <CollectionProductDetailClient productData={safeProduct} />;
 }

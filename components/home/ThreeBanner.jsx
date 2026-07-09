@@ -17,7 +17,7 @@ const banners = [
 
 export default function ThreeBanner() {
   return (
-    <div className="mt-20 flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row">
       {banners.map((item) => (
         <div
           key={item.title}

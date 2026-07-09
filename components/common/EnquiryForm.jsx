@@ -210,7 +210,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
   }
 
   return (
-    <section className="mx-auto max-w-[648px] lg:max-w-[1100px] rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:justify-between lg:px-12 lg:py-12">
+    <section className="mx-auto mt-15 lg:mt-2 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:justify-between lg:px-12 lg:py-12">
       <div className="basis-5/11">
         <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9C8D79]">
           Start Your Project

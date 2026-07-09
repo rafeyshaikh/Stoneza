@@ -1,5 +1,4 @@
 // models/Homepage.model.js
-
 import mongoose from "mongoose";
 
 const imageSchema = new mongoose.Schema(
@@ -12,11 +11,26 @@ const imageSchema = new mongoose.Schema(
 
 const heroSlideSchema = new mongoose.Schema(
   {
-    title: String,
-    subtitle: String,
-    paragraph: String,
-    buttonText: String,
-    buttonLink: String,
+    title: {
+      type:String,
+      trim:true
+    },
+    subtitle: {
+      type:String,
+      trim:true
+    },
+    paragraph: {
+      type:String,
+      trim:true
+    },
+    buttonText: {
+      type:String,
+      trim:true
+    },
+    buttonLink: {
+      type:String,
+      trim:true
+    },
     image: imageSchema,
     isActive: {
       type: Boolean,
@@ -27,34 +41,90 @@ const heroSlideSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const featuredProductsSchema = new mongoose.Schema({
+  title: {type:String, trim:true},
+  bannerImage: imageSchema,
+  caption: {type:String, trim:true},
+  buttonText: {type:String, trim:true},
+}, { _id: false });
+
+const middleBannerSchema = new mongoose.Schema({
+  image: imageSchema,
+  caption: {type:String, trim:true},
+  buttonText: {type:String, trim:true},
+  buttonLink: {type:String, trim:true},
+}, { _id: false });
+
+const threeBannerSchema = new mongoose.Schema({
+  title: {type:String, trim:true},
+  image: imageSchema,
+  caption: {type:String, trim:true},
+  buttonLink: {type:String, trim:true},
+}, { _id: false });
+
+const twoBannerSchema = new mongoose.Schema({
+  title: {type:String, trim:true},
+  image: imageSchema,
+  caption: {type:String, trim:true},
+  buttonText: {type:String, trim:true},
+  buttonLink: {type:String, trim:true},
+}, { _id: false });
 
 const testimonialSchema = new mongoose.Schema(
   {
-    name: String,
-    review: String,
-    location: String,
+    name: {
+      type:String,
+      trim:true
+    },
+    review: {
+      type:String,
+      trim:true
+    },
+    stars: {
+      type:Number,
+      min:1,
+      max:5
+    },
   },
   { _id: false }
 );
 
-const instagramPostSchema = new mongoose.Schema(
-  {
-    images: [imageSchema],
-    link: String,
-    caption: String,
-  },
-  { _id: false }
-);
+const socialLinkSchema = new mongoose.Schema({
+  name: {type:String,trim:true},
+  url: {type:String,trim:true},
+  icon: {type:String,trim:true},
+}, { _id: false });
+
+const footerSchema = new mongoose.Schema({
+  title: {type:String,trim:true},
+  caption:{type:String,trim:true},
+  socialLinks: [socialLinkSchema],
+  phone: [{type:String,trim:true}],
+  email: [{type:String,trim:true}],
+  address: {type:String,trim:true},
+  whatsapp: {type:String,trim:true},
+  mapLink: {type:String,trim:true},
+  copyright: {type:String,trim:true},
+}, { _id: false });
 
 const homepageSchema = new mongoose.Schema(
   {
     heroSlides: [heroSlideSchema],
 
+    featuredProducts: featuredProductsSchema,
+
+    middleBanner:middleBannerSchema,
+
     newArrivalsTitle: String,
+
+    threeBanner: threeBannerSchema,
+
+    twoBanner: twoBannerSchema,
 
     testimonials: [testimonialSchema],
 
-    instagramPosts: [instagramPostSchema],
+    footer:footerSchema,
+
 
   },
   {
