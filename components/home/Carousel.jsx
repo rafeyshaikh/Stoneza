@@ -85,7 +85,7 @@ export default function Carousel({ title, data, itemsPerView = 3, button = false
                     "--slide-width": `${100 / itemsPerView}%`
                   }}
                 >
-                  <ProductCard item={item} />
+                  <ProductCard item={item} button={button} />
                 </div>
               ))}
             </div>
@@ -96,7 +96,7 @@ export default function Carousel({ title, data, itemsPerView = 3, button = false
   );
 }
 
-function ProductCard({ item }) {
+function ProductCard({ item, button }) {
   const [hovered, setHovered] = useState(false);
 
   return (

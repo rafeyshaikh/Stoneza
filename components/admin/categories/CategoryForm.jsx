@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import ImageUploader from "@/components/admin/products/ImageUploader";
 
@@ -88,7 +89,9 @@ export default function CategoryForm({
   initialData = null,
   isEdit = false,
 }) {
+  const router = useRouter();
   const [formData, setFormData] = useState(() => {
+
     if (!initialData) return EMPTY_FORM;
 
     return {
@@ -235,6 +238,9 @@ export default function CategoryForm({
           ? "Category updated successfully"
           : "Category created successfully",
       );
+
+      router.push("/admin/categories");
+      router.refresh();
 
       if (!isEdit) {
         setFormData(EMPTY_FORM);

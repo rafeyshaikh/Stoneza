@@ -4,6 +4,9 @@ import CategoryForm from "@/components/admin/categories/CategoryForm";
 import Category from "@/models/Category.model";
 import { connectDB } from "@/lib/databaseConnection";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function NewCategoryPage() {
   await connectDB();
   const parentCategories = (

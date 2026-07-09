@@ -7,6 +7,9 @@ import Category from "@/models/Category.model";
 
 import { connectDB } from "@/lib/databaseConnection";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function AdminProductsPage() {
   await connectDB();
   const products = await Product.find({}).populate("category", "name").sort({ createdAt: -1 }).lean();

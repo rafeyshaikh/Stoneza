@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import {
   Select,
@@ -33,6 +34,7 @@ const getEmptyForm = () => ({
 
   price: "",
   stock: 0,
+  sku: "",
   weight: 0,
 
   dimensions: {
@@ -60,13 +62,9 @@ const getEmptyForm = () => ({
     stoneType: "",
     productForm: "",
     calibratedThickness: "",
-    faceTexture: "",
-    cornerPieces: "",
-    coveragePerUnit: "",
-    waterAbsorption: "",
-    density: "",
-    weatherResistance: "",
-    application: "",
+    finishOptions: "",
+    primaryColor: "",
+    suitability: "",
     installationMethod: "",
     moq: "Project-based — ask us",
     weightPerSqM: "",
@@ -97,6 +95,7 @@ export default function ProductForm({
   initialData = null,
   isEdit = false,
 }) {
+  const router = useRouter();
   const [formData, setFormData] = useState(() => {
     if (!initialData) return getEmptyForm();
 
@@ -388,6 +387,10 @@ export default function ProductForm({
           ? "Product updated successfully"
           : "Product created successfully",
       );
+
+      router.push("/admin/products");
+      router.refresh();
+
       if (!isEdit) {
         setFormData(getEmptyForm());
         setProductImages([]);

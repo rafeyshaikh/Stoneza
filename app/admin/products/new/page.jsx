@@ -7,6 +7,9 @@ import ProductForm from "@/components/admin/products/ProductForm";
 import Category from "@/models/Category.model";
 import { connectDB } from "@/lib/databaseConnection";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function NewProductPage() {
   await connectDB();
 

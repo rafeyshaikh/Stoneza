@@ -7,6 +7,9 @@ import CategoryForm from "@/components/admin/categories/CategoryForm";
 import { connectDB } from "@/lib/databaseConnection";
 import Category from "@/models/Category.model";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function EditCategoryPage({ params }) {
   await connectDB();
 

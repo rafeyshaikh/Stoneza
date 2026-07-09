@@ -45,7 +45,13 @@ export default function CategoryTable({ categories = [] }) {
     setCurrentPage(1);
   };
   const handleSortOrderToggle = () => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    if (sortBy === "createdAt-desc") {
+      setSortBy("createdAt-asc");
+    } else if (sortBy === "createdAt-asc") {
+      setSortBy("createdAt-desc");
+    } else {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    }
     setCurrentPage(1);
   };
 
@@ -96,16 +102,27 @@ export default function CategoryTable({ categories = [] }) {
 
   // Sorting
   const sortedCategories = [...filteredCategories].sort((a, b) => {
-    let aValue = a[sortBy];
-    let bValue = b[sortBy];
+    let currentSortBy = sortBy;
+    let currentSortOrder = sortOrder;
 
-    if (sortBy === "name") {
+    if (sortBy === "createdAt-desc") {
+      currentSortBy = "createdAt";
+      currentSortOrder = "desc";
+    } else if (sortBy === "createdAt-asc") {
+      currentSortBy = "createdAt";
+      currentSortOrder = "asc";
+    }
+
+    let aValue = a[currentSortBy];
+    let bValue = b[currentSortBy];
+
+    if (currentSortBy === "name") {
       aValue = a.name.toLowerCase();
       bValue = b.name.toLowerCase();
     }
 
-    if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-    if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+    if (aValue < bValue) return currentSortOrder === "asc" ? -1 : 1;
+    if (aValue > bValue) return currentSortOrder === "asc" ? 1 : -1;
     return 0;
   });
 
@@ -199,6 +216,8 @@ export default function CategoryTable({ categories = [] }) {
               <SelectItem value="sortOrder">Sort Order</SelectItem>
               <SelectItem value="name">Name</SelectItem>
               <SelectItem value="categoryLevel">Category Level</SelectItem>
+              <SelectItem value="createdAt-desc">Latest</SelectItem>
+              <SelectItem value="createdAt-asc">Oldest</SelectItem>
             </SelectContent>
           </Select>
 

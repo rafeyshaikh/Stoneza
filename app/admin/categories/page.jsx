@@ -5,6 +5,9 @@ import CategoryTable from "@/components/admin/categories/CategoryTable";
 import Category from "@/models/Category.model";
 import { connectDB } from "@/lib/databaseConnection";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function AdminCategoriesPage() {
   await connectDB();
   const categories = await Category.find({}).populate("parentCategory", "name categoryLevel").sort({ sortOrder: 1 }).lean();
