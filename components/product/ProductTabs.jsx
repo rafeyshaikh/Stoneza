@@ -101,7 +101,7 @@ export default function ProductTabs({ product, onEnquireClick }) {
       )}
 
       {/* 3. Applications Section (Expanded) */}
-      <section className="py-12">
+      {details.application && details.application.length > 0 ?(<section className="py-12">
         <h2 className="font-serif font-light text-3xl md:text-4xl text-[#1c1714] mb-2">
           Where it works best
         </h2>
@@ -110,51 +110,16 @@ export default function ProductTabs({ product, onEnquireClick }) {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {details.application && details.application.length > 0 ? (
-            details.application.map((app, index) => (
+            {details.application.map((app, index) => (
               <div key={app} className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
                 <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <h4 className="font-serif text-lg font-medium text-[#1c1714] capitalize">{app}</h4>
               </div>
-            ))
-          ) : (
-            <>
-              <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
-                <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
-                  01
-                </span>
-                <h4 className="font-serif text-lg font-medium text-[#1c1714]">Entrance façades</h4>
-              </div>
-
-              <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
-                <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
-                  02
-                </span>
-                <h4 className="font-serif text-lg font-medium text-[#1c1714]">Pool deck cladding</h4>
-                <p className="text-xs text-[#3a322c] leading-relaxed">Rich organic textures and low porosity around wet areas.</p>
-              </div>
-
-              <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
-                <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
-                  03
-                </span>
-                <h4 className="font-serif text-lg font-medium text-[#1c1714]">Interior accent walls</h4>
-                <p className="text-xs text-[#3a322c] leading-relaxed">Lobbies, hospitality lounges, and architectural columns.</p>
-              </div>
-
-              <div className="border border-stone-300/40 rounded-lg p-6 bg-white shadow-sm flex flex-col gap-3">
-                <span className="h-8 w-8 rounded-full bg-stone-100 flex items-center justify-center text-xs font-serif italic font-medium text-[#9a4a2e]">
-                  04
-                </span>
-                <h4 className="font-serif text-lg font-medium text-[#1c1714]">Villa elevations</h4>
-                <p className="text-xs text-[#3a322c] leading-relaxed">Timeless, weathered aesthetics that age with nobility.</p>
-              </div>
-            </>
-          )}
+            ))}
         </div>
-      </section>
+      </section>):('')}
 
       {/* 4. Final Project CTA Section (Expanded) */}
       <section className="py-12">

@@ -1,6 +1,7 @@
 import Container from "./Container";
 import Link from "next/link";
-import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import {redirectToWhatsApp} from "@/lib/whatsapp";
 import { Input } from "@/components/ui/input";
 import { FaPlay } from "react-icons/fa";
 
@@ -9,17 +10,6 @@ export default function Footer() {
     <footer className="bg-[#C5B9AB] border-t border-[#ddd4c8] text-[#4b433c] pt-10">
       <div className="text-[22px] md:text-[28px] py-2 px-4 text-center text-[#393938] font-display">
         BE IN THE KNOW
-      </div>
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-3 py-4 px-4">
-        <Input
-          placeholder="Enter your email"
-          type="email"
-          className="w-full sm:w-[360px] h-12 border-2 border-[#CBC9C4]"
-        />
-
-        <button className="w-full sm:w-auto px-7 py-4 bg-[#393938] text-white font-medium hover:bg-[#5c5248] transition-colors duration-300 flex justify-center">
-          <FaPlay className="text-white text-xs" />
-        </button>
       </div>
       <Container>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_2fr] gap-10 lg:gap-12 py-12 lg:py-16">
@@ -139,6 +129,13 @@ export default function Footer() {
               >
                 <FaInstagram size={18} />
               </a>
+
+              <p
+                onClick={()=>{redirectToWhatsApp()}}
+                className="transition-colors hover:text-[#b39463]"
+              >
+                <FaWhatsapp size={18} />
+              </p>
             </div>
           </div>
         </div>

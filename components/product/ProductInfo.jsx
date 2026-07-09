@@ -3,16 +3,17 @@
 import { redirectToWhatsApp } from "@/lib/whatsapp";
 import { FaWhatsapp } from "react-icons/fa6";
 
-export default function ProductInfo({ product, onEnquireClick }) {
+export default function ProductInfo({ product }) {
   return (
     <div className="max-w-[550px]">
       {/* Badge */}
-      <span className="inline-block bg-[#9a4a2e] text-white text-[11px] tracking-[0.1em] uppercase font-bold px-3 py-1 rounded-full mb-4">
-        {product.badges?.join(", ") || "New Arrival"}
-      </span>
-
+      {product.badges?.length > 0 && (
+        <span className="inline-block bg-[#9a4a2e] text-white text-[11px] tracking-[0.1em] uppercase font-bold px-3 py-1 rounded-full mb-4">
+          {product.badges?.join(", ")}
+        </span>
+      )}
       {/* Product Title */}
-      <h1 className="font-serif font-light text-4xl md:text-5xl lg:text-6xl text-[#1c1714] leading-[1.02] tracking-tight mb-2">
+      <h1 className="font-serif font-light text-4xl md:text-5xl lg:text-6xl text-[#1c1714] leading-[1.02] tracking-tight mb-2 capitalize">
         {product.name}
       </h1>
 
@@ -30,11 +31,7 @@ export default function ProductInfo({ product, onEnquireClick }) {
           <span className="text-xs text-[#3a322c] ml-2 italic">Guide Price</span>
         </div>
       ) : (
-        <div className="mb-6">
-          <span className="text-xl font-medium text-stone-500 italic">
-            Price on Request
-          </span>
-        </div>
+        ''
       )}
 
       {/* Description */}
@@ -81,7 +78,7 @@ export default function ProductInfo({ product, onEnquireClick }) {
         </div>
       </div>
 
-      
+
 
       {/* Micro Benefits */}
       <div className="flex gap-x-6 gap-y-2 flex-wrap text-xs text-[#3a322c] mb-6">
