@@ -17,7 +17,7 @@ const reviewSchema = new mongoose.Schema(
     order: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
-      required: true,
+      required: false,
       index: true,
     },
     productName: {
@@ -62,7 +62,7 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
-reviewSchema.index({ product: 1, user: 1, order: 1 }, { unique: true });
+reviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 const Review = mongoose.models.Review || mongoose.model("Review", reviewSchema);
 

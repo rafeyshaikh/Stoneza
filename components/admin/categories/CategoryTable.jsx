@@ -140,7 +140,7 @@ export default function CategoryTable({ categories = [] }) {
             value={levelFilter}
             onValueChange={handleLevelChange}
           >
-            <SelectTrigger className="w-[150px] border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-850">
+            <SelectTrigger className="w-[150px] border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-800">
               <SelectValue placeholder="All Levels" />
             </SelectTrigger>
             <SelectContent 
@@ -163,7 +163,7 @@ export default function CategoryTable({ categories = [] }) {
             value={statusFilter}
             onValueChange={handleStatusChange}
           >
-            <SelectTrigger className="w-[140px] border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-850">
+            <SelectTrigger className="w-[140px] border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-800">
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
             <SelectContent
@@ -185,7 +185,7 @@ export default function CategoryTable({ categories = [] }) {
             value={sortBy}
             onValueChange={handleSortByChange}
           >
-            <SelectTrigger className="w-[140px] border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-850">
+            <SelectTrigger className="w-[140px] border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-800">
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent
@@ -208,7 +208,7 @@ export default function CategoryTable({ categories = [] }) {
             size="icon"
             onClick={handleSortOrderToggle}
             title={sortOrder === "asc" ? "Sort Ascending" : "Sort Descending"}
-            className="border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-850"
+            className="border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-800"
           >
             <ArrowUpDown className="size-4" />
           </Button>
@@ -242,7 +242,7 @@ export default function CategoryTable({ categories = [] }) {
                 className="border-b border-stone-200/70 dark:border-stone-900"
               >
                 <td className="py-4 pr-3">
-                  <div className="relative h-16 w-16 overflow-hidden rounded-lg border">
+                  <div className="relative h-16 w-16 overflow-hidden rounded-lg border dark:border-stone-800">
                     {category.bannerImage?.square?.url ? (
                       <Image
                         src={category.bannerImage.square.url}
@@ -264,7 +264,7 @@ export default function CategoryTable({ categories = [] }) {
                       {category.name}
                     </p>
 
-                    <p className="mt-1 text-xs text-stone-500">{category.slug}</p>
+                    <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">{category.slug}</p>
                   </div>
                 </td>
 
@@ -329,7 +329,7 @@ export default function CategoryTable({ categories = [] }) {
         </table>
 
         {!sortedCategories.length && (
-          <p className="py-8 text-center text-sm text-stone-500">
+          <p className="py-8 text-center text-sm text-stone-500 dark:text-stone-400">
             No categories found.
           </p>
         )}
@@ -337,7 +337,7 @@ export default function CategoryTable({ categories = [] }) {
         {/* Pagination Controls */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between border-t border-stone-200/70 pt-4 mt-4 dark:border-stone-900">
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-500 dark:text-stone-400">
               Page {validCurrentPage} of {totalPages}
             </p>
 
@@ -347,7 +347,7 @@ export default function CategoryTable({ categories = [] }) {
                 variant="outline"
                 disabled={validCurrentPage <= 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-850"
+                className="border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-800"
               >
                 <ChevronLeft className="size-4" />
               </Button>
@@ -357,7 +357,7 @@ export default function CategoryTable({ categories = [] }) {
                 variant="outline"
                 disabled={validCurrentPage >= totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-850"
+                className="border-stone-300/70 bg-white dark:bg-stone-900 dark:border-stone-800"
               >
                 <ChevronRight className="size-4" />
               </Button>

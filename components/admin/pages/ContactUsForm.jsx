@@ -83,7 +83,7 @@ export default function ContactUsForm() {
   if (loading) {
     return (
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
-        <div className="flex h-48 items-center justify-center text-stone-500">
+        <div className="flex h-48 items-center justify-center text-stone-500 dark:text-stone-400">
           Loading contact information...
         </div>
       </section>

@@ -8,6 +8,8 @@ export default function ProductTabs({ product, onEnquireClick }) {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true); // Open by default
   const details = product.stoneDetails || {};
 
+  let alignVal=0;
+
   // Formulate key-value specs pairs from actual MongoDB stoneDetails structure
   const specsLeft = [
     { label: "Stone type", value: details.stoneType || "Natural quarried stone" },
@@ -44,6 +46,14 @@ export default function ProductTabs({ product, onEnquireClick }) {
           <table className="w-full text-sm">
             <tbody>
               {specsLeft.map((item) => (
+                item.value !== "N/A" && (
+                  (alignVal++),
+                <tr key={item.label} className="border-b border-stone-300/40">
+                  <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
+                  <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
+                </tr>)
+              ))}
+              {specsRight.slice(0,6-alignVal).map((item) => (
                 <tr key={item.label} className="border-b border-stone-300/40">
                   <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
                   <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
@@ -53,9 +63,9 @@ export default function ProductTabs({ product, onEnquireClick }) {
           </table>
 
           {/* Right Table */}
-          <table className="w-full text-sm">
+          <table className={`w-full text-sm h-${(6-alignVal)*5}`}>
             <tbody>
-              {specsRight.map((item) => (
+              {specsRight.slice(6-alignVal,specsRight.length).map((item) => (
                 <tr key={item.label} className="border-b border-stone-300/40">
                   <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
                   <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>

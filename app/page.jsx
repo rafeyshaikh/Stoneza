@@ -4,6 +4,8 @@ import Container from "@/components/common/Container";
 import { shopGiftStyleData } from "@/data/ShopGiftStyleData";
 import { collectionData } from "@/data/CollectionHomeData";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
+import Product from "@/models/Product.model";
+import { connectDB } from "@/lib/databaseConnection";
 import BigBanner from "@/components/home/BigBanner";
 import ThreeBanner from "@/components/home/ThreeBanner";
 import Carousel from "@/components/home/Carousel";
@@ -19,7 +21,13 @@ import RecentBlogs from "@/components/home/RecentBlogs";
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 
 export default async function Home() {
+  await connectDB();
   const categories = await getCategoriesForLayout();
+
+  const featured = await Product.find({ isFeatured: true, status: "published" })
+    .select("name slug images hoverImage price")
+    .lean();
+  const safeFeatured = JSON.parse(JSON.stringify(featured));
 
   const mainCategoryData = categories.length > 0
     ? categories.map((cat, idx) => ({
@@ -51,7 +59,7 @@ export default async function Home() {
       {mainCategoryData.length > 0 && (
         <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
       )}
-      <FeaturedProducts />
+      <FeaturedProducts products={safeFeatured} />
       <BigBanner src={"/assets/hero/Big_Banner_Ethereal_Forms.jpg"} alt={"Ethereal"} title={"Onde Éternelle"} button={"Home Decor"} height={800} />
       <Carousel title={"What's New"} data={whatsNewData} />
       <ThreeBanner />

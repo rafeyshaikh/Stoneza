@@ -2,14 +2,14 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { redirectToWhatsApp } from "@/lib/whatsapp";
 
-export default function ProductCard({ item, setHoveredId, hoveredId, slug }) {
+export default function ProductCard({ item, setHoveredId, hoveredId, slug, button = true }) {
   const router = useRouter();
 
   const name = item?.name || "";
   const productSlug = item?.slug || "";
   const productId = (item?.id || item?._id)?.toString();
 
-  const image = item?.image || (item?.images?.length ? item?.images[0].url : "/assets/placeholder.jpg");
+  const image = item?.image || item?.thumbnail?.url || (item?.images?.length ? item?.images[0].url : "/assets/placeholder.jpg");
   const imageHover = item?.imageHover || item?.hoverImage?.url || image;
 
   const targetUrl = slug
@@ -33,7 +33,7 @@ export default function ProductCard({ item, setHoveredId, hoveredId, slug }) {
             className="h-full w-full object-contain"
           />
 
-          {setHoveredId && hoveredId === productId && (
+          {button && setHoveredId && hoveredId === productId && (
             <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center bg-white py-2">
               <button
                 onClick={()=>router.push(targetUrl)}

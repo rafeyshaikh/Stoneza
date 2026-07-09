@@ -22,7 +22,6 @@ const navItems = [
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Grid2X2 },
   { label: "Enquiries", href: "/admin/enquiries", icon: BiSolidCommentDetail },
-  { label: "Customers", href: "/admin/customers", icon: Users },
   { label: "Reviews", href: "/admin/reviews", icon: Star },
   { label: "Homepage CMS", href: "/admin/cms/homepage", icon: FileText },
   { label: "Pages CMS", href: "/admin/cms/pages", icon: FileText },

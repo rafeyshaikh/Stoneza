@@ -30,7 +30,7 @@ export default function ReviewsTable({ reviews = [] }) {
           ))}
         </tbody>
       </table>
-      {!reviews.length ? <p className="py-8 text-center text-sm text-stone-500">No reviews pending moderation.</p> : null}
+      {!reviews.length ? <p className="py-8 text-center text-sm text-stone-500 dark:text-stone-400">No reviews pending moderation.</p> : null}
     </div>
   );
 }

@@ -25,7 +25,7 @@ export default function RecentOrders({ orders = [] }) {
             ))}
           </tbody>
         </table>
-        {!orders.length ? <p className="py-8 text-center text-sm text-stone-500">No recent orders yet.</p> : null}
+        {!orders.length ? <p className="py-8 text-center text-sm text-stone-500 dark:text-stone-400">No recent orders yet.</p> : null}
       </div>
     </div>
   );

@@ -205,7 +205,7 @@ export default function ProductTable({ products = [], categories = [] }) {
             {loading && (
               <tr>
                 <td colSpan="6">
-                  <p className="py-10 text-center text-sm text-stone-500">
+                  <p className="py-10 text-center text-sm text-stone-500 dark:text-stone-400">
                     Loading...
                   </p>
                 </td>
@@ -240,7 +240,7 @@ export default function ProductTable({ products = [], categories = [] }) {
                         <p className="font-medium text-stone-900 dark:text-stone-100">
                           {product.name}
                         </p>
-                        <p className="mt-1 text-xs text-stone-500">
+                        <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
                           SKU: {product.sku}
                         </p>
                       </div>
@@ -260,7 +260,7 @@ export default function ProductTable({ products = [], categories = [] }) {
                             "en-IN",
                           )}
                         </p>
-                        <p className="text-xs text-stone-500 line-through">
+                        <p className="text-xs text-stone-500 dark:text-stone-400 line-through">
                           ₹{Number(product.price).toLocaleString("en-IN")}
                         </p>
                       </div>
@@ -305,7 +305,7 @@ export default function ProductTable({ products = [], categories = [] }) {
             {!loading && !items.length && (
               <tr>
                 <td colSpan="6">
-                  <p className="py-10 text-center text-sm text-stone-500">
+                  <p className="py-10 text-center text-sm text-stone-500 dark:text-stone-400">
                     No products found.
                   </p>
                 </td>
@@ -318,7 +318,7 @@ export default function ProductTable({ products = [], categories = [] }) {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-stone-200/70 pt-3 dark:border-stone-900">
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-stone-500 dark:text-stone-400">
             Page {page} of {totalPages}
           </p>
 

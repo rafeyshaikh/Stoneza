@@ -8,9 +8,11 @@ export default function PageHeader({ title, description, actionLabel, onAction }
         <h2 className="font-heading text-2xl font-semibold text-stone-900 dark:text-stone-100">{title}</h2>
         {description ? <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">{description}</p> : null}
       </div>
-      {actionLabel ? <Link href={onAction ? onAction : "#"} className="px-2 py-1 border cursor-pointer rounded-md hover:bg-stone-200 dark:hover:bg-stone-800">
-        <Button className="cursor-pointer">{actionLabel}</Button>
-      </Link> : null}
+      {actionLabel ? (
+        <Link href={onAction ? onAction : "#"}>
+          <Button className="cursor-pointer">{actionLabel}</Button>
+        </Link>
+      ) : null}
     </div>
   );
 }

@@ -85,8 +85,18 @@ const largeShopData = [
   }
 ];
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts({ products = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const displayProducts = products.length > 0
+    ? products.map((prod) => ({
+        title: prod.name,
+        image: prod.images?.[0]?.url || "/assets/placeholder.jpg",
+        image_hover: prod.hoverImage?.url || prod.images?.[0]?.url || "/assets/placeholder.jpg",
+        slug: prod.slug,
+      }))
+    : largeShopData;
+
   return (
     <section className="w-full py-10 px-4 lg:px-12">
       <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-5 lg:gap-10 items-center">
@@ -108,14 +118,15 @@ export default function FeaturedProducts() {
           <div className="flex items-center justify-between gap-6 mb-10 w-full">
             <button 
               className="text-[#6B6765] hover:opacity-70 transition cursor-pointer"
-              onClick={() => setCurrentIndex((prev) => (prev === 0 ? largeShopData.length - 1 : prev - 1))}
+              onClick={() => setCurrentIndex((prev) => (prev === 0 ? displayProducts.length - 1 : prev - 1))}
             >
               <PiCaretLeftLight size={50} className="text-[#1c1b1b] text-bold cursor-pointer" />
             </button>
 
-            {largeShopData.map((item, index) => (
-              <div
+            {displayProducts.map((item, index) => (
+              <Link
                 key={index}
+                href={item.slug ? `/products/${item.slug}` : "#"}
                 className={`relative w-[160px] h-[160px] lg:w-[220px] lg:h-[220px] overflow-hidden group cursor-pointer
                 ${currentIndex === index ? "opacity-100" : "hidden pointer-events-none "}`}
               >
@@ -136,12 +147,12 @@ export default function FeaturedProducts() {
                   height={400}
                   className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 />
-              </div>
+              </Link>
             ))}
 
             <button 
               className="text-[#6B6765] hover:opacity-70 transition cursor-pointer"
-              onClick={() => setCurrentIndex((prev) => (prev === largeShopData.length - 1 ? 0 : prev + 1))}
+              onClick={() => setCurrentIndex((prev) => (prev === displayProducts.length - 1 ? 0 : prev + 1))}
             >
               <PiCaretLeftLight size={50} className="text-[#1c1b1b] text-bold rotate-180" />
             </button>
@@ -157,9 +168,11 @@ export default function FeaturedProducts() {
               Discover Our Handpicked Collection of Best-Selling Items. Perfect for Adding a Touch of Elegance to Your Home.
             </p>
 
-            <button className="border border-[#6B6765] px-8 py-3 text-sm tracking-[0.15em] uppercase text-[#6B6765] transition-all duration-300 hover:bg-[#6B6765] hover:text-white">
-              Explore
-            </button>
+            <Link href="/products">
+              <button className="border border-[#6B6765] px-8 py-3 text-sm tracking-[0.15em] uppercase text-[#6B6765] transition-all duration-300 hover:bg-[#6B6765] hover:text-white cursor-pointer">
+                Explore
+              </button>
+            </Link>
           </div>
         </div>
       </div>

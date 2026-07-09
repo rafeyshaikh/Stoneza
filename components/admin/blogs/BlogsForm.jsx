@@ -198,7 +198,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
   return (
     <form onSubmit={handleSubmit} className="mx-auto space-y-6">
       {/* Basic Information */}
-      <section className="rounded-xl border bg-white p-6 shadow-sm dark:bg-stone-950">
+      <section className="rounded-xl border border-stone-300 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-950">
         <div className="mb-6">
           <h3 className="text-xl font-semibold">Blog Information</h3>
 
@@ -270,7 +270,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
       </section>
 
       {/* SEO */}
-      <section className="rounded-xl border bg-white p-6 shadow-sm dark:bg-stone-950">
+      <section className="rounded-xl border border-stone-300 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-950">
         <div className="mb-6">
           <h3 className="text-xl font-semibold">SEO Settings</h3>
 
@@ -318,7 +318,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
       </section>
 
       {/* Publishing */}
-      <section className="rounded-xl border bg-white p-6 shadow-sm dark:bg-stone-950">
+      <section className="rounded-xl border border-stone-300 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-950">
         <div className="flex items-center justify-between">
           <div>
             <h4 className="font-medium">Publish Blog</h4>

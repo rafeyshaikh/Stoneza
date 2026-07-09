@@ -16,8 +16,4 @@ export default async function AdminCategoriesPage() {
       <CategoryTable categories={JSON.parse(JSON.stringify(categories))} />
     </>
   );
-}
-
-function addCategory() {
-  window.location.href = "/admin/categories/new";
-}
+}

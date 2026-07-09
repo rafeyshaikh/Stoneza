@@ -137,34 +137,16 @@ function ProductCard({ item }) {
 
           {/* Buttons */}
 
-          {item.hasOwnProperty("soldOut") && !item.soldOut && (
+          {item.hasOwnProperty("soldOut") && (
             <div
               className="absolute bottom-0 left-0 right-0 z-20 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 flex items-center bg-white py-2
-              "
-            >
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  console.log("Add To Bag", item.id);
-                }}
-                className="w-full border-r border-black py-3 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer"
+              ">
+              <Link
+                href={item.href || "#"}
+                className="w-full py-3 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer text-center hover:bg-black/5 transition-colors text-stone-900"
               >
-                Add To Bag
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  console.log("Buy Now", item.id);
-                }}
-                className="w-full py-3 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer"
-              >
-                Buy Now
-              </button>
+                View Details
+              </Link>
             </div>
           )}
         </div>

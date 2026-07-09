@@ -192,7 +192,7 @@ export default function EnquiryDetailsClient({ enquiry }) {
             <MessageSquare className="size-5 text-indigo-500" />
             Requirement Notes & Management
           </h3>
-          <p className="text-xs text-stone-500 mb-4">
+          <p className="text-xs text-stone-500 dark:text-stone-400 mb-4">
             Keep track of specific customer requirements, thickness preferences, sample shipments, quotes shared, or communication follow-ups.
           </p>
 

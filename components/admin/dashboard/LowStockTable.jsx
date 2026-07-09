@@ -25,7 +25,7 @@ export default function LowStockTable({ products = [] }) {
             ))}
           </tbody>
         </table>
-        {!products.length ? <p className="py-8 text-center text-sm text-stone-500">No low-stock products.</p> : null}
+        {!products.length ? <p className="py-8 text-center text-sm text-stone-500 dark:text-stone-400">No low-stock products.</p> : null}
       </div>
     </div>
   );

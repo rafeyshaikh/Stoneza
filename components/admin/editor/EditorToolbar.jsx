@@ -143,20 +143,6 @@ export default function EditorToolbar({ editor }) {
       </ToolbarButton>
 
       <ToolbarButton
-        active={editorState.bold}
-        onClick={() => editor.chain().focus().toggleBold().run()}
-      >
-        <Bold size={16} />
-      </ToolbarButton>
-
-      <ToolbarButton
-        active={editorState.italic}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-      >
-        <Italic size={16} />
-      </ToolbarButton>
-
-      <ToolbarButton
         active={editorState.underline}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
       >

@@ -16,6 +16,7 @@ import { CiSearch } from "react-icons/ci";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { PiXBold } from "react-icons/pi";
 import { PiCaretDownThin } from "react-icons/pi";
+import ProductCard from "../product/ProductCard";
 
 export default function Header() {
   const { categories, setCategories } = useCategories();
@@ -23,12 +24,77 @@ export default function Header() {
   const [logoHovered, setLogoHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { isLoggedIn, userRole } = useAuth();
+  const [hoveredId , setHoveredId] = useState(null);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
 
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setLoading(true);
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/public/products?search=${encodeURIComponent(searchQuery)}&limit=4`);
+        const data = await res.json();
+        if (data.success && data.data && data.data.items) {
+          setSearchResults(data.data.items);
+        }
+      } catch (err) {
+        console.error("Header search error:", err);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+  }, [pathname]);
+
+  const matchedCategories = [];
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+    categories.forEach((cat) => {
+      if (cat.title.toLowerCase().includes(q)) {
+        matchedCategories.push({ name: cat.title, slug: cat.slug });
+      }
+      cat.categories?.forEach((sub) => {
+        if (sub.title.toLowerCase().includes(q)) {
+          matchedCategories.push({ name: sub.title, slug: sub.slug });
+        }
+        sub.links?.forEach((third) => {
+          if (third.name.toLowerCase().includes(q)) {
+            matchedCategories.push({ name: third.name, slug: third.slug });
+          }
+        });
+      });
+    });
+  }
+
+  const uniqueCategories = [];
+  const seenSlugs = new Set();
+  matchedCategories.forEach((cat) => {
+    if (!seenSlugs.has(cat.slug)) {
+      seenSlugs.add(cat.slug);
+      uniqueCategories.push(cat);
+    }
+  });
 
   const closeTimer = useRef(null);
 
@@ -59,7 +125,7 @@ export default function Header() {
     };
   }, [isLoggedIn]);
 
-  const darkMode = !isHomePage || isScrolled || logoHovered;
+  const darkMode = !isHomePage || isScrolled || logoHovered || isSearchOpen;
 
   return (
     <>
@@ -113,31 +179,14 @@ export default function Header() {
               )}
             </Link>
 
-            {/* USER */}
-
-            {/* <Link
-            href={isLoggedIn ? "/profile" : "/auth/login"}
-            className="absolute right-20 top-1/2 hidden -translate-y-1/2 lg:block"
-          >
-            <PiUserLight className="text-2xl" />
-
-          </Link> */}
-
-            {/* {userRole === "admin" && (
-            <Link href="/admin"
-              className="absolute right-28 top-1/2 hidden -translate-y-1/2 lg:block border px-2">
-              Admin Dashboard
-            </Link>
-          )} */}
-
             {/* SEARCH */}
-
-            <Link
-              href="/search"
-              className="absolute right-0 top-1/2 -translate-y-1/2 lg:right-10"
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 lg:right-10 text-2xl transition-colors cursor-pointer"
+              aria-label="Toggle search"
             >
-              <CiSearch className="text-2xl" />
-            </Link>
+              <CiSearch />
+            </button>
 
           </div>
 
@@ -326,6 +375,132 @@ export default function Header() {
             )}
           </AnimatePresence>
         </Container>
+
+        {/* SEARCH OVERLAY */}
+        <AnimatePresence>
+          {isSearchOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="w-full bg-[#F5F3ED] text-[#393938] border-t border-[#cbc9c4] overflow-hidden shadow-lg relative z-[9999]"
+            >
+              <Container className="py-8">
+                {/* Search Bar Input Line */}
+                <div className="relative flex items-center justify-between transition-colors duration-300">
+                  <div className="flex items-center gap-4 flex-1 lg:h-18 my-auto">
+                    <CiSearch className="text-3xl text-[#8A7F73]" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Type to search products..."
+                      className="w-full bg-transparent border-none outline-none text-md md:text-lg font-light tracking-wide placeholder-[#B7AC9E] text-[#1c1714] capitalize"
+                      autoFocus
+                    />
+                  </div>
+                  <button
+                    onClick={() => setIsSearchOpen(false)}
+                    className="text-2xl text-[#8A7F73] hover:text-[#9a4a2e] transition-colors pl-4 cursor-pointer"
+                    aria-label="Close search"
+                  >
+                    <PiXBold />
+                  </button>
+                </div>
+
+                {/* Live Search Results Scrollable Container */}
+                {searchQuery.trim() && (
+                  <div className="max-h-[60vh] overflow-y-auto pr-2 mt-8 scrollbar-thin scrollbar-thumb-stone-300 scrollbar-track-transparent">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 text-left">
+                      
+                      {/* Products Column */}
+                      <div className="lg:col-span-3">
+                        <div className="flex items-center justify-between mb-6">
+                          <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8A7F73]">
+                            {loading ? "Searching..." : `${searchResults.length} Products Found`}
+                          </span>
+                          {searchResults.length > 0 && (
+                            <Link
+                              href={`/products?search=${encodeURIComponent(searchQuery)}`}
+                              className="text-xs uppercase tracking-[0.2em] font-bold text-[#9a4a2e] hover:underline"
+                              onClick={() => setIsSearchOpen(false)}
+                            >
+                              View All
+                            </Link>
+                          )}
+                        </div>
+
+                        {searchResults.length > 0 ? (
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            {searchResults.map((product) => {
+                              return (
+                                <Link
+                                  key={product._id}
+                                  href={`/products/${product.slug}`}
+                                  className="group flex flex-col items-center text-center  p-4"
+                                  onClick={() => setIsSearchOpen(false)}
+                                >
+                                  <ProductCard item={product} setHoveredId={setHoveredId} hoveredId={hoveredId} button={false}/>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          !loading && (
+                            <div className="text-sm text-[#8a7f73] py-8">
+                              No products found matching "{searchQuery}".
+                            </div>
+                          )
+                        )}
+                      </div>
+
+                      {/* Categories Column */}
+                      <div className="border-t lg:border-t-0 lg:border-l border-stone-300/80 pt-8 lg:pt-0 lg:pl-8">
+                        <span className="block text-xs uppercase tracking-[0.2em] font-semibold text-[#8A7F73] mb-6">
+                          Matching Categories
+                        </span>
+                        {uniqueCategories.length > 0 ? (
+                          <ul className="flex flex-wrap gap-2.5 lg:flex-col lg:gap-3">
+                            {uniqueCategories.map((cat) => (
+                              <li key={cat.slug} className="w-auto lg:w-full">
+                                <Link
+                                  href={`/collections/${cat.slug}`}
+                                  className="text-xs lg:text-sm text-[#1c1714] bg-stone-200/50 hover:bg-[#9a4a2e] hover:text-white transition-all duration-300 block py-1.5 px-4 lg:px-3 lg:py-1 rounded-full lg:rounded-none lg:bg-transparent capitalize font-heading font-medium lg:font-normal"
+                                  onClick={() => setIsSearchOpen(false)}
+                                >
+                                  {cat.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="text-sm text-[#8a7f73]">
+                            No categories match this search.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </Container>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* SEARCH BACKDROP BLUR */}
+        <AnimatePresence>
+          {isSearchOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsSearchOpen(false)}
+              className="fixed inset-0 top-[64px] bg-black/20 lg:top-[106px] z-[9998] pointer-events-auto"
+            />
+          )}
+        </AnimatePresence>
       </header>
     </>
   );

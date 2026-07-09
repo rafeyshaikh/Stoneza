@@ -63,7 +63,7 @@ export default function BlogsTable({ blogs = [] }) {
               className="border-b border-stone-200/70 dark:border-stone-900"
             >
               <td className="py-4 pr-3">
-                <div className="relative h-14 w-24 overflow-hidden rounded-lg border">
+                <div className="relative h-14 w-24 overflow-hidden rounded-lg border dark:border-stone-800">
                   <Image
                     src={blog.bannerImage?.url}
                     alt={blog.title}
@@ -79,7 +79,7 @@ export default function BlogsTable({ blogs = [] }) {
                     {blog.title}
                   </p>
 
-                  <p className="mt-1 text-xs text-stone-500">{blog.slug}</p>
+                  <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">{blog.slug}</p>
                 </div>
               </td>
 
@@ -125,7 +125,7 @@ export default function BlogsTable({ blogs = [] }) {
         </tbody>
       </table>
       {!blogs.length ? (
-        <p className="py-8 text-center text-sm text-stone-500">
+        <p className="py-8 text-center text-sm text-stone-500 dark:text-stone-400">
           No blogs found.
         </p>
       ) : null}

@@ -80,7 +80,7 @@ export default function PageEditor({
 
         <div className="mt-4">
           {loading ? (
-            <div className="flex h-[400px] items-center justify-center text-stone-500">
+            <div className="flex h-[400px] items-center justify-center text-stone-500 dark:text-stone-400">
               Loading...
             </div>
           ) : (

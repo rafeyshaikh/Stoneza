@@ -74,7 +74,7 @@ export default function MultipleImageUploader({
             Product Images
           </h4>
 
-          <p className="mt-1 text-sm text-stone-500">{hint}</p>
+          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">{hint}</p>
 
           <p className="mt-2 text-xs text-stone-400">
             First image becomes the product thumbnail.

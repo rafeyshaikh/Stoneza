@@ -199,7 +199,7 @@ export default function EnquiriesTable({ enquiries = [] }) {
             {loading && (
               <tr>
                 <td colSpan="9">
-                  <p className="py-10 text-center text-sm text-stone-500">
+                  <p className="py-10 text-center text-sm text-stone-500 dark:text-stone-400">
                     Loading enquiries...
                   </p>
                 </td>
@@ -239,13 +239,13 @@ export default function EnquiriesTable({ enquiries = [] }) {
           </tbody>
         </table>
         {!loading && !items.length ? (
-          <p className="py-8 text-center text-sm text-stone-500">No enquiries available.</p>
+          <p className="py-8 text-center text-sm text-stone-500 dark:text-stone-400">No enquiries available.</p>
         ) : null}
       </div>
 
       {!loading && totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-stone-200/70 pt-3 dark:border-stone-900">
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-stone-500 dark:text-stone-400">
             Page {page} of {totalPages}
           </p>
 
