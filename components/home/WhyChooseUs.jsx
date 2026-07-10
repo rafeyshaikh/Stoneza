@@ -2,7 +2,7 @@ import { whyChooseData } from "@/data/WhyChooseUs";
 
 export default function WhyChooseUs() {
   return (
-    <section className="my-10">
+    <section id="why-choose-us" className="my-10">
       <h1 className="font-display text-[#393938] text-[24px] text-center mb-16">
         Why Choose Stoneza For Natural Stone in India
       </h1>

@@ -25,6 +25,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { isLoggedIn, userRole } = useAuth();
   const [hoveredId , setHoveredId] = useState(null);
+  const [isPastWhyChooseUs, setIsPastWhyChooseUs] = useState(false);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
@@ -116,6 +117,14 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+
+      const element = document.getElementById("why-choose-us");
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        setIsPastWhyChooseUs(rect.top <= 0);
+      } else {
+        setIsPastWhyChooseUs(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -131,7 +140,7 @@ export default function Header() {
     <>
       <header
         className={`
-        fixed top-0 left-0 right-0 z-[9999]
+        ${isPastWhyChooseUs ? "absolute" : "fixed"} top-0 left-0 right-0 z-[9999]
         transition-all duration-500 w-screen
         ${darkMode
             ? "bg-[#C5B9AB] text-[#393938] shadow-sm"
