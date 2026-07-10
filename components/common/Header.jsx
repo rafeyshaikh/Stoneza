@@ -121,7 +121,7 @@ export default function Header() {
       const element = document.getElementById("why-choose-us");
       if (element) {
         const rect = element.getBoundingClientRect();
-        setIsPastWhyChooseUs(rect.top <= 0);
+        setIsPastWhyChooseUs(rect.top <= 106);
       } else {
         setIsPastWhyChooseUs(false);
       }
@@ -140,8 +140,9 @@ export default function Header() {
     <>
       <header
         className={`
-        ${isPastWhyChooseUs ? "absolute" : "fixed"} top-0 left-0 right-0 z-[9999]
+        fixed top-0 left-0 right-0 z-[9999]
         transition-all duration-500 w-screen
+        ${isPastWhyChooseUs ? "-translate-y-full pointer-events-none" : "translate-y-0"}
         ${darkMode
             ? "bg-[#C5B9AB] text-[#393938] shadow-sm"
             : "bg-black/10 text-white"
