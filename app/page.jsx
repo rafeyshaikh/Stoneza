@@ -5,6 +5,7 @@ import { shopGiftStyleData } from "@/data/ShopGiftStyleData";
 import { collectionData } from "@/data/CollectionHomeData";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Product from "@/models/Product.model";
+import Blog from "@/models/Blog.model";
 import { connectDB } from "@/lib/databaseConnection";
 import BigBanner from "@/components/home/BigBanner";
 import ThreeBanner from "@/components/home/ThreeBanner";
@@ -28,6 +29,28 @@ export default async function Home() {
     .select("name slug images hoverImage price")
     .lean();
   const safeFeatured = JSON.parse(JSON.stringify(featured));
+
+  const newArrivals = await Product.find({ isNewArrival: true, status: "published" })
+    .select("name slug images hoverImage price")
+    .lean();
+  const safeNewArrivals = JSON.parse(JSON.stringify(newArrivals));
+
+  const latestBlogs = await Blog.find({ status: "published" })
+    .sort({ publishedAt: -1 })
+    .limit(2)
+    .lean();
+  const safeLatestBlogs = JSON.parse(JSON.stringify(latestBlogs));
+
+  const newArrivalsData = safeNewArrivals.length > 0
+    ? safeNewArrivals.map((prod) => ({
+        id: prod._id,
+        title: prod.name,
+        price: prod.price,
+        image: prod.images?.[0]?.url || "/assets/placeholder.jpg",
+        hoverImage: prod.hoverImage?.url || prod.images?.[0]?.url || "/assets/placeholder.jpg",
+        href: `/products/${prod.slug}`,
+      }))
+    : whatsNewData;
 
   const mainCategoryData = categories.length > 0
     ? categories.map((cat, idx) => ({
@@ -61,7 +84,7 @@ export default async function Home() {
       )}
       <FeaturedProducts products={safeFeatured} />
       <BigBanner src={"/assets/hero/Big_Banner_Ethereal_Forms.jpg"} alt={"Ethereal"} title={"Onde Éternelle"} button={"Home Decor"} height={800} />
-      <Carousel title={"What's New"} data={whatsNewData} button={true} />
+      <Carousel title={"What's New"} data={newArrivalsData} button={true} />
       <ThreeBanner />
       {subCategoryData.length > 0 && (
         <Carousel title="Sub Categories" data={subCategoryData}  />
@@ -71,7 +94,7 @@ export default async function Home() {
       <BrandPromo />
       <WhyChooseUs />
       <Review />
-      <RecentBlogs />
+      <RecentBlogs blogs={safeLatestBlogs} />
       <InstagramSection />
     </div>
   );

@@ -168,12 +168,15 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link
-                href={current.primaryButtonLink}
-                className="bg-[#f2ede4] px-8 py-4 text-sm font-semibold uppercase tracking-wide text-stone-900 transition hover:bg-white"
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("enquiry-form")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="bg-[#f2ede4] px-8 py-4 text-sm font-semibold uppercase tracking-wide text-stone-900 transition hover:bg-white cursor-pointer"
               >
                 {current.primaryButtonText}
-              </Link>
+              </button>
 
               <Link
                 href={current.secondaryButtonLink}

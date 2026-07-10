@@ -200,7 +200,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
 
   if (status === "success") {
     return (
-      <section className="mx-auto max-w-[648px] rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-10 text-center text-[#F5F1EA]">
+      <section id="enquiry-form" className="mx-auto max-w-[648px] rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-10 text-center text-[#F5F1EA] scroll-mt-20 lg:scroll-mt-32">
         <h2 className="font-serif text-[24px] text-[#F5F1EA]">Thank you!</h2>
         <p className="mt-3 font-sans text-[14px] text-[#B7AC9E]">
           A Stoneza consultant will reach out shortly with pricing and samples.
@@ -210,7 +210,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
   }
 
   return (
-    <section className="mx-auto mt-15 lg:mt-2 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:justify-between lg:px-12 lg:py-12">
+    <section id="enquiry-form" className="mx-auto mt-15 lg:mt-2 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:justify-between lg:px-12 lg:py-12 scroll-mt-20 lg:scroll-mt-32">
       <div className="basis-5/11">
         <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9C8D79]">
           Start Your Project
