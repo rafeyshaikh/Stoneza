@@ -5,9 +5,9 @@ import { ArrowRight } from "lucide-react";
 
 export default function CollectionCTA({
   title = "Ready to Transform Your Space?",
-  description = "Explore our curated collection of luxury surfaces, décor, and timeless pieces crafted to elevate every corner of your home.",
-  buttonText = "SHOP COLLECTION",
-  buttonLink = "/collections",
+  description = "Discover premium natural stones sourced from around the globe, each chosen for its unique beauty, durability, and ability to elevate any architectural design.",
+  buttonText = "Explore Products",
+  buttonLink = "/products",
 }) {
   return (
     <section className="py-16 px-10">
@@ -49,8 +49,7 @@ export default function CollectionCTA({
             </Link>
 
             <p className="text-center text-sm text-white/80">
-              Trusted by <span className="font-semibold">1000+</span> homeowners
-              across India
+              Trusted by <span className="font-semibold">1000+</span> architects & designers across India
             </p>
           </div>
         </div>
