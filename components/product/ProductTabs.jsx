@@ -8,19 +8,14 @@ export default function ProductTabs({ product, onEnquireClick }) {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true); // Open by default
   const details = product.stoneDetails || {};
 
-  let alignVal=0;
-
   // Formulate key-value specs pairs from actual MongoDB stoneDetails structure
-  const specsLeft = [
+  const allSpecs = [
     { label: "Stone type", value: details.stoneType || "Natural quarried stone" },
     { label: "Product form", value: details.productForm || "Loose panels / crated" },
     { label: "Calibrated thickness", value: details.calibratedThickness || "N/A" },
     { label: "Face texture", value: details.faceTexture || "N/A" },
     { label: "Corner pieces", value: details.cornerPieces || "N/A" },
     { label: "Coverage", value: details.coveragePerUnit || "N/A" },
-  ];
-
-  const specsRight = [
     { label: "Water absorption", value: details.waterAbsorption || "Low porosity" },
     { label: "Density", value: details.density ? `${details.density} kg/m³` : "N/A" },
     { label: "Weather resistant", value: details.weatherResistance || "Yes — exterior grade" },
@@ -28,6 +23,14 @@ export default function ProductTabs({ product, onEnquireClick }) {
     { label: "Installation", value: details.installationMethod || "Adhesive / substrate" },
     { label: "Minimum order (MOQ)", value: details.moq || "Project-based" },
   ];
+
+  // Filter out any specs that have value "N/A"
+  const filteredSpecs = allSpecs.filter(item => item.value && item.value !== "N/A");
+
+  // Split evenly into left and right columns
+  const half = Math.ceil(filteredSpecs.length / 2);
+  const specsLeft = filteredSpecs.slice(0, half);
+  const specsRight = filteredSpecs.slice(half);
 
   return (
     <div className="max-w-[1240px] mx-auto px-6 md:px-8 py-8 divide-y divide-stone-300/40">
@@ -43,36 +46,32 @@ export default function ProductTabs({ product, onEnquireClick }) {
 
         <div className="grid md:grid-cols-2 gap-10 md:gap-16">
           {/* Left Table */}
-          <table className="w-full text-sm">
-            <tbody>
-              {specsLeft.map((item) => (
-                item.value !== "N/A" && (
-                  (alignVal++),
-                <tr key={item.label} className="border-b border-stone-300/40">
-                  <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
-                  <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
-                </tr>)
-              ))}
-              {specsRight.slice(0,6-alignVal).map((item) => (
-                <tr key={item.label} className="border-b border-stone-300/40">
-                  <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
-                  <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {specsLeft.length > 0 && (
+            <table className="w-full text-sm">
+              <tbody>
+                {specsLeft.map((item) => (
+                  <tr key={item.label} className="border-b border-stone-300/40">
+                    <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
+                    <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
           {/* Right Table */}
-          <table className={`w-full text-sm h-${(6-alignVal)*5}`}>
-            <tbody>
-              {specsRight.slice(6-alignVal,specsRight.length).map((item) => (
-                <tr key={item.label} className="border-b border-stone-300/40">
-                  <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
-                  <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {specsRight.length > 0 && (
+            <table className="w-full text-sm">
+              <tbody>
+                {specsRight.map((item) => (
+                  <tr key={item.label} className="border-b border-stone-300/40">
+                    <td className="py-4 text-[#3a322c] font-medium w-[40%]">{item.label}</td>
+                    <td className="py-4 text-[#1c1714] font-semibold">{item.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </section>
 
