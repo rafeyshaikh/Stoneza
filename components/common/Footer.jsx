@@ -56,10 +56,19 @@ export default function Footer() {
 
               <li>
                 <Link
-                  href="/pages/business-expansion"
+                  href="/pages/terms-and-conditions"
                   className="transition-colors cursor-pointer"
                 >
-                  Business Enquiry
+                  Terms of Use
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="/pages/return-policy"
+                  className="transition-colors cursor-pointer"
+                >
+                  Return & Refund Policy
                 </Link>
               </li>
 
@@ -77,17 +86,48 @@ export default function Footer() {
           {/* HELPDESK */}
           <div>
             <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.18em]">
-              HELPDESK
+              SHOP BY STONE TYPE
             </h3>
 
             <ul className="space-y-3 text-[13px]">
-
               <li>
                 <Link
-                  href="/pages/terms-and-conditions"
+                  href="/products?stoneType=marble"
                   className="transition-colors cursor-pointer"
                 >
-                  Terms of Use
+                  Marble
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?stoneType=granite"
+                  className="transition-colors cursor-pointer"
+                >
+                  Granite
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?stoneType=slate"
+                  className="transition-colors cursor-pointer"
+                >
+                  Slate
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?stoneType=limestone"
+                  className="transition-colors cursor-pointer"
+                >
+                  Limestone
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/products?stoneType=cobbles"
+                  className="transition-colors cursor-pointer"
+                >
+                  Cobbles
                 </Link>
               </li>
             </ul>

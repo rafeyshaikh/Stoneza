@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useContact } from "@/context/ContactContext";
 
 export default function ProductTabs({ product, onEnquireClick }) {
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true); // Open by default
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const { contactDetails } = useContact();
   const details = product.stoneDetails || {};
 
   // Formulate key-value specs pairs from actual MongoDB stoneDetails structure
@@ -108,6 +111,53 @@ export default function ProductTabs({ product, onEnquireClick }) {
           </AnimatePresence>
         </div>
       )}
+
+      {/* 2.5 For Further Help (Accordion UI) */}
+      <div className="py-6">
+        <button
+          onClick={() => setIsHelpOpen((prev) => !prev)}
+          className="flex w-full items-center justify-between py-4 text-left font-serif font-light text-3xl md:text-4xl text-[#1c1714] outline-none group cursor-pointer"
+        >
+          <span>For Further Help</span>
+          <ChevronDown
+            className={`size-8 text-stone-500 transition-transform duration-300 ${
+              isHelpOpen ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+        
+        <AnimatePresence initial={false}>
+          {isHelpOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <div className="pt-2 pb-6 text-sm md:text-base text-[#3a322c] leading-relaxed w-full flex flex-col gap-2">
+                <p>Need assistance or have specific requirements? Reach out to us:</p>
+                {contactDetails?.email && (
+                  <p>
+                    <span className="font-semibold text-[#1c1714]">Email:</span>{" "}
+                    <a href={`mailto:${contactDetails.email}`} className="text-[#9a4a2e] hover:underline">
+                      {contactDetails.email}
+                    </a>
+                  </p>
+                )}
+                {contactDetails?.phone && (
+                  <p>
+                    <span className="font-semibold text-[#1c1714]">Phone / WhatsApp:</span>{" "}
+                    <a href={`tel:${contactDetails.phone}`} className="text-[#9a4a2e] hover:underline">
+                      {contactDetails.phone}
+                    </a>
+                  </p>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* 3. Applications Section (Expanded) */}
       {details.application && details.application.length > 0 ?(<section className="py-12">

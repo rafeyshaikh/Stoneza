@@ -9,6 +9,7 @@ import {
 import Providers from "@/context";
 import AppChrome from "@/components/common/AppChrome";
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
+import { getContactDetails } from "@/lib/getContactDetails";
 
 export const metadata = {
   title: "Stoneza",
@@ -17,6 +18,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const categories = await getCategoriesForLayout();
+  const contactDetails = await getContactDetails();
 
   return (
     <html
@@ -29,7 +31,7 @@ export default async function RootLayout({ children }) {
       `}
     >
       <body className="min-h-full flex flex-col bg-[#EAE8E2]">
-        <Providers initialCategories={categories}>
+        <Providers initialCategories={categories} initialContactDetails={contactDetails}>
           <AppChrome>{children}</AppChrome>
         </Providers>
         <Toaster

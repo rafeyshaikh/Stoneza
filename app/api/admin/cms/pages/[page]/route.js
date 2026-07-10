@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/databaseConnection";
 import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
+import { revalidateTag } from "next/cache";
 
 import Pages from "@/models/Pages.model";
 
@@ -96,6 +97,10 @@ export async function PATCH(req, { params }) {
     pages[page] = body;
 
     await pages.save();
+
+    if (page === "contactUs") {
+      revalidateTag("contact-details");
+    }
 
     return response(
       true,
