@@ -13,7 +13,7 @@ import Container from "@/components/common/Container";
 export default function Carousel({ title, data, itemsPerView = 3, button = false }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "start",
+    align: "center",
     duration: 25,
   });
 
@@ -80,7 +80,7 @@ export default function Carousel({ title, data, itemsPerView = 3, button = false
               {data.map((item) => (
                 <div
                   key={item.id}
-                  className="px-3 flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_var(--slide-width)]"
+                  className="px-3 flex-[0_0_70%] md:flex-[0_0_50%] lg:flex-[0_0_var(--slide-width)]"
                   style={{
                     "--slide-width": `${100 / itemsPerView}%`
                   }}
