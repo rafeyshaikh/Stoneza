@@ -38,8 +38,32 @@ export default function ProductDetailClient({ productData }) {
     { label: activeProduct.name },
   ];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": productData.seo?.metaTitle || activeProduct.name,
+    "image": productData.seo?.ogImage ? [productData.seo.ogImage] : activeProduct.images,
+    "description": productData.seo?.metaDescription || activeProduct.shortDescription || activeProduct.description?.replace(/<[^>]*>/g, "")?.slice(0, 160) || "Premium natural stone product from Stoneza.",
+    "sku": activeProduct.sku,
+    "brand": {
+      "@type": "Brand",
+      "name": "Stoneza",
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "price": activeProduct.price || "0",
+      "availability": "https://schema.org/InStock",
+      "url": productData.seo?.canonicalUrl || `https://stoneza.in/products/${activeProduct.slug}`,
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <section className="py-10 bg-[#EAE8E2]">
         <div className="max-w-[1400px] mx-auto px-4">
