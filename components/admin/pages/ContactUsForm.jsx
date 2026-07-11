@@ -12,6 +12,10 @@ export default function ContactUsForm() {
   const [data, setData] = useState({
     address: "",
     phone: "",
+    whatsapp: "",
+    youtube: "",
+    instagram: "",
+    facebook: "",
     email: "",
     mapEmbedCode: "",
   });
@@ -34,6 +38,10 @@ export default function ContactUsForm() {
         setData({
           address: result.data.address || "",
           phone: result.data.phone || "",
+          whatsapp: result.data.whatsapp || "",
+          youtube: result.data.youtube || "",
+          instagram: result.data.instagram || "",
+          facebook: result.data.facebook || "",
           email: result.data.email || "",
           mapEmbedCode: result.data.mapEmbedCode || "",
         });
@@ -133,6 +141,46 @@ export default function ContactUsForm() {
               onChange={(e) =>
                 handleChange("email", e.target.value)
               }
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>WhatsApp Number / Link</Label>
+            <Input
+              placeholder="+91 99500 36866"
+              value={data.whatsapp}
+              onChange={(e) => handleChange("whatsapp", e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>YouTube URL</Label>
+            <Input
+              placeholder="https://youtube.com/@..."
+              value={data.youtube}
+              onChange={(e) => handleChange("youtube", e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Instagram URL</Label>
+            <Input
+              placeholder="https://instagram.com/..."
+              value={data.instagram}
+              onChange={(e) => handleChange("instagram", e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Facebook URL</Label>
+            <Input
+              placeholder="https://facebook.com/..."
+              value={data.facebook}
+              onChange={(e) => handleChange("facebook", e.target.value)}
             />
           </div>
         </div>

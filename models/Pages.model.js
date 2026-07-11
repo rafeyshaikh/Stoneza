@@ -21,6 +21,10 @@ const contactUsSchema = new mongoose.Schema(
   {
     address: String,
     phone: String,
+    whatsapp:String,
+    youtube:String,
+    instagram:String,
+    facebook:String,
     email: String,
     mapEmbedCode: String,
   },
@@ -43,6 +47,10 @@ const pageSchema = new mongoose.Schema(
     privacyPolicy: policySchema,
 
     termsAndConditions: policySchema,
+
+    disclaimer: policySchema,
+
+    returnPolicy: policySchema,
   },
   {
     timestamps: true,

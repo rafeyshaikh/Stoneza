@@ -7,6 +7,8 @@ const ALLOWED_PAGES = [
   "contactUs",
   "privacyPolicy",
   "termsAndConditions",
+  "disclaimer",
+  "returnPolicy",
 ];
 
 async function getOrCreatePagesDocument() {
@@ -22,6 +24,10 @@ async function getOrCreatePagesDocument() {
       contactUs: {
         address: "",
         phone: "",
+        whatsapp: "",
+        youtube: "",
+        instagram: "",
+        facebook: "",
         email: "",
         mapEmbedCode: "",
       },
@@ -31,6 +37,14 @@ async function getOrCreatePagesDocument() {
       },
       termsAndConditions: {
         title: "Terms & Conditions",
+        content: "",
+      },
+      disclaimer: {
+        title: "Disclaimer",
+        content: "",
+      },
+      returnPolicy: {
+        title: "Return Policy",
         content: "",
       },
     });
@@ -51,11 +65,30 @@ export async function GET(req, { params }) {
 
     const pages = await getOrCreatePagesDocument();
 
+    if (page === "contactUs" && pages.contactUs) {
+      const contactData = pages.contactUs;
+      return response(true, 200, `${page} fetched successfully`, {
+        address: contactData.address || "",
+        phone: contactData.phone || "",
+        whatsapp: contactData.whatsapp || "",
+        youtube: contactData.youtube || "",
+        instagram: contactData.instagram || "",
+        facebook: contactData.facebook || "",
+        email: contactData.email || "",
+        mapEmbedCode: contactData.mapEmbedCode || "",
+      });
+    }
+
+    const pageData = pages[page] || {
+      title: page === "disclaimer" ? "Disclaimer" : page === "returnPolicy" ? "Return Policy" : "",
+      content: ""
+    };
+
     return response(
       true,
       200,
       `${page} fetched successfully`,
-      pages[page]
+      pageData
     );
   } catch (error) {
     console.error(`Error fetching page ${params?.page}:`, error);

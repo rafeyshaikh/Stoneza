@@ -1,9 +1,7 @@
 import Container from "./Container";
 import Link from "next/link";
-import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaWhatsapp, FaYoutube } from "react-icons/fa";
 import {redirectToWhatsApp} from "@/lib/whatsapp";
-import { Input } from "@/components/ui/input";
-import { FaPlay } from "react-icons/fa";
 import { useContact } from "@/context/ContactContext";
 
 export default function Footer() {
@@ -158,7 +156,7 @@ export default function Footer() {
                 href="https://www.facebook.com/thestoneza"
                 target="_blank"
                 rel="noreferrer"
-                className="transition-colors hover:text-[#b39463]"
+                className=""
               >
                 <FaFacebookF size={16} />
               </a>
@@ -167,14 +165,23 @@ export default function Footer() {
                 href="https://www.instagram.com/thestoneza"
                 target="_blank"
                 rel="noreferrer"
-                className="transition-colors hover:text-[#b39463]"
+                className=""
               >
                 <FaInstagram size={18} />
               </a>
 
+              <a 
+                href="https://www.youtube.com/@thestoneza"
+                target="_blank"
+                rel="noreferrer"
+                className=""
+                >
+                  <FaYoutube size={18} />
+                </a>
+
               <p
                 onClick={()=>{redirectToWhatsApp()}}
-                className="transition-colors hover:text-[#b39463]"
+                className="cursor-pointer"
               >
                 <FaWhatsapp size={18} />
               </p>

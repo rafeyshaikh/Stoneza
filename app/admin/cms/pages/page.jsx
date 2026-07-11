@@ -34,6 +34,16 @@ export default function StaticPagesCmsPage() {
           title="Terms & Conditions"
         />
 
+        <PageEditor
+          pageKey="disclaimer"
+          title="Disclaimer"
+        />
+
+        <PageEditor
+          pageKey="returnPolicy"
+          title="Return Policy"
+        />
+
         <ContactUsForm
         />
       </div>
