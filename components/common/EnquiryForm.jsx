@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { enquirySchema, PROJECT_TYPES } from "@/lib/validations/enquiry"; // adjust path
+import { enquirySchema, PROJECT_TYPES } from "@/lib/validations/enquiry";
+import { useContact } from "@/context/ContactContext";
 
 const BULLETS = [
   "Factory-direct bulk pricing",
@@ -27,6 +28,7 @@ const fieldBase =
   "w-full rounded-[4px] border border-[#54493F] bg-[#3B3530] px-3.5 py-[11px] text-[13.5px] leading-none text-[#EDE8E1] placeholder:text-[#8A7F73] outline-none transition-colors focus:border-[#B49A75] appearance-none";
 
 export default function EnquiryForm({ initialStoneType = "", compact = false }) {
+  const { contactDetails } = useContact();
   const getInitialState = () => ({
     name: "",
     phone: "",
@@ -241,7 +243,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
 
       <div className="mt-8 lg:mt-0 lg:max-w-[600px] basis-6/11">
         <form
-          className="mt-7 grid gap-x-5 gap-y-5 rounded-[6px] border border-[#4A413A] bg-[#28221D] p-5 md:grid-cols-2 md:p-6"
+          className="mt-7 lg:mt-0 grid gap-x-5 gap-y-5 rounded-[6px] border border-[#4A413A] bg-[#28221D] p-5 md:grid-cols-2 md:p-6"
           onSubmit={onSubmit}
           noValidate
         >
@@ -336,7 +338,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
             )}
 
             <p className="mt-3 text-center font-sans text-[12px] text-[#8F8477]">
-              Or call / WhatsApp directly: +91 99500 36866
+              Or call / WhatsApp directly: {contactDetails.phone}
             </p>
           </div>
         </form>

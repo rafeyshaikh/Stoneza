@@ -4,8 +4,10 @@ import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import {redirectToWhatsApp} from "@/lib/whatsapp";
 import { Input } from "@/components/ui/input";
 import { FaPlay } from "react-icons/fa";
+import { useContact } from "@/context/ContactContext";
 
 export default function Footer() {
+  const { contactDetails } = useContact();
   return (
     <footer className="bg-[#C5B9AB] border-t border-[#ddd4c8] text-[#4b433c] pt-10">
       <div className="text-[22px] md:text-[28px] py-2 px-4 text-center text-[#393938] font-display">
@@ -141,13 +143,13 @@ export default function Footer() {
 
             <div className="space-y-3 text-[13px]">
               <p className="font-medium">
-                <a href="tel:+918287263306">+91 8287263306</a>
+                <a href={`tel:${contactDetails?.phone}`}>{contactDetails?.phone}</a>
               </p>
 
               <p>
                 (Mon-Sat 10am-7pm)
                 <br />
-                support@addresshome.com
+                {contactDetails?.email}
               </p>
             </div>
 
