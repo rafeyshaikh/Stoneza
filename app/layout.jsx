@@ -57,7 +57,7 @@ export default async function RootLayout({ children }) {
         ${libreBaskerville.variable}
         h-full antialiased
       `}>
-      <head>
+      <body className="min-h-full flex flex-col bg-[#EAE8E2]">
         {gaId && (
           <>
             <Script
@@ -74,8 +74,6 @@ export default async function RootLayout({ children }) {
             </Script>
           </>
         )}
-      </head>
-      <body className="min-h-full flex flex-col bg-[#EAE8E2]">
         <Providers initialCategories={categories} initialContactDetails={contactDetails}>
           <AppChrome>{children}</AppChrome>
         </Providers>
