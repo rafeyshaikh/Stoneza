@@ -69,6 +69,7 @@ export default function ImageUploader({
           type="button"
           variant="outline"
           disabled={uploading}
+          className="cursor-pointer bg-white hover:bg-gray-100"
           onClick={() => inputRef.current?.click()}
         >
           <UploadCloud className="size-4" />

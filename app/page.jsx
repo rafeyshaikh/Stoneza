@@ -7,6 +7,7 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Product from "@/models/Product.model";
 import Blog from "@/models/Blog.model";
 import Homepage from "@/models/Homepage.model";
+import Seo from "@/models/Seo.model";
 import { connectDB } from "@/lib/databaseConnection";
 import BigBanner from "@/components/home/BigBanner";
 import ThreeBanner from "@/components/home/ThreeBanner";
@@ -25,11 +26,11 @@ import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 
 export async function generateMetadata() {
   await connectDB();
-  const homepage = await Homepage.findOne().lean();
+  const seo = await Seo.findOne().lean();
   return {
-    title: homepage?.seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
-    description: homepage?.seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
-    keywords: homepage?.seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
+    title: seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
+    description: seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+    keywords: seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
   };
 }
 

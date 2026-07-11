@@ -21,7 +21,6 @@ export default function HomepageEditor() {
     brandPromos: [],
     testimonials: [],
     footer: { caption: "", copyright: "" },
-    seo: { metaTitle: "", metaDescription: "", keywords: "" },
   });
 
   const [loading, setLoading] = useState(true);
@@ -46,7 +45,6 @@ export default function HomepageEditor() {
           brandPromos: result.data.brandPromos || [],
           testimonials: result.data.testimonials || [],
           footer: result.data.footer || { caption: "", copyright: "" },
-          seo: result.data.seo || { metaTitle: "", metaDescription: "", keywords: "" },
         });
       }
     } catch (e) {
@@ -123,7 +121,7 @@ export default function HomepageEditor() {
             Modify text banners, images, dynamic sliders, testimonials and SEO metadata.
           </p>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="shadow-sm">
+        <Button onClick={handleSave} disabled={saving} className="shadow-sm cursor-pointer bg-white hover:bg-gray-100">
           {saving ? (
             <>
               <Loader2 className="mr-2 size-4 animate-spin" /> Saving...

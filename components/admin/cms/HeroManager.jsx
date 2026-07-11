@@ -98,7 +98,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
             Manage main slider slides, banners, actions, and display ordering.
           </p>
         </div>
-        <Button onClick={addSlide} size="sm" type="button">
+        <Button onClick={addSlide} size="sm" type="button" className="cursor-pointer border border-black bg-white hover:bg-gray-100">
           <Plus className="mr-2 size-4" /> Add Slide
         </Button>
       </div>

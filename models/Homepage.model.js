@@ -96,12 +96,6 @@ const footerSchema = new mongoose.Schema({
   copyright: { type: String, trim: true },
 }, { _id: false });
 
-const seoSchema = new mongoose.Schema({
-  metaTitle: { type: String, trim: true },
-  metaDescription: { type: String, trim: true },
-  keywords: { type: String, trim: true },
-}, { _id: false });
-
 const homepageSchema = new mongoose.Schema(
   {
     heroSlides: [heroSlideSchema],
@@ -119,8 +113,6 @@ const homepageSchema = new mongoose.Schema(
     testimonials: [testimonialSchema],
 
     footer: footerSchema,
-
-    seo: seoSchema,
   },
   {
     timestamps: true,

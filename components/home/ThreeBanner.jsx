@@ -29,7 +29,7 @@ export default function ThreeBanner({ banners }) {
     : staticBanners;
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex mt-12 lg:mt-0 flex-col md:flex-row">
       {displayBanners.map((item, index) => (
         <div
           key={index}

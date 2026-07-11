@@ -74,7 +74,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
             Manage testimonials, star ratings, review statements, and display sequences.
           </p>
         </div>
-        <Button onClick={addTestimonial} size="sm" type="button">
+        <Button onClick={addTestimonial} size="sm" type="button" className="cursor-pointer border border-black bg-white hover:bg-gray-100">
           <Plus className="mr-2 size-4" /> Add Testimonial
         </Button>
       </div>

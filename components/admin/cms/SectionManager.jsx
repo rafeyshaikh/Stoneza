@@ -108,7 +108,6 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
     { id: "middleBanner", name: "Middle Banner", icon: ImageIcon },
     { id: "threeBanners", name: "Three Banners", icon: Layout },
     { id: "brandPromos", name: "Brand Promos", icon: Sparkles },
-    { id: "seo", name: "SEO Settings", icon: Globe },
     { id: "footer", name: "Footer Settings", icon: Footprints },
   ];
 
@@ -375,52 +374,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
             </div>
           )}
 
-          {/* TAB 4: SEO SETTINGS */}
-          {activeTab === "seo" && (
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-heading text-base font-semibold text-stone-900 dark:text-stone-100">
-                  Homepage SEO Settings
-                </h4>
-                <p className="text-xs text-stone-500 dark:text-stone-400">
-                  Manage search engine indexing parameters for the homepage.
-                </p>
-              </div>
 
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="seo-meta-title">Meta Title</Label>
-                  <Input
-                    id="seo-meta-title"
-                    placeholder="Stoneza - Natural Stone Showcase & Enquiry"
-                    value={data.seo?.metaTitle || ""}
-                    onChange={(e) => updateSubField("seo", "metaTitle", e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="seo-meta-desc">Meta Description</Label>
-                  <Textarea
-                    id="seo-meta-desc"
-                    rows={4}
-                    placeholder="Elevate interiors and outdoor spaces with natural stone..."
-                    value={data.seo?.metaDescription || ""}
-                    onChange={(e) => updateSubField("seo", "metaDescription", e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="seo-keywords">Keywords (Comma-separated)</Label>
-                  <Input
-                    id="seo-keywords"
-                    placeholder="natural stone, marble, granite, luxury flooring"
-                    value={data.seo?.keywords || ""}
-                    onChange={(e) => updateSubField("seo", "keywords", e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* TAB 5: FOOTER SETTINGS */}
           {activeTab === "footer" && (
