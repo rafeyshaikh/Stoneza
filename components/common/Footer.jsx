@@ -152,39 +152,83 @@ export default function Footer() {
             </div>
 
             <div className="mt-6 flex items-center gap-5">
-              <a
-                href="https://www.facebook.com/thestoneza"
-                target="_blank"
-                rel="noreferrer"
-                className=""
-              >
-                <FaFacebookF size={16} />
-              </a>
+              {contactDetails?.facebook ? (
+                <a
+                  href={contactDetails.facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                  className=""
+                >
+                  <FaFacebookF size={16} />
+                </a>
+              ) : (
+                <a
+                  href="https://www.facebook.com/thestoneza"
+                  target="_blank"
+                  rel="noreferrer"
+                  className=""
+                >
+                  <FaFacebookF size={16} />
+                </a>
+              )}
 
-              <a
-                href="https://www.instagram.com/thestoneza"
-                target="_blank"
-                rel="noreferrer"
-                className=""
-              >
-                <FaInstagram size={18} />
-              </a>
+              {contactDetails?.instagram ? (
+                <a
+                  href={contactDetails.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className=""
+                >
+                  <FaInstagram size={18} />
+                </a>
+              ) : (
+                <a
+                  href="https://www.instagram.com/thestoneza"
+                  target="_blank"
+                  rel="noreferrer"
+                  className=""
+                >
+                  <FaInstagram size={18} />
+                </a>
+              )}
 
-              <a 
-                href="https://www.youtube.com/@thestoneza"
-                target="_blank"
-                rel="noreferrer"
-                className=""
+              {contactDetails?.youtube ? (
+                <a 
+                  href={contactDetails.youtube}
+                  target="_blank"
+                  rel="noreferrer"
+                  className=""
                 >
                   <FaYoutube size={18} />
                 </a>
+              ) : (
+                <a 
+                  href="https://www.youtube.com/@thestoneza"
+                  target="_blank"
+                  rel="noreferrer"
+                  className=""
+                >
+                  <FaYoutube size={18} />
+                </a>
+              )}
 
-              <p
-                onClick={()=>{redirectToWhatsApp()}}
-                className="cursor-pointer"
-              >
-                <FaWhatsapp size={18} />
-              </p>
+              {contactDetails?.whatsapp ? (
+                <a
+                  href={contactDetails.whatsapp.startsWith('http') ? contactDetails.whatsapp : `https://wa.me/${contactDetails.whatsapp.replace(/\D/g, '')}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="cursor-pointer"
+                >
+                  <FaWhatsapp size={18} />
+                </a>
+              ) : (
+                <p
+                  onClick={() => redirectToWhatsApp()}
+                  className="cursor-pointer"
+                >
+                  <FaWhatsapp size={18} />
+                </p>
+              )}
             </div>
           </div>
         </div>
