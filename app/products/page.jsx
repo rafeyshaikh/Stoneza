@@ -3,13 +3,25 @@ import Product from "@/models/Product.model";
 import ProductsClient from "./ProductsClient";
 import { Suspense } from "react";
 
-export const metadata = {
-  title: "All Products | Stoneza",
-  description: "Explore our premium collection of natural stones, cladding, tiles, and outdoor features.",
-  alternates: {
-    canonical: "https://stoneza.in/products",
-  },
-};
+import Seo from "@/models/Seo.model";
+
+export async function generateMetadata() {
+  await connectDB();
+  const seo = await Seo.findOne().lean();
+  const baseDomain = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://stoneza.in";
+  return {
+    title: `All Products | ${seo?.metaTitle || "Stoneza"}`,
+    description: seo?.metaDescription || "Explore our premium collection of natural stones, cladding, tiles, and outdoor features.",
+    alternates: {
+      canonical: `${baseDomain}/products`,
+    },
+    openGraph: {
+      title: `All Products | ${seo?.metaTitle || "Stoneza"}`,
+      description: seo?.metaDescription || "Explore our premium collection of natural stones, cladding, tiles, and outdoor features.",
+      images: seo?.ogImage ? [{ url: seo.ogImage }] : [],
+    },
+  };
+}
 
 export default async function ProductsPage() {
   await connectDB();
