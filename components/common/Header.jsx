@@ -6,6 +6,8 @@ import Link from "next/link";
 import MegaMenu from "./Megamenu";
 import { useAuth } from "@/context/AuthContext";
 import { useCategories } from "@/context/CategoriesContext";
+import { GoPlus } from "react-icons/go";
+import { LuMinus } from "react-icons/lu";
 
 import { useRef, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -285,11 +287,11 @@ export default function Header() {
 
                   {/* NAVIGATION */}
 
-                  <nav className="px-6 pb-10">
+                  <nav className="px-5 pb-10">
                     {displayNavItems.map((item, index) => (
                       <div
                         key={`${item.title}-${index}`}
-                        className="border-b border-[#b3a697]"
+                        className="border-b border-[#b3a697] relative"
                       >
                         {/* MAIN CATEGORY */}
 
@@ -303,12 +305,13 @@ export default function Header() {
                         >
                           <span>{item.title}</span>
 
-                          <PiCaretDownThin
-                            className={`text-xl transition-transform duration-300 ${openCategory === index
-                                ? "rotate-180"
-                                : ""
-                              }`}
-                          />
+                          {
+                            openCategory === index ? (
+                              <LuMinus className="text-xl transition-transform duration-300 rotate-180 opacity-100 absolute right-0" />
+                            ) : (
+                              <GoPlus className="text-xl transition-transform duration-300 opacity-100 absolute right-0" />
+                            )
+                          }
                         </button>
 
                         {/* SUBMENU */}
@@ -369,6 +372,7 @@ export default function Header() {
                                             );
                                           }
                                         )}
+                                        <Link href={`/collections/${category.slug}`} onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-[15px] font-semibold text-[#5e5e5e] transition hover:text-black uppe">View All</Link>
                                       </div>
                                     </div>
                                   )

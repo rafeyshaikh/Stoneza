@@ -6,24 +6,29 @@ import BigBanner from "@/components/home/BigBanner";
 import { PiCaretDown } from "react-icons/pi";
 import { CiSearch } from "react-icons/ci";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 
 export default function ProductsClient({ products }) {
+  const searchParams = useSearchParams();
   const [hoveredId, setHoveredId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  
   // Sort states (Price sorting removed)
   const [sortBy, setSortBy] = useState("default");
   const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const stoneType = searchParams.get('stoneType');
+  const currentTitle = stoneType == "marble" ? "Marble Collection" : stoneType == "granite" ? "Granite Collection" : stoneType == "quartzite" ? "Quartzite Collection" : stoneType == "limestone" ? "Limestone Collection" : stoneType == "sandstone" ? "Sandstone Collection" : stoneType == "slate" ? "Slate Collection" : "All Products";
   
   // Filter states
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
-    stoneTypes: [],
+    stoneTypes: stoneType ? [stoneType] : [],
     finishes: [],
     applications: [],
     colors: [],
     badges: [],
   });
+
 
   // Generic lists of options
   const genericStoneTypes = ["Marble", "Granite", "Quartzite", "Limestone", "Sandstone", "Slate"];
@@ -119,7 +124,6 @@ export default function ProductsClient({ products }) {
     });
   };
 
-  // Filter application
   const filteredProducts = products.filter((product) => {
     // 1. Search Query
     if (searchQuery.trim()) {
@@ -180,8 +184,8 @@ export default function ProductsClient({ products }) {
     <div className="w-full min-h-screen bg-[#EAE8E2]">
       <BigBanner
         src={'/assets/hero/collection-banner.webp'}
-        title={"All Products"}
-        alt={"All Products"}
+        title={currentTitle}
+        alt={currentTitle}
         button={null}
         height={575}
       />
@@ -199,7 +203,7 @@ export default function ProductsClient({ products }) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Products..."
-            className="w-full h-full bg-transparent border-none outline-none focus:border-none text-[#1A1613] placeholder-[#B7AC9E] font-medium text-[12px] tracking-[2px] placeholder:uppercase placeholder:text-[12px] placeholder:tracking-[2px] pl-8"
+            className="w-full h-full bg-transparent border-none outline-none focus:border-none text-[#1A1613] placeholder-[#B7AC9E] capitalize font-medium text-[16px] tracking-[1px] placeholder:uppercase placeholder:text-[14px] placeholder:tracking-[2px] pl-8"
           />
         </div>
 
@@ -410,7 +414,7 @@ export default function ProductsClient({ products }) {
       {sortedProducts.length === 0 ? (
         <div className="max-w-[1400px] mx-auto p-10 justify-items-center">
           <div className="text-center py-20 text-stone-500">
-            No products match the selected filters or sorting options.
+            No products match the selected filters or searched query.
           </div>
         </div>
       ) : (

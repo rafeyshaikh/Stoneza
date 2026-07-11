@@ -28,8 +28,7 @@ export default async function RootLayout({ children }) {
         ${nunitoSans.variable}
         ${libreBaskerville.variable}
         h-full antialiased
-      `}
-    >
+      `}>
       <body className="min-h-full flex flex-col bg-[#EAE8E2]">
         <Providers initialCategories={categories} initialContactDetails={contactDetails}>
           <AppChrome>{children}</AppChrome>

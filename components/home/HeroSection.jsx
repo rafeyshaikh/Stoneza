@@ -7,41 +7,41 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const heroItems = [
   {
-    eyebrow: "FOR RESORTS · HOTELS · TOWNSHIPS · ARCHITECTS",
-    headingNormal: "Stone that makes a space",
-    headingAccent: "unforgettable.",
+    eyebrow: "OUTDOOR SPACES · LANDSCAPES · TIMELESS DESIGN",
+    heading: "Natural stone for spaces that inspire.",
     paragraph:
-      "Quarry-direct sandstone, granite, limestone and basalt — engineered, finished and delivered to spec for India's most ambitious hospitality and architectural projects.",
-    primaryButtonText: "Request a Bulk Quote",
-    primaryButtonLink: "/quote",
-    secondaryButtonText: "Order Material Samples",
-    secondaryButtonLink: "/samples",
-    image: "/assets/hero/HomePage-Slider-1.webp",
+      "Transform open spaces with natural stone crafted for lasting beauty, enduring performance, and effortless outdoor living.",
+    primaryButtonText: "EXPLORE THE COLLECTION",
+    primaryButtonLink: "/collections/landscape-and-outdoor-living",
+    image: "/assets/hero/NewSlide1.png",
   },
   {
-    eyebrow: "FOR RESORTS · HOTELS · TOWNSHIPS · ARCHITECTS",
-    headingNormal: "Crafted surfaces for spaces that",
-    headingAccent: "endure.",
+    eyebrow: "FLOORING · PAVING · ENDURING DESIGN",
+    heading: "Natural stone for every step you take.",
     paragraph:
-      "From poolside decks to grand facades, our natural stone is cut, finished and delivered to exact architectural specification.",
-    primaryButtonText: "Request a Bulk Quote",
-    primaryButtonLink: "/quote",
-    secondaryButtonText: "Order Material Samples",
-    secondaryButtonLink: "/samples",
-    image: "/assets/hero/HomePage-Slider-2.webp",
+      "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+    primaryButtonText: "EXPLORE THE COLLECTION",
+    primaryButtonLink: "/collections/flooring-and-paving-surfaces",
+    image: "/assets/hero/NewSlide2.png",
   },
   {
-    eyebrow: "FOR RESORTS · HOTELS · TOWNSHIPS · ARCHITECTS",
-    headingNormal: "Natural stone, engineered for",
-    headingAccent: "scale.",
+    eyebrow: "WALLS · FACADES · ARCHITECTURAL CHARACTER",
+    heading: "Stone that shapes architectural identity.",
     paragraph:
-      "Quarry-direct sourcing and precision finishing, built for large-format hospitality and township developments.",
-    primaryButtonText: "Request a Bulk Quote",
-    primaryButtonLink: "/quote",
-    secondaryButtonText: "Order Material Samples",
-    secondaryButtonLink: "/samples",
-    image: "/assets/hero/HomePage-Slider-3.webp",
+      "Transform walls into lasting architectural statements with natural stone crafted for depth, distinction, and timeless exterior beauty.",
+    primaryButtonText: "EXPLORE THE COLLECTION",
+    primaryButtonLink: "/collections/wall-facade-cladding",
+    image: "/assets/hero/NewSlide3.png",
   },
+  {
+    eyebrow: "TEXTURES · PATTERNS · DISTINCTIVE FINISHES",
+    heading: "Crafted details that bring stone to life.",
+    paragraph:
+      "Discover distinctive patterns and refined finishes designed to add depth, texture, and timeless character to every surface.",
+    primaryButtonText: "EXPLORE THE COLLECTION",
+    primaryButtonLink: "/collections/patterns-finishes",
+    image: "/assets/hero/NewSlide4.png",
+  }
 ];
 
 export default function HeroSection() {
@@ -146,7 +146,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-2xl text-left"
+            className="max-w-2xl text-left lg:mt-10 "
           >
             {/* Eyebrow */}
             <p className="font-heading text-xs font-medium uppercase tracking-[4px] text-[#c9a877] sm:text-sm sm:tracking-[6px]">
@@ -155,9 +155,9 @@ export default function HeroSection() {
 
             {/* Heading */}
             <h1 className="mt-6 font-heading text-[40px] font-normal leading-[1.15] text-white sm:text-[52px] lg:text-[64px]">
-              {current.headingNormal}{" "}
+              {current.heading.slice(0, current.heading.lastIndexOf(' '))}{" "}
               <em className="font-serif italic text-[#c9a877]">
-                {current.headingAccent}
+                {current.heading.slice(current.heading.lastIndexOf(' '), current.heading.length)}
               </em>
             </h1>
 
@@ -177,13 +177,6 @@ export default function HeroSection() {
               >
                 {current.primaryButtonText}
               </button>
-
-              <Link
-                href={current.secondaryButtonLink}
-                className="border border-white/70 px-8 py-4 text-sm font-semibold uppercase tracking-wide text-white transition hover:border-white hover:bg-white/10"
-              >
-                {current.secondaryButtonText}
-              </Link>
             </div>
           </motion.div>
         </AnimatePresence>

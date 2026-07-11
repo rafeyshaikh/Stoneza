@@ -18,6 +18,7 @@ import InstagramSection from "@/components/home/InstagramSection";
 import EnquiryForm from "@/components/common/EnquiryForm";
 import BrandPromo from "@/components/home/BrandPromo";
 import RecentBlogs from "@/components/home/RecentBlogs";
+import MiddleBanner from "@/components/home/MiddleBanner";
 
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 
@@ -83,7 +84,7 @@ export default async function Home() {
         <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
       )}
       <FeaturedProducts products={safeFeatured} />
-      <BigBanner src={"/assets/hero/Big_Banner_Ethereal_Forms.jpg"} alt={"Ethereal"} title={"Onde Éternelle"} button={"Home Decor"} height={800} />
+      <MiddleBanner src={"/assets/hero/All-Products-Banner.png"}/>
       <Carousel title={"What's New"} data={newArrivalsData} button={true} />
       <ThreeBanner />
       {subCategoryData.length > 0 && (

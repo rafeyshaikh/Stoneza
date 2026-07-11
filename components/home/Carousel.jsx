@@ -132,12 +132,12 @@ function ProductCard({ item, button }) {
 
           {button && (
             <div
-              className="absolute bottom-0 left-0 right-0 z-20 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 flex items-center bg-white py-2">
-              <Link
-                href={item.href || "#"}
-                className="w-full py-3 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer text-center hover:bg-black/5 transition-colors text-stone-900">
+              className="absolute bottom-0 left-0 right-0 z-20 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 flex items-center bg-white">
+              <button
+                onClick={() => window.location.href = `/products/${item.slug}`}
+                className="w-full py-5 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer text-center hover:bg-black/5 transition-colors text-stone-900">
                 View Details
-              </Link>
+              </button>
             </div>
           )}
         </div>
