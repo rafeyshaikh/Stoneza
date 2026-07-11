@@ -96,12 +96,10 @@ const socialLinkSchema = new mongoose.Schema({
 }, { _id: false });
 
 const footerSchema = new mongoose.Schema({
-  title: {type:String,trim:true},
   caption:{type:String,trim:true},
-  socialLinks: [socialLinkSchema],
-  phone: [{type:String,trim:true}],
-  email: [{type:String,trim:true}],
-  address: {type:String,trim:true},
+  instaLink: socialLinkSchema,
+  facebookLink: socialLinkSchema,
+  twitterLink: socialLinkSchema,
   whatsapp: {type:String,trim:true},
   mapLink: {type:String,trim:true},
   copyright: {type:String,trim:true},
@@ -124,7 +122,6 @@ const homepageSchema = new mongoose.Schema(
     testimonials: [testimonialSchema],
 
     footer:footerSchema,
-
 
   },
   {

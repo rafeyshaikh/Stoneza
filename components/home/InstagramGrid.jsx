@@ -50,7 +50,7 @@ export default function InstagramGrid({ posts }) {
   const selectedPost =
     selectedIndex !== null ? posts[selectedIndex] : null;
 
-  // Compute slides for the current post: use children if present (for CAROUSEL_ALBUM), otherwise fallback to single media
+    
   const slides = selectedPost
     ? selectedPost.children && selectedPost.children.length > 0
       ? selectedPost.children
@@ -137,6 +137,7 @@ export default function InstagramGrid({ posts }) {
                 src={displayImage}
                 alt={altText}
                 fill
+                unoptimized
                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -256,6 +257,7 @@ export default function InstagramGrid({ posts }) {
                       alt={selectedPost.caption ? selectedPost.caption.slice(0, 120) : "Instagram Post Image"}
                       fill
                       priority
+                      unoptimized
                       className="object-cover"
                     />
                   )

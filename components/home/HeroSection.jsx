@@ -21,7 +21,7 @@ const heroItems = [
     paragraph:
       "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
     primaryButtonText: "EXPLORE THE COLLECTION",
-    primaryButtonLink: "/collections/flooring-and-paving-surfaces",
+    primaryButtonLink: "/collections/flooring-paving-surfaces",
     image: "/assets/hero/NewSlide2.png",
   },
   {
@@ -30,7 +30,7 @@ const heroItems = [
     paragraph:
       "Transform walls into lasting architectural statements with natural stone crafted for depth, distinction, and timeless exterior beauty.",
     primaryButtonText: "EXPLORE THE COLLECTION",
-    primaryButtonLink: "/collections/wall-facade-cladding",
+    primaryButtonLink: "/collections/wall-cladding-facade-stones",
     image: "/assets/hero/NewSlide3.png",
   },
   {
@@ -125,7 +125,7 @@ export default function HeroSection() {
         >
           <Image
             src={item.image}
-            alt={item.headingNormal}
+            alt={item.heading}
             fill
             priority={index === 0}
             className="object-cover"
@@ -168,15 +168,12 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("enquiry-form")?.scrollIntoView({ behavior: "smooth" });
-                }}
+              <Link
+                href={current.primaryButtonLink}
                 className="bg-[#f2ede4] px-8 py-4 text-sm font-semibold uppercase tracking-wide text-stone-900 transition hover:bg-white cursor-pointer"
               >
                 {current.primaryButtonText}
-              </button>
+              </Link>
             </div>
           </motion.div>
         </AnimatePresence>

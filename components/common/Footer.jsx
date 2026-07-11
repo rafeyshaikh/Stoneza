@@ -155,7 +155,7 @@ export default function Footer() {
 
             <div className="mt-6 flex items-center gap-5">
               <a
-                href="https://www.facebook.com/addresshomedecor"
+                href="https://www.facebook.com/thestoneza"
                 target="_blank"
                 rel="noreferrer"
                 className="transition-colors hover:text-[#b39463]"
@@ -164,7 +164,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://www.instagram.com/addresshomedecor"
+                href="https://www.instagram.com/thestoneza"
                 target="_blank"
                 rel="noreferrer"
                 className="transition-colors hover:text-[#b39463]"
