@@ -6,6 +6,7 @@ import { collectionData } from "@/data/CollectionHomeData";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Product from "@/models/Product.model";
 import Blog from "@/models/Blog.model";
+import Homepage from "@/models/Homepage.model";
 import { connectDB } from "@/lib/databaseConnection";
 import BigBanner from "@/components/home/BigBanner";
 import ThreeBanner from "@/components/home/ThreeBanner";
@@ -22,9 +23,22 @@ import MiddleBanner from "@/components/home/MiddleBanner";
 
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 
+export async function generateMetadata() {
+  await connectDB();
+  const homepage = await Homepage.findOne().lean();
+  return {
+    title: homepage?.seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
+    description: homepage?.seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+    keywords: homepage?.seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
+  };
+}
+
 export default async function Home() {
   await connectDB();
   const categories = await getCategoriesForLayout();
+
+  const homepage = await Homepage.findOne().lean();
+  const safeHomepage = homepage ? JSON.parse(JSON.stringify(homepage)) : null;
 
   const featured = await Product.find({ isFeatured: true, status: "published" })
     .select("name slug images hoverImage price")
@@ -79,22 +93,29 @@ export default async function Home() {
 
   return (
     <div>
-      <HeroSection />
+      <HeroSection slides={safeHomepage?.heroSlides} />
       {mainCategoryData.length > 0 && (
         <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
       )}
-      <FeaturedProducts products={safeFeatured} />
-      <MiddleBanner src={"/assets/hero/All-Products-Banner.png"}/>
-      <Carousel title={"What's New"} data={newArrivalsData} button={true} />
-      <ThreeBanner />
+      <FeaturedProducts products={safeFeatured} cmsData={safeHomepage?.featuredProducts} />
+      <MiddleBanner
+        src={safeHomepage?.middleBanner?.image?.url || "/assets/hero/All-Products-Banner.png"}
+        title={safeHomepage?.middleBanner?.title || "All Products"}
+        eyebrow={safeHomepage?.middleBanner?.eyebrow || "The Stoneza Collection"}
+        caption={safeHomepage?.middleBanner?.caption || "Natural stone. Timeless character. Endless possibilities."}
+        button={safeHomepage?.middleBanner?.buttonText || "View All"}
+        link={safeHomepage?.middleBanner?.buttonLink || "/products"}
+      />
+      <Carousel title={safeHomepage?.newArrivalsTitle || "What's New"} data={newArrivalsData} button={true} />
+      <ThreeBanner banners={safeHomepage?.threeBanners} />
       {subCategoryData.length > 0 && (
         <Carousel title="Sub Categories" data={subCategoryData}  />
       )}
       <EnquiryForm />
       {/* <ShopTheLook /> */}
-      <BrandPromo />
+      <BrandPromo promos={safeHomepage?.brandPromos} />
       <WhyChooseUs />
-      <Review />
+      <Review reviews={safeHomepage?.testimonials} />
       <RecentBlogs blogs={safeLatestBlogs} />
       <InstagramSection />
     </div>

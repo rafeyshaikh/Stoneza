@@ -5,6 +5,8 @@ export default function MiddleBanner({
   src,
   alt = "Stoneza natural stone collection",
   title = "All Products",
+  eyebrow = "The Stoneza Collection",
+  caption = "Natural stone. Timeless character. Endless possibilities.",
   button = "View All Products",
   height = 600,
   link = "/products",
@@ -38,7 +40,7 @@ export default function MiddleBanner({
             <span className="h-px w-10 bg-[#c98b4b] md:w-12"/>
 
             <p className="font-heading text-[12px] uppercase tracking-[0.35em] text-white/90 md:text-sm">
-              The Stoneza Collection
+              {eyebrow}
             </p>
           </div>
 
@@ -51,10 +53,8 @@ export default function MiddleBanner({
           <span className="mt-7 block h-[2px] w-14 bg-[#c98b4b]" />
 
           {/* Description */}
-          <p className="mt-7 max-w-md font-display text-lg leading-relaxed text-white/90 md:text-xl">
-            Natural stone. Timeless character.
-            <br />
-            Endless possibilities.
+          <p className="mt-7 max-w-md font-display text-lg leading-relaxed text-white/90 md:text-xl whitespace-pre-line">
+            {caption}
           </p>
 
           {/* CTA */}
@@ -66,7 +66,7 @@ export default function MiddleBanner({
                 aria-hidden="true"
                 className="text-[14px] leading-none transition-transform duration-300 group-hover:translate-x-1"
               >
-                View All Products →
+                {button} →
               </span>
             </Link>
           )}

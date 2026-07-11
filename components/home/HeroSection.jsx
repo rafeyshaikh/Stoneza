@@ -44,10 +44,27 @@ const heroItems = [
   }
 ];
 
-export default function HeroSection() {
+export default function HeroSection({ slides = [] }) {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const [activeSlide, setActiveSlide] = useState(0);
+
+  // Filter active slides and map fields to match UI keys
+  const activeSlides = slides && slides.length > 0
+    ? slides
+        .filter((s) => s.isActive !== false)
+        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+        .map((s) => ({
+          eyebrow: s.eyebrow || "",
+          heading: s.title || "",
+          paragraph: s.paragraph || "",
+          primaryButtonText: s.buttonText || "",
+          primaryButtonLink: s.buttonLink || "",
+          image: s.image?.url || "/assets/placeholder.jpg",
+        }))
+    : [];
+
+  const displayItems = activeSlides.length > 0 ? activeSlides : heroItems;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,14 +72,14 @@ export default function HeroSection() {
     }, 10000);
 
     return () => clearTimeout(timer);
-  }, [activeSlide]);
+  }, [activeSlide, displayItems.length]);
 
   const nextSlide = () => {
-    setActiveSlide((prev) => (prev + 1) % heroItems.length);
+    setActiveSlide((prev) => (prev + 1) % displayItems.length);
   };
 
   const prevSlide = () => {
-    setActiveSlide((prev) => (prev === 0 ? heroItems.length - 1 : prev - 1));
+    setActiveSlide((prev) => (prev === 0 ? displayItems.length - 1 : prev - 1));
   };
 
   const handleTouchStart = (e) => {
@@ -88,7 +105,7 @@ export default function HeroSection() {
     }
   };
 
-  const current = heroItems[activeSlide];
+  const current = displayItems[activeSlide];
 
   return (
     <section
@@ -99,7 +116,7 @@ export default function HeroSection() {
     >
       {/* Slides */}
 
-      {heroItems.map((item, index) => (
+      {displayItems.map((item, index) => (
         <motion.div
           key={item.image}
           className="absolute inset-0"
@@ -129,6 +146,7 @@ export default function HeroSection() {
             fill
             priority={index === 0}
             className="object-cover"
+            unoptimized={item.image.startsWith("http")}
           />
 
           {/* Dark gradient overlay for text legibility */}
@@ -155,10 +173,21 @@ export default function HeroSection() {
 
             {/* Heading */}
             <h1 className="mt-6 font-heading text-[40px] font-normal leading-[1.15] text-white sm:text-[52px] lg:text-[64px]">
-              {current.heading.slice(0, current.heading.lastIndexOf(' '))}{" "}
-              <em className="font-serif italic text-[#c9a877]">
-                {current.heading.slice(current.heading.lastIndexOf(' '), current.heading.length)}
-              </em>
+              {(() => {
+                const text = current.heading || "";
+                const lastSpaceIndex = text.lastIndexOf(" ");
+                if (lastSpaceIndex === -1) {
+                  return <span>{text}</span>;
+                }
+                return (
+                  <>
+                    {text.slice(0, lastSpaceIndex)}{" "}
+                    <em className="font-serif italic text-[#c9a877]">
+                      {text.slice(lastSpaceIndex)}
+                    </em>
+                  </>
+                );
+              })()}
             </h1>
 
             {/* Paragraph */}
@@ -181,7 +210,7 @@ export default function HeroSection() {
 
       {/* Dots */}
       <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3">
-        {heroItems.map((_, index) => (
+        {displayItems.map((_, index) => (
           <button
             key={index}
             aria-label={`Go to slide ${index + 1}`}

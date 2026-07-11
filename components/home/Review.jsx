@@ -4,18 +4,31 @@ import { useState,useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { reviewData } from "@/data/Review";
 
-export default function Review() {
+export default function Review({ reviews }) {
   const [activeSlide, setActiveSlide] = useState(0);
 
+  const displayReviews = reviews && reviews.length > 0
+    ? [...reviews]
+        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+        .map((r) => ({
+          rating: r.stars || 5,
+          review: r.review || "",
+          name: r.name || "",
+        }))
+    : reviewData;
+
   useEffect(() => {
-  const interval = setInterval(() => {
-    setActiveSlide((prev) => (prev + 1) % reviewData.length);
-  }, 8000);
+    if (displayReviews.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % displayReviews.length);
+    }, 8000);
 
-  return () => clearInterval(interval);
-}, [activeSlide]);
+    return () => clearInterval(interval);
+  }, [activeSlide, displayReviews.length]);
 
-  const item = reviewData[activeSlide];
+  if (displayReviews.length === 0) return null;
+
+  const item = displayReviews[activeSlide];
 
   return (
     <section className="my-10 border-y border-gray-300 py-16">
@@ -44,7 +57,7 @@ export default function Review() {
             </div>
 
             {/* Review */}
-            <h3 className="text-2xl font-display italic text-[#1c1c1b]">
+            <h3 className="text-2xl font-display italic text-[#1c1c1b] px-4">
               {item.review}
             </h3>
 
@@ -53,19 +66,21 @@ export default function Review() {
         </AnimatePresence>
 
         {/* Dots */}
-        <div className="flex justify-center gap-3 mt-8">
-          {reviewData.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveSlide(index)}
-              className={`h-3 w-3 rounded-full transition-all duration-300 ${
-                activeSlide === index
-                  ? "bg-black"
-                  : "border border-black"
-              }`}
-            />
-          ))}
-        </div>
+        {displayReviews.length > 1 && (
+          <div className="flex justify-center gap-3 mt-8">
+            {displayReviews.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveSlide(index)}
+                className={`h-3 w-3 rounded-full transition-all duration-300 cursor-pointer ${
+                  activeSlide === index
+                    ? "bg-black"
+                    : "border border-black"
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

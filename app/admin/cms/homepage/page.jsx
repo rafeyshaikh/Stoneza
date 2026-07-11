@@ -1,23 +1,17 @@
 import Breadcrumbs from "@/components/admin/layout/Breadcrumbs";
 import PageHeader from "@/components/admin/shared/PageHeader";
-import HeroManager from "@/components/admin/cms/HeroManager";
-import FeaturedCollectionsManager from "@/components/admin/cms/FeaturedCollectionsManager";
-import TestimonialsManager from "@/components/admin/cms/TestimonialsManager";
-import InstagramManager from "@/components/admin/cms/InstagramManager";
-import NewArrivalsManager from "@/components/admin/cms/NewArrivalsManager";
-import OurProcessManager from "@/components/admin/cms/OurProcessManager";
-import ShopTheLookManager from "@/components/admin/cms/ShopTheLookManager";
+import HomepageEditor from "@/components/admin/cms/HomepageEditor";
 
 export default function HomepageCmsPage() {
   return (
     <>
       <Breadcrumbs />
-      <PageHeader title="Homepage CMS" description="Enable, order, and manage all homepage sections with direct Cloudinary uploads." />
-      <div className="space-y-4">
-        <HeroManager />
-        <FeaturedCollectionsManager />
-        <TestimonialsManager />
-        <InstagramManager />
+      <PageHeader
+        title="Homepage CMS"
+        description="Enable, customize, and manage all homepage layouts, banners, sliders, and reviews with Cloudinary uploads."
+      />
+      <div className="mt-5">
+        <HomepageEditor />
       </div>
     </>
   );

@@ -85,7 +85,7 @@ const largeShopData = [
   }
 ];
 
-export default function FeaturedProducts({ products = [] }) {
+export default function FeaturedProducts({ products = [], cmsData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const displayProducts = products.length > 0
@@ -103,12 +103,13 @@ export default function FeaturedProducts({ products = [] }) {
         {/* Left Banner */}
         <div className="relative overflow-hidden">
           <Image
-            src="/assets/gifting/Gifting_Banner.jpg"
-            alt="Occasional Gifting"
+            src={cmsData?.bannerImage?.url || "/assets/gifting/Gifting_Banner.jpg"}
+            alt={cmsData?.title || "Featured Products"}
             width={1200}
             height={700}
             className="w-full h-auto object-cover"
             priority
+            unoptimized={cmsData?.bannerImage?.url ? cmsData.bannerImage.url.startsWith("http") : false}
           />
         </div>
 
@@ -161,16 +162,16 @@ export default function FeaturedProducts({ products = [] }) {
           {/* Text Content */}
           <div className="max-w-md text-center">
             <h2 className="font-display text-[32px] text-[#6B6765] mb-6">
-              Featured Products
+              {cmsData?.title || "Featured Products"}
             </h2>
 
             <p className="font-body text-[14px] leading-7 text-[#1c1b1b] mb-8 text-left">
-              Discover Our Handpicked Collection of Best-Selling Items. Perfect for Adding a Touch of Elegance to Your Home.
+              {cmsData?.caption || "Discover Our Handpicked Collection of Best-Selling Items. Perfect for Adding a Touch of Elegance to Your Home."}
             </p>
 
             <Link href="/products">
               <button className="border border-[#6B6765] px-8 py-3 text-sm tracking-[0.15em] uppercase text-[#6B6765] transition-all duration-300 hover:bg-[#6B6765] hover:text-white cursor-pointer">
-                Explore
+                {cmsData?.buttonText || "Explore"}
               </button>
             </Link>
           </div>
