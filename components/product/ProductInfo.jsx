@@ -2,8 +2,14 @@
 
 import { redirectToWhatsApp } from "@/lib/whatsapp";
 import { FaWhatsapp } from "react-icons/fa6";
+import { ChevronDown } from "lucide-react";
 
-export default function ProductInfo({ product }) {
+export default function ProductInfo({
+  product,
+  selectedVariants = {},
+  setSelectedVariants,
+  onEnquireClick,
+}) {
   return (
     <div className="max-w-[550px]">
       {/* Badge */}
@@ -24,7 +30,7 @@ export default function ProductInfo({ product }) {
 
       {/* Price if available */}
       {product.price ? (
-        <div className="mb-6">
+        <div className="mb-4">
           <span className="text-3xl font-medium text-[#1c1714]">
             ₹{product.price.toLocaleString()}
           </span>
@@ -34,15 +40,55 @@ export default function ProductInfo({ product }) {
         ''
       )}
 
-      {/* Description */}
-      <p className="text-[15.5px] text-[#3a322c] leading-relaxed mb-6 max-w-prose">
-        {product.shortDescription}
-      </p>
+      {/* Quote / GST disclaimer */}
+      <div className="mb-6">
+        <div className="font-sans text-[11px] uppercase tracking-[0.2em] font-bold text-[#9a4a2e] mb-1">
+          ENQUIRE NOW TO REQUEST A QUOTE
+        </div>
+        <div className="text-[11.5px] text-[#3a322c]/80 italic">
+          *Ex-Factory Price, Transportation & GST will be charged extra, as applicable.
+        </div>
+      </div>
+
+
+      {/* Customizations / Variants Dropdowns */}
+      {product.variants && product.variants.length > 0 && (
+        <div className="space-y-4 mb-6">
+          {product.variants.map((variant) => (
+            <div key={variant._id || variant.name} className="flex flex-col gap-1.5">
+              <span className="font-sans text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#9a4a2e]">
+                {variant.name}
+              </span>
+              <div className="relative">
+                <select
+                  value={selectedVariants[variant.name] || ""}
+                  onChange={(e) =>
+                    setSelectedVariants((prev) => ({
+                      ...prev,
+                      [variant.name]: e.target.value,
+                    }))
+                  }
+                  className="w-full h-12 pl-4 pr-10 bg-white border border-stone-300 rounded text-sm text-[#1c1714] outline-none transition-colors focus:border-[#c8a980] appearance-none cursor-pointer font-sans"
+                >
+                  {variant.options?.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-stone-500">
+                  <ChevronDown className="size-4" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Action Buttons */}
       <div className="flex gap-4 flex-wrap mb-6">
         <button
-          onClick={() => redirectToWhatsApp(product)}
+          onClick={() => redirectToWhatsApp(product, selectedVariants)}
           className="flex-1 min-w-[200px] h-[54px] bg-[#1c1714] hover:bg-[#25D366] text-[#f4efe7] hover:text-white text-sm tracking-[3px] uppercase transition-all duration-300 rounded shadow-sm cursor-pointer flex items-center justify-center gap-2 font-body"
         >
           <FaWhatsapp size={25} />

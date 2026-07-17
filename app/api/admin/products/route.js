@@ -43,6 +43,7 @@ export async function POST(req) {
       dimensions,
       weight,
       stoneDetails,
+      variants,
     } = body;
 
     if (!name?.trim()) {
@@ -154,6 +155,14 @@ export async function POST(req) {
         leadTime: stoneDetails.leadTime?.trim() || "",
         sampleAvailable: typeof stoneDetails.sampleAvailable === "boolean" ? stoneDetails.sampleAvailable : true,
       },
+      variants: Array.isArray(variants)
+        ? variants.map((v) => ({
+            name: v.name?.trim() || "",
+            options: Array.isArray(v.options)
+              ? v.options.map((o) => o.trim()).filter(Boolean)
+              : [],
+          })).filter((v) => v.name)
+        : [],
     });
 
     return response(true, 201, "Product created successfully", product);

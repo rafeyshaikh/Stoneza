@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import ImageWithLoader from "@/components/common/Loader";
 
-export default function ProductGallery({ images }) {
+export default function ProductGallery({ images, shortDescription }) {
   const [selectedImage, setSelectedImage] = useState(images?.[0] || "");
 
   useEffect(() => {
@@ -44,14 +44,21 @@ export default function ProductGallery({ images }) {
         ))}
       </div>
 
-      {/* Main Image */}
-      <div className="order-1 lg:order-2 relative w-full lg:flex-1 lg:min-w-0 aspect-square self-start bg-stone-100/50 rounded-lg overflow-hidden border border-stone-200">
-        <ImageWithLoader
-          src={selectedImage}
-          alt="Product gallery main"
-          fill
-          className="object-cover transition-transform duration-500 hover:scale-[1.03]"
-        />
+      {/* Main Image and Short Description */}
+      <div className="order-1 lg:order-2 lg:flex-1 lg:min-w-0 flex flex-col gap-6">
+        <div className="relative w-full aspect-square bg-stone-100/50 rounded-lg overflow-hidden border border-stone-200">
+          <ImageWithLoader
+            src={selectedImage}
+            alt="Product gallery main"
+            fill
+            className="object-cover transition-transform duration-500 hover:scale-[1.03]"
+          />
+        </div>
+        {shortDescription && (
+          <p className="text-[15.5px] text-[#3a322c] leading-relaxed max-w-prose hidden lg:block">
+            {shortDescription}
+          </p>
+        )}
       </div>
     </div>
   );

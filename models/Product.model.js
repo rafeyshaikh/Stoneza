@@ -191,6 +191,22 @@ const productSchema = new mongoose.Schema(
         default: true,
       },
     },
+    variants: [
+      {
+        name: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        options: [
+          {
+            type: String,
+            required: true,
+            trim: true,
+          },
+        ],
+      },
+    ],
   },
   {
     timestamps: true,

@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import ProductSeoForm from "@/components/admin/products/ProductSeoForm";
 import TipTapEditor from "@/components/admin/editor/TipTapEditor";
+import VariantManager from "@/components/admin/products/VariantManager";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,6 +74,8 @@ const getEmptyForm = () => ({
     leadTime: "",
     sampleAvailable: true,
   },
+
+  variants: [],
 
   seo: {
     metaTitle: "",
@@ -176,6 +179,11 @@ export default function ProductForm({
 
         ogImage: initialData.seo?.ogImage || "",
       },
+
+      variants: (initialData.variants || []).map((v) => ({
+        name: v.name,
+        options: Array.isArray(v.options) ? v.options.join(", ") : v.options || "",
+      })),
     };
   });
   const [productImages, setProductImages] = useState([]);
@@ -344,6 +352,13 @@ export default function ProductForm({
                 .filter(Boolean)
             : [],
         },
+
+        variants: (formData.variants || []).map((v) => ({
+          name: v.name?.trim() || "",
+          options: typeof v.options === "string"
+            ? v.options.split(",").map((o) => o.trim()).filter(Boolean)
+            : v.options || [],
+        })).filter((v) => v.name),
 
         seo: {
           ...formData.seo,
@@ -662,6 +677,14 @@ export default function ProductForm({
             </span>
           </div>
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="mb-5 text-lg font-semibold">Customizations & Variants</h3>
+        <VariantManager
+          variants={formData.variants}
+          onChange={(newVariants) => handleChange("variants", newVariants)}
+        />
       </section>
 
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">

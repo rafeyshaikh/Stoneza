@@ -75,6 +75,7 @@ export async function PATCH(request, { params }) {
       dimensions,
       weight,
       stoneDetails,
+      variants,
     } = body;
 
     const product = await Product.findOne({
@@ -192,6 +193,15 @@ export async function PATCH(request, { params }) {
       leadTime: stoneDetails.leadTime?.trim() || "",
       sampleAvailable: typeof stoneDetails.sampleAvailable === "boolean" ? stoneDetails.sampleAvailable : true,
     };
+
+    product.variants = Array.isArray(variants)
+      ? variants.map((v) => ({
+          name: v.name?.trim() || "",
+          options: Array.isArray(v.options)
+            ? v.options.map((o) => o.trim()).filter(Boolean)
+            : [],
+        })).filter((v) => v.name)
+      : [];
 
     await product.save();
 

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useContact } from "@/context/ContactContext";
 
 export default function ProductTabs({ product, onEnquireClick }) {
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(true); // Open by default
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const { contactDetails } = useContact();
   const details = product.stoneDetails || {};

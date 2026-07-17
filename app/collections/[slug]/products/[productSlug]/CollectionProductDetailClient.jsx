@@ -12,6 +12,16 @@ import EnquiryForm from "@/components/common/EnquiryForm";
 export default function CollectionProductDetailClient({ productData }) {
   const [showEnquiryModal, setShowEnquiryModal] = useState(false);
 
+  const [selectedVariants, setSelectedVariants] = useState(() => {
+    const initial = {};
+    productData.variants?.forEach((v) => {
+      if (v.options?.length > 0) {
+        initial[v.name] = v.options[0];
+      }
+    });
+    return initial;
+  });
+
   const activeProduct = {
     name: productData.name,
     slug: productData.slug,
@@ -21,6 +31,7 @@ export default function CollectionProductDetailClient({ productData }) {
     description: productData.description || "",
     stoneDetails: productData.stoneDetails || {},
     specifications: productData.specifications || [],
+    variants: productData.variants || [],
     careInstructions:
       productData.careInstructions ||
       "Clean with neutral stone cleansers. Seal periodically.",
@@ -73,13 +84,26 @@ export default function CollectionProductDetailClient({ productData }) {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16">
-            <ProductGallery images={activeProduct.images} />
+            <ProductGallery
+              images={activeProduct.images}
+              shortDescription={activeProduct.shortDescription}
+            />
 
             <ProductInfo
               product={activeProduct}
+              selectedVariants={selectedVariants}
+              setSelectedVariants={setSelectedVariants}
               onEnquireClick={() => setShowEnquiryModal(true)}
             />
           </div>
+
+          {activeProduct.shortDescription && (
+            <div className="mt-8 block lg:hidden">
+              <p className="text-[15.5px] text-[#3a322c] leading-relaxed max-w-prose">
+                {activeProduct.shortDescription}
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -119,13 +143,19 @@ export default function CollectionProductDetailClient({ productData }) {
 
             <EnquiryForm
               compact
-              initialStoneType={activeProduct.name}
+              initialStoneType={
+                Object.keys(selectedVariants).length > 0
+                  ? `${activeProduct.name} (${Object.entries(selectedVariants)
+                      .map(([name, val]) => `${name}: ${val}`)
+                      .join(", ")})`
+                  : activeProduct.name
+              }
             />
           </div>
         </div>
       )}
 
-      <StickyEnquiryNow product={activeProduct} />
+      <StickyEnquiryNow product={activeProduct} selectedVariants={selectedVariants} />
     </>
   );
 }
