@@ -4,11 +4,12 @@ import { usePathname } from "next/navigation";
 
 export default function PageWrapper({ children }) {
   const pathname = usePathname();
+  const isHomePage = !pathname || pathname === "/" || pathname === "";
 
   return (
     <main
       className={`flex-grow ${
-        pathname !== "/" ? "pt-[64px] lg:pt-[106px]" : ""
+        !isHomePage ? "pt-[64px] lg:pt-[106px]" : ""
       }`}
     >
       {children}

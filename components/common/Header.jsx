@@ -33,7 +33,7 @@ export default function Header() {
   const [openCategory, setOpenCategory] = useState(null);
 
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+  const isHomePage = !pathname || pathname === "/" || pathname === "";
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -463,7 +463,7 @@ export default function Header() {
                         ) : (
                           !loading && (
                             <div className="text-sm text-[#8a7f73] py-8">
-                              No products found matching "{searchQuery}".
+                              No products found matching &quot;{searchQuery}&quot;.
                             </div>
                           )
                         )}
