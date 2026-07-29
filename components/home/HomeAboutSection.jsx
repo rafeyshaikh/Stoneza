@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function HomeAboutSection({ storyData }) {
+export default function HomeAboutSection({ storyData, imageleft = false }) {
   const defaultParagraphs = [
     "At STONEZA, we've been part of this journey since the very beginning. As one of India's trusted natural stone suppliers and manufacturers in Rajasthan, we operate our own quarries and factories across Rajasthan to source nature's finest stones—ensuring authenticity, quality, and best prices at every step.",
     "Our story began in 1992 in Bhilwara, Rajasthan, as a family-run enterprise with a simple mission: to provide the finest natural stone flooring, wall tiles, and architectural stone solutions at competitive prices. Starting with sandstone extraction from Bijolia's renowned quarries, we have grown into a globally connected brand offering a diverse range of stones for flooring, cladding, landscaping, and design-led applications.",
@@ -19,7 +19,7 @@ export default function HomeAboutSection({ storyData }) {
       <div className="max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-16">
         <div className="grid gap-18 lg:grid-cols-2 items-center">
           {/* LEFT TEXT COLUMN */}
-          <div className="space-y-6">
+          <div className={`space-y-6 ${imageleft ? "order-2" : ""}`}>
             <h2 className="font-display text-3xl sm:text-4xl tracking-tight text-[#393938]">
               About Us
             </h2>

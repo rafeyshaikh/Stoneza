@@ -98,7 +98,7 @@ export default function FeaturedProducts({ products = [], cmsData }) {
     : largeShopData;
 
   return (
-    <section className="w-full py-10 px-4 lg:px-12">
+    <section className="w-full pb-10 px-4 lg:px-12">
       <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-5 lg:gap-10 items-center">
         {/* Left Banner */}
         <div className="relative overflow-hidden">

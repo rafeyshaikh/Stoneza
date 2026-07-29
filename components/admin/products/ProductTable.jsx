@@ -6,9 +6,10 @@ import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Pencil, Trash2, ChevronLeft, ChevronRight, FileSpreadsheet } from "lucide-react";
 
 import SearchBar from "@/components/admin/shared/SearchBar";
+import BulkImportModal from "@/components/admin/products/BulkImportModal";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,7 @@ export default function ProductTable({ products = [], categories = [] }) {
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState("");
   const [sort, setSort] = useState("newest");
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   const [items, setItems] = useState(products);
   const [loading, setLoading] = useState(false);
@@ -185,9 +187,25 @@ export default function ProductTable({ products = [], categories = [] }) {
             </SelectContent>
           </Select>
 
-          {/* <Button variant="destructive">Bulk Delete</Button> */}
+          <Button
+            onClick={() => setIsImportOpen(true)}
+            variant="outline"
+            className="border-stone-300 dark:border-stone-700 font-medium text-xs h-9 cursor-pointer"
+          >
+            <FileSpreadsheet className="mr-1.5 size-4 text-[#c9a877]" />
+            Bulk Import
+          </Button>
         </div>
       </div>
+
+      <BulkImportModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        onSuccess={() => {
+          router.refresh();
+          fetchProducts();
+        }}
+      />
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[860px] text-left text-sm">

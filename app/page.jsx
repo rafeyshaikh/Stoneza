@@ -111,6 +111,7 @@ export default async function Home() {
         link={safeHomepage?.middleBanner?.buttonLink || "/products"}
       />
       <Carousel title={safeHomepage?.newArrivalsTitle || "What's New"} data={newArrivalsData} button={true} />
+      <HomeAboutSection storyData={safeAbout?.story} imageleft={true} />
       <ThreeBanner banners={safeHomepage?.threeBanners} />
       {subCategoryData.length > 0 && (
         <Carousel title="Sub Categories" data={subCategoryData}  />
