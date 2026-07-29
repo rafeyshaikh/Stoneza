@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { redirectToWhatsApp } from "@/lib/whatsapp";
+import { isValidImageUrl } from "@/lib/utils";
 
 export default function ProductCard({ item, setHoveredId, hoveredId, slug, button = true }) {
   const router = useRouter();
@@ -9,8 +10,11 @@ export default function ProductCard({ item, setHoveredId, hoveredId, slug, butto
   const productSlug = item?.slug || "";
   const productId = (item?.id || item?._id)?.toString();
 
-  const image = item?.image || item?.thumbnail?.url || (item?.images?.length ? item?.images[0].url : "/assets/placeholder.jpg");
-  const imageHover = item?.imageHover || item?.hoverImage?.url || image;
+  const rawImage = item?.image || item?.thumbnail?.url || (item?.images?.length ? item?.images[0].url : "");
+  const image = isValidImageUrl(rawImage) ? rawImage : "/assets/placeholder.jpg";
+
+  const rawHover = item?.imageHover || item?.hoverImage?.url || "";
+  const imageHover = isValidImageUrl(rawHover) ? rawHover : image;
 
   const targetUrl = slug
     ? `/collections/${slug}/products/${productSlug}`

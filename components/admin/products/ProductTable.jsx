@@ -20,6 +20,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const isValidImageUrl = (url) => {
+  if (!url || typeof url !== "string") return false;
+  const lower = url.toLowerCase().trim();
+  return lower.startsWith("http://") || lower.startsWith("https://") || lower.startsWith("/");
+};
+
 export default function ProductTable({ products = [], categories = [] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
@@ -240,7 +246,7 @@ export default function ProductTable({ products = [], categories = [] }) {
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-4">
                       <div className="relative h-16 w-16 overflow-hidden rounded-xl border bg-stone-100 dark:bg-stone-900">
-                        {product.images?.[0]?.url ? (
+                        {isValidImageUrl(product.images?.[0]?.url) ? (
                           <Image
                             src={product.images[0].url}
                             alt={product.name}
