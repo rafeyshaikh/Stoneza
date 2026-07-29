@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
-import { UploadCloud, Trash2 } from "lucide-react";
+import { UploadCloud, Trash2, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -16,21 +16,19 @@ export default function ImageUploader({
   hint = "Image uploads to Cloudinary when you save.",
 }) {
   const inputRef = useRef(null);
-  const [previewUrl, setPreviewUrl] = useState(existingImage?.url || "");
 
-  // Build/revoke a local object URL whenever a new file is picked, so we
-  // never touch the network just to show a preview.
+  // Build/revoke a local object URL whenever a new file is picked
+  const objectUrl = useMemo(() => {
+    if (!file) return "";
+    return URL.createObjectURL(file);
+  }, [file]);
+
   useEffect(() => {
-    if (!file) {
-      setPreviewUrl(existingImage?.url || "");
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
-
+    if (!objectUrl) return;
     return () => URL.revokeObjectURL(objectUrl);
-  }, [file, existingImage?.url]);
+  }, [objectUrl]);
+
+  const displayUrl = file ? objectUrl : existingImage?.url || "";
 
   const handlePick = (event) => {
     const picked = event.target.files?.[0];
@@ -72,31 +70,49 @@ export default function ImageUploader({
           className="cursor-pointer bg-white hover:bg-gray-100"
           onClick={() => inputRef.current?.click()}
         >
-          <UploadCloud className="size-4" />
-          {previewUrl ? "Replace" : "Choose image"}
+          {uploading ? (
+            <>
+              <Loader2 className="mr-1.5 size-4 animate-spin" />
+              Uploading...
+            </>
+          ) : (
+            <>
+              <UploadCloud className="mr-1.5 size-4" />
+              {displayUrl ? "Replace" : "Choose image"}
+            </>
+          )}
         </Button>
       </div>
 
-      {previewUrl && (
+      {uploading && !displayUrl && (
+        <div className="mt-4 flex items-center gap-2.5 rounded-xl border border-stone-300 bg-stone-100 p-4 text-xs font-medium text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300">
+          <Loader2 className="size-4 animate-spin text-stone-900 dark:text-stone-100" />
+          <span>Uploading image to Cloudinary... Please wait.</span>
+        </div>
+      )}
+
+      {displayUrl && (
         <div className="relative mt-5 h-48 w-48 overflow-hidden rounded-xl border">
           <Image
-            src={previewUrl}
+            src={displayUrl}
             alt="Preview"
             fill
             className="object-cover"
-            unoptimized={Boolean(file)} // object URLs aren't optimizable by next/image
+            unoptimized={Boolean(file || (displayUrl && (displayUrl.startsWith("blob:") || displayUrl.startsWith("http"))))}
           />
 
-          <Button
-            type="button"
-            size="icon"
-            variant="destructive"
-            className="absolute right-2 top-2"
-            disabled={uploading}
-            onClick={handleRemove}
-          >
-            <Trash2 className="size-4" />
-          </Button>
+          {!uploading && (
+            <Button
+              type="button"
+              size="icon"
+              variant="destructive"
+              className="absolute right-2 top-2 z-10"
+              disabled={uploading}
+              onClick={handleRemove}
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          )}
 
           {file && !uploading && (
             <span className="absolute bottom-2 left-2 rounded-md bg-black/60 px-2 py-0.5 text-xs text-white">
@@ -105,8 +121,9 @@ export default function ImageUploader({
           )}
 
           {uploading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-xs font-medium text-white">
-              Uploading...
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 backdrop-blur-xs p-2 text-center text-xs font-medium text-white transition animate-in fade-in">
+              <Loader2 className="mb-2 size-6 animate-spin text-stone-200" />
+              <span>Uploading to Cloudinary...</span>
             </div>
           )}
         </div>

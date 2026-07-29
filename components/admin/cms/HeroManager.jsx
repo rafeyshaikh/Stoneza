@@ -69,8 +69,11 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
     setActiveSlideIndex(newIndex);
   };
 
+  const [uploadingIndex, setUploadingIndex] = useState(null);
+
   const handleImageSelect = async (index, file) => {
     try {
+      setUploadingIndex(index);
       const uploaded = await uploadImage(file, "homepage/hero");
       if (uploaded) {
         updateSlideField(index, "image", uploaded);
@@ -79,6 +82,8 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
     } catch (e) {
       console.error(e);
       toast.error("Failed to upload slide image");
+    } finally {
+      setUploadingIndex(null);
     }
   };
 
@@ -106,7 +111,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
       {slides.length === 0 ? (
         <div className="flex h-32 flex-col items-center justify-center rounded-xl border border-dashed border-stone-300 bg-white/60 text-sm text-stone-500 dark:border-stone-700 dark:bg-stone-900/60 dark:text-stone-400">
           <ImageIcon className="mb-2 size-6 opacity-40" />
-          No slides added yet. Click "Add Slide" to begin.
+          No slides added yet. Click &quot;Add Slide&quot; to begin.
         </div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
@@ -275,6 +280,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
                     existingImage={slides[activeSlideIndex].image?.url ? slides[activeSlideIndex].image : null}
                     onFileSelect={(file) => handleImageSelect(activeSlideIndex, file)}
                     onRemove={() => handleImageRemove(activeSlideIndex)}
+                    uploading={uploadingIndex === activeSlideIndex}
                     hint="Upload high-resolution landscape images (1920x1080 recommendations)."
                   />
                 </div>

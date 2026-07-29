@@ -285,7 +285,7 @@ export default function ProductTable({ products = [], categories = [] }) {
                   <td className="py-4 text-right">
                     <div className="flex justify-end gap-2">
                       <Link href={`/admin/products/${product._id}/edit`}>
-                        <Button size="icon" variant="outline">
+                        <Button size="icon" variant="outline" className="cursor-pointer">
                           <Pencil className="size-4" />
                         </Button>
                       </Link>
@@ -294,6 +294,7 @@ export default function ProductTable({ products = [], categories = [] }) {
                         size="icon"
                         variant="destructive"
                         onClick={() => handleDelete(product._id)}
+                        className="cursor-pointer"
                       >
                         <Trash2 className="size-4" />
                       </Button>

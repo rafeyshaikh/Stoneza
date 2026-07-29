@@ -27,49 +27,46 @@ export default function HomepageEditor() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetchHomepageData();
-  }, []);
-
-  const fetchHomepageData = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/admin/cms/homepage");
-      const result = await res.json();
-      if (result.success && result.data) {
-        setData({
-          heroSlides: result.data.heroSlides || [],
-          featuredProducts: result.data.featuredProducts || { title: "", caption: "", buttonText: "", bannerImage: { url: "", publicId: "" } },
-          middleBanner: result.data.middleBanner || { title: "", eyebrow: "", caption: "", buttonText: "", buttonLink: "", image: { url: "", publicId: "" } },
-          newArrivalsTitle: result.data.newArrivalsTitle || "What's New",
-          threeBanners: result.data.threeBanners || [],
-          brandPromos: result.data.brandPromos || [],
-          testimonials: result.data.testimonials || [],
-          footer: result.data.footer || { caption: "", copyright: "" },
-        });
+    let ignore = false;
+    async function loadData() {
+      try {
+        const res = await fetch("/api/admin/cms/homepage");
+        const result = await res.json();
+        if (!ignore && result.success && result.data) {
+          setData({
+            heroSlides: result.data.heroSlides || [],
+            featuredProducts: result.data.featuredProducts || { title: "", caption: "", buttonText: "", bannerImage: { url: "", publicId: "" } },
+            middleBanner: result.data.middleBanner || { title: "", eyebrow: "", caption: "", buttonText: "", buttonLink: "", image: { url: "", publicId: "" } },
+            newArrivalsTitle: result.data.newArrivalsTitle || "What's New",
+            threeBanners: result.data.threeBanners || [],
+            brandPromos: result.data.brandPromos || [],
+            testimonials: result.data.testimonials || [],
+            footer: result.data.footer || { caption: "", copyright: "" },
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        toast.error("Failed to load homepage CMS data");
+      } finally {
+        if (!ignore) setLoading(false);
       }
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to load homepage CMS data");
-    } finally {
-      setLoading(false);
     }
-  };
 
-  const fileToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("Could not read file"));
-      reader.readAsDataURL(file);
-    });
+    loadData();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const uploadImage = async (file, folder = "homepage") => {
     try {
-      const base64 = await fileToBase64(file);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", folder);
+
       const res = await fetch("/api/admin/upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: base64, folder }),
+        body: formData,
       });
       const result = await res.json();
       if (!result.success) throw new Error(result.message || "Upload failed");
@@ -110,18 +107,18 @@ export default function HomepageEditor() {
   }
 
   return (
-    <div className="space-y-6 pb-20">
-      {/* FLOATING ACTION SAVE BUTTON */}
-      <div className="flex items-center justify-between border-b pb-4">
+    <div className="space-y-6 pb-20 relative">
+      {/* STICKY ACTION SAVE BAR */}
+      <div className="sticky top-16 z-30 flex items-center justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
         <div>
-          <h2 className="font-heading text-xl font-bold text-stone-900 dark:text-stone-100">
+          <h2 className="font-heading text-base font-bold text-stone-900 dark:text-stone-100">
             Customize Layout & Settings
           </h2>
-          <p className="text-sm text-stone-500">
-            Modify text banners, images, dynamic sliders, testimonials and SEO metadata.
+          <p className="text-xs text-stone-500 dark:text-stone-400">
+            Modify text banners, images, dynamic sliders, testimonials and footer metadata.
           </p>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="shadow-sm cursor-pointer bg-white hover:bg-gray-100">
+        <Button onClick={handleSave} disabled={saving} className="shadow-sm cursor-pointer bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200">
           {saving ? (
             <>
               <Loader2 className="mr-2 size-4 animate-spin" /> Saving...

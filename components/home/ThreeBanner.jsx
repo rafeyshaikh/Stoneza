@@ -40,16 +40,18 @@ export default function ThreeBanner({ banners }) {
             alt={item.title || "Stoneza Banner"}
             fill
             className="object-cover transition-transform duration-[4000ms] group-hover:scale-110"
-            unoptimized={item.image.startsWith("http")}
+            unoptimized={Boolean(item.image && (item.image.startsWith("http") || item.image.startsWith("data:")))}
           />
 
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
-            <Link href={item.link}>
-              <button className="border border-white px-6 md:px-8 py-3 font-heading text-[11px] md:text-[12px] font-medium uppercase tracking-[0.3em] text-white whitespace-nowrap cursor-pointer hover:bg-white hover:text-black transition duration-300">
-                {item.title}
-              </button>
-            </Link>
-          </div>
+          {item.title && (
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+              <Link href={item.link}>
+                <button className="border border-white px-6 md:px-8 py-3 font-heading text-[11px] md:text-[12px] font-medium uppercase tracking-[0.3em] text-white whitespace-nowrap cursor-pointer hover:bg-white hover:text-black transition duration-300">
+                  {item.title}
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       ))}
     </div>

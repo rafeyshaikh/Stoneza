@@ -1,19 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import { toast } from "sonner";
-import { Image as ImageIcon, Sparkles, Layout, Globe, Footprints, Plus, Trash2 } from "lucide-react";
+import { Image as ImageIcon, Sparkles, Layout, Footprints, Plus, Trash2 } from "lucide-react";
 
 export default function SectionManager({ data = {}, onChange, uploadImage }) {
   const [activeTab, setActiveTab] = useState("middleBanner");
+  const [uploadingKey, setUploadingKey] = useState(null);
 
   const updateSubField = (section, field, value) => {
     onChange({
-      ...data,
       [section]: {
         ...data[section],
         [field]: value,
@@ -23,6 +24,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
 
   const handleMiddleBannerUpload = async (file) => {
     try {
+      setUploadingKey("middleBanner");
       const uploaded = await uploadImage(file, "homepage/middle");
       if (uploaded) {
         updateSubField("middleBanner", "image", uploaded);
@@ -31,76 +33,84 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
     } catch (e) {
       console.error(e);
       toast.error("Upload failed");
+    } finally {
+      setUploadingKey(null);
     }
   };
 
   // Three Banners handlers
   const handleThreeBannerUpload = async (index, file) => {
     try {
+      setUploadingKey(`threeBanners-${index}`);
       const uploaded = await uploadImage(file, "homepage/threebanners");
       if (uploaded) {
         const list = [...(data.threeBanners || [])];
         list[index] = { ...list[index], image: uploaded };
-        onChange({ ...data, threeBanners: list });
+        onChange({ threeBanners: list });
         toast.success("ThreeBanner image uploaded");
       }
     } catch (e) {
       console.error(e);
       toast.error("Upload failed");
+    } finally {
+      setUploadingKey(null);
     }
   };
 
   const updateThreeBannerField = (index, field, value) => {
     const list = [...(data.threeBanners || [])];
     list[index] = { ...list[index], [field]: value };
-    onChange({ ...data, threeBanners: list });
+    onChange({ threeBanners: list });
   };
 
   const addThreeBanner = () => {
     const list = [...(data.threeBanners || [])];
     list.push({ title: "", image: { url: "", publicId: "" }, buttonLink: "" });
-    onChange({ ...data, threeBanners: list });
+    onChange({ threeBanners: list });
     toast.success("Added new banner column");
   };
 
   const removeThreeBanner = (index) => {
     const list = (data.threeBanners || []).filter((_, idx) => idx !== index);
-    onChange({ ...data, threeBanners: list });
+    onChange({ threeBanners: list });
     toast.success("Removed banner column");
   };
 
   // Brand Promos handlers
   const handleBrandPromoUpload = async (index, file) => {
     try {
+      setUploadingKey(`brandPromos-${index}`);
       const uploaded = await uploadImage(file, "homepage/promos");
       if (uploaded) {
         const list = [...(data.brandPromos || [])];
         list[index] = { ...list[index], image: uploaded };
-        onChange({ ...data, brandPromos: list });
+        onChange({ brandPromos: list });
         toast.success("Brand promo image uploaded");
       }
     } catch (e) {
       console.error(e);
       toast.error("Upload failed");
+    } finally {
+      setUploadingKey(null);
     }
   };
 
   const updateBrandPromoField = (index, field, value) => {
     const list = [...(data.brandPromos || [])];
     list[index] = { ...list[index], [field]: value };
-    onChange({ ...data, brandPromos: list });
+    onChange({ brandPromos: list });
   };
 
   const addBrandPromo = () => {
     const list = [...(data.brandPromos || [])];
     list.push({ title: "", image: { url: "", publicId: "" }, caption: "", buttonText: "", buttonLink: "" });
-    onChange({ ...data, brandPromos: list });
+    onChange({ brandPromos: list });
     toast.success("Added brand promo block");
   };
 
   const removeBrandPromo = (index) => {
     const list = (data.brandPromos || []).filter((_, idx) => idx !== index);
-    onChange({ ...data, brandPromos: list });
+    onChange({ brandPromos: list });
     toast.success("Removed brand promo block");
   };
 
@@ -211,6 +221,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
                     existingImage={data.middleBanner?.image?.url ? data.middleBanner.image : null}
                     onFileSelect={handleMiddleBannerUpload}
                     onRemove={() => updateSubField("middleBanner", "image", { url: "", publicId: "" })}
+                    uploading={uploadingKey === "middleBanner"}
                     hint="Upload landscape image (approx. 1920x600 recommendations)."
                   />
                 </div>
@@ -275,8 +286,9 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
                         onRemove={() => {
                           const list = [...(data.threeBanners || [])];
                           list[index] = { ...list[index], image: { url: "", publicId: "" } };
-                          onChange({ ...data, threeBanners: list });
+                          onChange({ threeBanners: list });
                         }}
+                        uploading={uploadingKey === `threeBanners-${index}`}
                         hint="Portrait image."
                       />
                     </div>
@@ -365,6 +377,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
                           list[index] = { ...list[index], image: { url: "", publicId: "" } };
                           onChange({ ...data, brandPromos: list });
                         }}
+                        uploading={uploadingKey === `brandPromos-${index}`}
                         hint="Promo image."
                       />
                     </div>

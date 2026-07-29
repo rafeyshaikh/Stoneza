@@ -1,9 +1,15 @@
 import { connectDB } from "@/lib/databaseConnection";
 import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import Homepage from "@/models/Homepage.model";
 import cloudinary from "@/lib/cloudinary";
+
+const defaultThreeBanners = [
+  { title: "Photo Frames", image: { url: "/assets/others/Below_Banner_1.jpg", publicId: "" }, buttonLink: "/products" },
+  { title: "Decor Object", image: { url: "/assets/others/Below_Banner_2.jpg", publicId: "" }, buttonLink: "/products" },
+  { title: "Book Boxes", image: { url: "/assets/others/Below_Banner_3.jpg", publicId: "" }, buttonLink: "/products" },
+];
 
 async function getOrCreateHomepageDocument() {
   let homepage = await Homepage.findOne();
@@ -25,7 +31,7 @@ async function getOrCreateHomepageDocument() {
         image: { url: "", publicId: "" }
       },
       newArrivalsTitle: "What's New",
-      threeBanners: [],
+      threeBanners: defaultThreeBanners,
       brandPromos: [],
       testimonials: [],
       footer: {
@@ -38,6 +44,10 @@ async function getOrCreateHomepageDocument() {
         keywords: "",
       },
     });
+  } else if (!homepage.threeBanners || homepage.threeBanners.length === 0) {
+    homepage.threeBanners = defaultThreeBanners;
+    homepage.markModified("threeBanners");
+    await homepage.save();
   }
 
   return homepage;
@@ -124,20 +134,48 @@ export async function PATCH(request) {
       }
     }
 
-    // Update fields from the body
-    if (body.heroSlides !== undefined) homepage.heroSlides = body.heroSlides;
-    if (body.featuredProducts !== undefined) homepage.featuredProducts = body.featuredProducts;
-    if (body.middleBanner !== undefined) homepage.middleBanner = body.middleBanner;
-    if (body.newArrivalsTitle !== undefined) homepage.newArrivalsTitle = body.newArrivalsTitle;
-    if (body.threeBanners !== undefined) homepage.threeBanners = body.threeBanners;
-    if (body.brandPromos !== undefined) homepage.brandPromos = body.brandPromos;
-    if (body.testimonials !== undefined) homepage.testimonials = body.testimonials;
-    if (body.footer !== undefined) homepage.footer = body.footer;
+    // Update fields from the body with explicit Mongoose markModified
+    if (body.heroSlides !== undefined) {
+      homepage.heroSlides = body.heroSlides;
+      homepage.markModified("heroSlides");
+    }
+    if (body.featuredProducts !== undefined) {
+      homepage.featuredProducts = body.featuredProducts;
+      homepage.markModified("featuredProducts");
+    }
+    if (body.middleBanner !== undefined) {
+      homepage.middleBanner = body.middleBanner;
+      homepage.markModified("middleBanner");
+    }
+    if (body.newArrivalsTitle !== undefined) {
+      homepage.newArrivalsTitle = body.newArrivalsTitle;
+    }
+    if (body.threeBanners !== undefined) {
+      homepage.threeBanners = body.threeBanners;
+      homepage.markModified("threeBanners");
+    }
+    if (body.brandPromos !== undefined) {
+      homepage.brandPromos = body.brandPromos;
+      homepage.markModified("brandPromos");
+    }
+    if (body.testimonials !== undefined) {
+      homepage.testimonials = body.testimonials;
+      homepage.markModified("testimonials");
+    }
+    if (body.footer !== undefined) {
+      homepage.footer = body.footer;
+      homepage.markModified("footer");
+    }
 
     await homepage.save();
 
-    // Revalidate the homepage cache
-    revalidateTag("homepage-data");
+    // Revalidate the homepage cache both by tag and by path
+    try {
+      revalidateTag("homepage-data");
+      revalidatePath("/");
+    } catch (e) {
+      console.warn("Revalidation warning:", e);
+    }
 
     return response(true, 200, "Homepage CMS data updated successfully", homepage);
   } catch (error) {
