@@ -9,11 +9,10 @@ import Blog from "@/models/Blog.model";
 import Homepage from "@/models/Homepage.model";
 import Seo from "@/models/Seo.model";
 import { connectDB } from "@/lib/databaseConnection";
-import BigBanner from "@/components/home/BigBanner";
+import { getAboutData } from "@/lib/getAboutData";
 import ThreeBanner from "@/components/home/ThreeBanner";
 import Carousel from "@/components/home/Carousel";
 import { whatsNewData } from "@/data/WhatsNewData";
-import ShopTheLook from "@/components/home/ShopTheLook";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import Review from "@/components/home/Review";
 import InstagramSection from "@/components/home/InstagramSection";
@@ -21,6 +20,7 @@ import EnquiryForm from "@/components/common/EnquiryForm";
 import BrandPromo from "@/components/home/BrandPromo";
 import RecentBlogs from "@/components/home/RecentBlogs";
 import MiddleBanner from "@/components/home/MiddleBanner";
+import HomeAboutSection from "@/components/home/HomeAboutSection";
 
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 
@@ -40,6 +40,8 @@ export default async function Home() {
 
   const homepage = await Homepage.findOne().lean();
   const safeHomepage = homepage ? JSON.parse(JSON.stringify(homepage)) : null;
+
+  const safeAbout = await getAboutData();
 
   const featured = await Product.find({ isFeatured: true, status: "published" })
     .select("name slug images hoverImage price")
@@ -99,6 +101,7 @@ export default async function Home() {
         <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
       )}
       <FeaturedProducts products={safeFeatured} cmsData={safeHomepage?.featuredProducts} />
+      <HomeAboutSection storyData={safeAbout?.story} />
       <MiddleBanner
         src={safeHomepage?.middleBanner?.image?.url || "/assets/hero/All-Products-Banner.png"}
         title={safeHomepage?.middleBanner?.title || "All Products"}
@@ -113,7 +116,6 @@ export default async function Home() {
         <Carousel title="Sub Categories" data={subCategoryData}  />
       )}
       <EnquiryForm />
-      {/* <ShopTheLook /> */}
       <BrandPromo promos={safeHomepage?.brandPromos} />
       <WhyChooseUs />
       <Review reviews={safeHomepage?.testimonials} />

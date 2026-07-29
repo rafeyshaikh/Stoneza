@@ -69,26 +69,24 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
     setActiveSlideIndex(newIndex);
   };
 
-  const [uploadingIndex, setUploadingIndex] = useState(null);
-
-  const handleImageSelect = async (index, file) => {
-    try {
-      setUploadingIndex(index);
-      const uploaded = await uploadImage(file, "homepage/hero");
-      if (uploaded) {
-        updateSlideField(index, "image", uploaded);
-        toast.success("Image uploaded successfully");
+  const handleImageSelect = (index, file) => {
+    const updated = slides.map((s, idx) => {
+      if (idx === index) {
+        return { ...s, pendingFile: file };
       }
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to upload slide image");
-    } finally {
-      setUploadingIndex(null);
-    }
+      return s;
+    });
+    onChange(updated);
   };
 
   const handleImageRemove = (index) => {
-    updateSlideField(index, "image", { url: "", publicId: "" });
+    const updated = slides.map((s, idx) => {
+      if (idx === index) {
+        return { ...s, pendingFile: null, image: { url: "", publicId: "" } };
+      }
+      return s;
+    });
+    onChange(updated);
     toast.success("Image removed");
   };
 
@@ -277,10 +275,10 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
 
                 <div className="mt-3">
                   <ImageUploader
+                    file={slides[activeSlideIndex].pendingFile}
                     existingImage={slides[activeSlideIndex].image?.url ? slides[activeSlideIndex].image : null}
                     onFileSelect={(file) => handleImageSelect(activeSlideIndex, file)}
                     onRemove={() => handleImageRemove(activeSlideIndex)}
-                    uploading={uploadingIndex === activeSlideIndex}
                     hint="Upload high-resolution landscape images (1920x1080 recommendations)."
                   />
                 </div>

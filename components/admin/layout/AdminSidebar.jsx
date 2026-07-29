@@ -16,13 +16,16 @@ import {
 import { BiSolidCommentDetail } from "react-icons/bi";
 
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Grid2X2 },
   { label: "Enquiries", href: "/admin/enquiries", icon: BiSolidCommentDetail },
+  { label: "Users", href: "/admin/users", icon: Users },
   { label: "Homepage CMS", href: "/admin/cms/homepage", icon: FileText },
+  { label: "About Us CMS", href: "/admin/cms/about", icon: FileText },
   { label: "Pages CMS", href: "/admin/cms/pages", icon: FileText },
   { label: "Blog CMS", href: "/admin/cms/blogs", icon: NotebookPen },
   { label: "SEO", href: "/admin/seo", icon: Search },
@@ -31,6 +34,14 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const { userRole } = useAuth();
+
+  const displayedNavItems = navItems.filter((item) => {
+    if (item.href === "/admin/users") {
+      return userRole === "admin";
+    }
+    return true;
+  });
 
   return (
     <aside className="hidden lg:flex lg:w-72 lg:flex-col border-r border-stone-300/60 bg-stone-100/70 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/70 lg:sticky lg:top-0 lg:h-screen">
@@ -46,7 +57,7 @@ export default function AdminSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 p-3">
-        {navItems.map((item) => {
+        {displayedNavItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             item.href === "/admin"

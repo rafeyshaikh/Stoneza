@@ -22,39 +22,15 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
     });
   };
 
-  const handleMiddleBannerUpload = async (file) => {
-    try {
-      setUploadingKey("middleBanner");
-      const uploaded = await uploadImage(file, "homepage/middle");
-      if (uploaded) {
-        updateSubField("middleBanner", "image", uploaded);
-        toast.success("Middle banner uploaded");
-      }
-    } catch (e) {
-      console.error(e);
-      toast.error("Upload failed");
-    } finally {
-      setUploadingKey(null);
-    }
+  const handleMiddleBannerSelect = (file) => {
+    updateSubField("middleBanner", "pendingFile", file);
   };
 
   // Three Banners handlers
-  const handleThreeBannerUpload = async (index, file) => {
-    try {
-      setUploadingKey(`threeBanners-${index}`);
-      const uploaded = await uploadImage(file, "homepage/threebanners");
-      if (uploaded) {
-        const list = [...(data.threeBanners || [])];
-        list[index] = { ...list[index], image: uploaded };
-        onChange({ threeBanners: list });
-        toast.success("ThreeBanner image uploaded");
-      }
-    } catch (e) {
-      console.error(e);
-      toast.error("Upload failed");
-    } finally {
-      setUploadingKey(null);
-    }
+  const handleThreeBannerSelect = (index, file) => {
+    const list = [...(data.threeBanners || [])];
+    list[index] = { ...list[index], pendingFile: file };
+    onChange({ threeBanners: list });
   };
 
   const updateThreeBannerField = (index, field, value) => {
@@ -77,22 +53,10 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
   };
 
   // Brand Promos handlers
-  const handleBrandPromoUpload = async (index, file) => {
-    try {
-      setUploadingKey(`brandPromos-${index}`);
-      const uploaded = await uploadImage(file, "homepage/promos");
-      if (uploaded) {
-        const list = [...(data.brandPromos || [])];
-        list[index] = { ...list[index], image: uploaded };
-        onChange({ brandPromos: list });
-        toast.success("Brand promo image uploaded");
-      }
-    } catch (e) {
-      console.error(e);
-      toast.error("Upload failed");
-    } finally {
-      setUploadingKey(null);
-    }
+  const handleBrandPromoSelect = (index, file) => {
+    const list = [...(data.brandPromos || [])];
+    list[index] = { ...list[index], pendingFile: file };
+    onChange({ brandPromos: list });
   };
 
   const updateBrandPromoField = (index, field, value) => {
@@ -218,10 +182,13 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
 
                 <div className="flex flex-col justify-end">
                   <ImageUploader
+                    file={data.middleBanner?.pendingFile}
                     existingImage={data.middleBanner?.image?.url ? data.middleBanner.image : null}
-                    onFileSelect={handleMiddleBannerUpload}
-                    onRemove={() => updateSubField("middleBanner", "image", { url: "", publicId: "" })}
-                    uploading={uploadingKey === "middleBanner"}
+                    onFileSelect={handleMiddleBannerSelect}
+                    onRemove={() => {
+                      updateSubField("middleBanner", "image", { url: "", publicId: "" });
+                      updateSubField("middleBanner", "pendingFile", null);
+                    }}
                     hint="Upload landscape image (approx. 1920x600 recommendations)."
                   />
                 </div>
@@ -281,14 +248,14 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
 
                     <div className="pt-2">
                       <ImageUploader
+                        file={banner.pendingFile}
                         existingImage={banner.image?.url ? banner.image : null}
-                        onFileSelect={(file) => handleThreeBannerUpload(index, file)}
+                        onFileSelect={(file) => handleThreeBannerSelect(index, file)}
                         onRemove={() => {
                           const list = [...(data.threeBanners || [])];
-                          list[index] = { ...list[index], image: { url: "", publicId: "" } };
+                          list[index] = { ...list[index], pendingFile: null, image: { url: "", publicId: "" } };
                           onChange({ threeBanners: list });
                         }}
-                        uploading={uploadingKey === `threeBanners-${index}`}
                         hint="Portrait image."
                       />
                     </div>
@@ -370,14 +337,14 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
 
                     <div className="pt-2">
                       <ImageUploader
+                        file={promo.pendingFile}
                         existingImage={promo.image?.url ? promo.image : null}
-                        onFileSelect={(file) => handleBrandPromoUpload(index, file)}
+                        onFileSelect={(file) => handleBrandPromoSelect(index, file)}
                         onRemove={() => {
                           const list = [...(data.brandPromos || [])];
-                          list[index] = { ...list[index], image: { url: "", publicId: "" } };
-                          onChange({ ...data, brandPromos: list });
+                          list[index] = { ...list[index], pendingFile: null, image: { url: "", publicId: "" } };
+                          onChange({ brandPromos: list });
                         }}
-                        uploading={uploadingKey === `brandPromos-${index}`}
                         hint="Promo image."
                       />
                     </div>

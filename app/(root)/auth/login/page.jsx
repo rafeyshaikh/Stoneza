@@ -178,12 +178,12 @@ export default function LoginPage() {
 
               {/* Forgot Password */}
               <div className="flex justify-end mt-2">
-                <button
-                  type="button"
-                  className="text-[13px] text-[#6e7885] hover:underline"
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-[13px] text-[#6e7885] hover:underline cursor-pointer"
                 >
                   Forgot password?
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -204,7 +204,7 @@ export default function LoginPage() {
             {/* Register Text */}
             <div className="text-center mb-5">
               <p className="text-[14px] text-[#6f6f6f] leading-8">
-                Don't have an account? Enter your mobile number to continue to
+                Don&apos;t have an account? Enter your mobile number to continue to
                 register.
               </p>
 

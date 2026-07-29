@@ -1,30 +1,13 @@
 import mongoose from "mongoose";
 
-const imageSchema = new mongoose.Schema(
-  {
-    url: String,
-    publicId: String,
-  },
-  { _id: false },
-);
-
-const aboutUsSchema = new mongoose.Schema(
-  {
-    title: String,
-    content: String,
-    images: [imageSchema],
-  },
-  { _id: false },
-);
-
 const contactUsSchema = new mongoose.Schema(
   {
     address: String,
     phone: String,
-    whatsapp:String,
-    youtube:String,
-    instagram:String,
-    facebook:String,
+    whatsapp: String,
+    youtube: String,
+    instagram: String,
+    facebook: String,
     email: String,
     mapEmbedCode: String,
   },
@@ -33,15 +16,11 @@ const contactUsSchema = new mongoose.Schema(
 
 const policySchema = new mongoose.Schema(
   { title: String, content: String },
-  {
-    _id: false,
-  },
+  { _id: false },
 );
 
 const pageSchema = new mongoose.Schema(
   {
-    aboutUs: aboutUsSchema,
-
     contactUs: contactUsSchema,
 
     privacyPolicy: policySchema,

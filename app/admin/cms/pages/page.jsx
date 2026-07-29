@@ -15,15 +15,10 @@ export default function StaticPagesCmsPage() {
 
       <PageHeader
         title="Static Pages CMS"
-        description="Manage About, Policies, Terms, and Contact pages"
+        description="Manage Policies, Terms, and Contact details"
       />
 
       <div className="space-y-5">
-        <PageEditor
-          pageKey="aboutUs"
-          title="About Us"
-        />
-
         <PageEditor
           pageKey="privacyPolicy"
           title="Privacy Policy"

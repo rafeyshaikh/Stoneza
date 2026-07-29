@@ -3,7 +3,6 @@ import { response } from "@/lib/helperFunction";
 import Pages from "@/models/Pages.model";
 
 const ALLOWED_PAGES = [
-  "aboutUs",
   "contactUs",
   "privacyPolicy",
   "termsAndConditions",
@@ -16,11 +15,6 @@ async function getOrCreatePagesDocument() {
 
   if (!pages) {
     pages = await Pages.create({
-      aboutUs: {
-        title: "About Us",
-        content: "",
-        images: [],
-      },
       contactUs: {
         address: "",
         phone: "",

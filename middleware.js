@@ -44,7 +44,7 @@ export async function middleware(req) {
 
   const payload = await verifyToken(token);
 
-  if (!payload || payload.role !== "admin") {
+  if (!payload || (payload.role !== "admin" && payload.role !== "subadmin")) {
     if (isAdminApi) {
       return NextResponse.json(
         {

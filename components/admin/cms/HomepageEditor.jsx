@@ -81,17 +81,96 @@ export default function HomepageEditor() {
   const handleSave = async () => {
     try {
       setSaving(true);
+
+      // Deep clone current state payload
+      const payload = JSON.parse(JSON.stringify(data));
+
+      let pendingUploadsCount = 0;
+      if (data.heroSlides?.some((s) => s.pendingFile)) pendingUploadsCount++;
+      if (data.featuredProducts?.pendingFile) pendingUploadsCount++;
+      if (data.middleBanner?.pendingFile) pendingUploadsCount++;
+      if (data.threeBanners?.some((b) => b.pendingFile)) pendingUploadsCount++;
+      if (data.brandPromos?.some((p) => p.pendingFile)) pendingUploadsCount++;
+
+      if (pendingUploadsCount > 0) {
+        toast.loading("Uploading images to Cloudinary...", { id: "cms-save" });
+      } else {
+        toast.loading("Saving homepage settings...", { id: "cms-save" });
+      }
+
+      // 1. Process Hero Slides pending images
+      if (data.heroSlides && data.heroSlides.length > 0) {
+        for (let i = 0; i < data.heroSlides.length; i++) {
+          if (data.heroSlides[i].pendingFile) {
+            const uploaded = await uploadImage(data.heroSlides[i].pendingFile, "homepage/hero");
+            if (uploaded) {
+              payload.heroSlides[i].image = uploaded;
+            }
+          }
+          delete payload.heroSlides[i].pendingFile;
+        }
+      }
+
+      // 2. Process Featured Products Banner pending image
+      if (data.featuredProducts?.pendingFile) {
+        const uploaded = await uploadImage(data.featuredProducts.pendingFile, "homepage/featured");
+        if (uploaded) {
+          payload.featuredProducts.bannerImage = uploaded;
+        }
+        delete payload.featuredProducts.pendingFile;
+      }
+
+      // 3. Process Middle Banner pending image
+      if (data.middleBanner?.pendingFile) {
+        const uploaded = await uploadImage(data.middleBanner.pendingFile, "homepage/middle");
+        if (uploaded) {
+          payload.middleBanner.image = uploaded;
+        }
+        delete payload.middleBanner.pendingFile;
+      }
+
+      // 4. Process Three Banners pending images
+      if (data.threeBanners && data.threeBanners.length > 0) {
+        for (let i = 0; i < data.threeBanners.length; i++) {
+          if (data.threeBanners[i].pendingFile) {
+            const uploaded = await uploadImage(data.threeBanners[i].pendingFile, "homepage/threebanners");
+            if (uploaded) {
+              payload.threeBanners[i].image = uploaded;
+            }
+          }
+          delete payload.threeBanners[i].pendingFile;
+        }
+      }
+
+      // 5. Process Brand Promos pending images
+      if (data.brandPromos && data.brandPromos.length > 0) {
+        for (let i = 0; i < data.brandPromos.length; i++) {
+          if (data.brandPromos[i].pendingFile) {
+            const uploaded = await uploadImage(data.brandPromos[i].pendingFile, "homepage/promos");
+            if (uploaded) {
+              payload.brandPromos[i].image = uploaded;
+            }
+          }
+          delete payload.brandPromos[i].pendingFile;
+        }
+      }
+
+      toast.loading("Saving settings to database...", { id: "cms-save" });
+
       const res = await fetch("/api/admin/cms/homepage", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       const result = await res.json();
       if (!result.success) throw new Error(result.message || "Save failed");
-      toast.success("Homepage CMS updated successfully");
+
+      // Synchronize local state with saved payload
+      setData(payload);
+      toast.success("Homepage CMS updated successfully", { id: "cms-save" });
     } catch (e) {
       console.error(e);
-      toast.error(e.message || "Failed to save homepage settings");
+      toast.error(e.message || "Failed to save homepage settings", { id: "cms-save" });
     } finally {
       setSaving(false);
     }

@@ -7,9 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import { toast } from "sonner";
 
-export default function FeaturedCollectionsManager({ data = {}, onChange, uploadImage }) {
-  const [uploading, setUploading] = useState(false);
-
+export default function FeaturedCollectionsManager({ data = {}, onChange }) {
   const updateField = (field, value) => {
     onChange({
       ...data,
@@ -17,24 +15,19 @@ export default function FeaturedCollectionsManager({ data = {}, onChange, upload
     });
   };
 
-  const handleImageSelect = async (file) => {
-    try {
-      setUploading(true);
-      const uploaded = await uploadImage(file, "homepage/featured");
-      if (uploaded) {
-        updateField("bannerImage", uploaded);
-        toast.success("Featured banner uploaded successfully");
-      }
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to upload featured banner");
-    } finally {
-      setUploading(false);
-    }
+  const handleImageSelect = (file) => {
+    onChange({
+      ...data,
+      pendingFile: file,
+    });
   };
 
   const handleImageRemove = () => {
-    updateField("bannerImage", { url: "", publicId: "" });
+    onChange({
+      ...data,
+      pendingFile: null,
+      bannerImage: { url: "", publicId: "" },
+    });
     toast.success("Featured banner removed");
   };
 
@@ -85,10 +78,10 @@ export default function FeaturedCollectionsManager({ data = {}, onChange, upload
 
         <div className="flex flex-col justify-end">
           <ImageUploader
+            file={data.pendingFile}
             existingImage={data.bannerImage?.url ? data.bannerImage : null}
             onFileSelect={handleImageSelect}
             onRemove={handleImageRemove}
-            uploading={uploading}
             hint="Upload promotion sidebar image (approx. 1200x700 aspect recommendation)."
           />
         </div>

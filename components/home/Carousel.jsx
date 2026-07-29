@@ -31,6 +31,8 @@ export default function Carousel({ title, data, itemsPerView = 3, button = false
     }
   }, [emblaApi, itemsPerView]);
 
+  const arrowVisible = data.length > itemsPerView;
+
   const scrollPrev = useCallback(() => {
     if (!emblaApi) return;
 
@@ -56,22 +58,24 @@ export default function Carousel({ title, data, itemsPerView = 3, button = false
           </h2>
 
           {/* Left Arrow */}
+          {arrowVisible && (
+            <>
 
-          <button
-            onClick={scrollPrev}
-            className="absolute left-[-50px] top-1/2 z-20 hidden -translate-y-1/2 text-5xl text-[#393938] transition hover:opacity-60 lg:block"
-          >
-            <PiCaretLeftThin />
-          </button>
+              <button
+                onClick={scrollPrev}
+                className="absolute left-[-50px] top-1/2 z-20 hidden -translate-y-1/2 text-5xl text-[#393938] transition hover:opacity-60 lg:block"
+              >
+                <PiCaretLeftThin />
+              </button>
 
-          {/* Right Arrow */}
-
-          <button
-            onClick={scrollNext}
-            className="absolute right-[-50px] top-1/2 z-20 hidden -translate-y-1/2 text-5xl text-[#393938] transition hover:opacity-60 lg:block"
-          >
-            <PiCaretRightThin />
-          </button>
+              <button
+                onClick={scrollNext}
+                className="absolute right-[-50px] top-1/2 z-20 hidden -translate-y-1/2 text-5xl text-[#393938] transition hover:opacity-60 lg:block"
+              >
+                <PiCaretRightThin />
+              </button>
+            </>
+          )}
 
           {/* Embla */}
 
