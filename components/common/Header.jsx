@@ -42,33 +42,48 @@ export default function Header() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let active = true;
     if (!searchQuery.trim()) {
-      setSearchResults([]);
-      return;
+      const timer = setTimeout(() => {
+        if (active) {
+          setSearchResults([]);
+          setLoading(false);
+        }
+      }, 0);
+      return () => {
+        active = false;
+        clearTimeout(timer);
+      };
     }
 
-    setLoading(true);
     const delayDebounce = setTimeout(async () => {
       try {
+        if (active) setLoading(true);
         const res = await fetch(`/api/public/products?search=${encodeURIComponent(searchQuery)}&limit=4`);
         const data = await res.json();
-        if (data.success && data.data && data.data.items) {
+        if (active && data.success && data.data && data.data.items) {
           setSearchResults(data.data.items);
         }
       } catch (err) {
         console.error("Header search error:", err);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }, 300);
 
-    return () => clearTimeout(delayDebounce);
+    return () => {
+      active = false;
+      clearTimeout(delayDebounce);
+    };
   }, [searchQuery]);
 
   useEffect(() => {
-    setIsSearchOpen(false);
-    setSearchQuery("");
-    setSearchResults([]);
+    const timer = setTimeout(() => {
+      setIsSearchOpen(false);
+      setSearchQuery("");
+      setSearchResults([]);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   const matchedCategories = [];
@@ -144,7 +159,7 @@ export default function Header() {
       <header
         className={`
         fixed top-0 left-0 right-0 z-[9999]
-        transition-all duration-500 w-screen
+        transition-all duration-500 w-full
         ${isPastWhyChooseUs ? "-translate-y-full pointer-events-none" : "translate-y-0"}
         ${darkMode
             ? "bg-[#C5B9AB] text-[#393938] shadow-sm"
