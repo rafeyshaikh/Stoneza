@@ -3,7 +3,7 @@ import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
 import { generateSlug } from "@/lib/generateSlug";
 import cloudinary from "@/lib/cloudinary";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import Category from "@/models/Category.model";
 
@@ -177,6 +177,7 @@ export async function PATCH(request, { params }) {
 
     revalidateTag("layout-categories");
     revalidateTag("public-categories");
+    revalidatePath("/", "layout");
 
     return response(true, 200, "Category updated successfully", category);
   } catch (error) {
@@ -240,6 +241,7 @@ export async function DELETE(request, { params }) {
 
     revalidateTag("layout-categories");
     revalidateTag("public-categories");
+    revalidatePath("/", "layout");
 
     return response(true, 200, "Category deleted successfully");
   } catch (error) {

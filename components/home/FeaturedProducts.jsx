@@ -137,7 +137,7 @@ export default function FeaturedProducts({ products = [], cmsData }) {
                   alt={item.title}
                   width={300}
                   height={400}
-                  className="w-full h-auto transition-opacity duration-500 group-hover:opacity-0"
+                  className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
                 />
 
                 {/* Hover Image */}

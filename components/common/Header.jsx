@@ -33,8 +33,7 @@ export default function Header() {
   const [openCategory, setOpenCategory] = useState(null);
 
   const pathname = usePathname();
-  const normalizedPath = pathname ? pathname.split("?")[0].replace(/\/$/, "") : "";
-  const isHomePage = normalizedPath === "" || normalizedPath === "/";
+  const isHomePage = pathname === "/";
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

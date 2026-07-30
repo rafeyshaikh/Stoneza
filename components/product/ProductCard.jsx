@@ -34,7 +34,7 @@ export default function ProductCard({ item, setHoveredId, hoveredId, slug, butto
             src={setHoveredId && hoveredId === productId ? imageHover : image}
             alt={name}
             fill
-            className="h-full w-full object-contain"
+            className="h-full w-full object-cover"
           />
 
           {button && setHoveredId && hoveredId === productId && (

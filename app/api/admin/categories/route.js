@@ -3,7 +3,7 @@ import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
 import { generateSlug } from "@/lib/generateSlug";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import Category from "@/models/Category.model";
 
 export async function GET() {
@@ -123,6 +123,7 @@ export async function POST(request) {
     // Revalidate category tree cache
     revalidateTag("layout-categories");
     revalidateTag("public-categories");
+    revalidatePath("/", "layout");
 
     return response(true, 201, "Category created successfully", category);
   } catch (error) {

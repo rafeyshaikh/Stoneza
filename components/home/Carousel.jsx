@@ -127,7 +127,7 @@ function ProductCard({ item, button }) {
                 src={hovered ? (item.hoverImage ? item.hoverImage : item.image) : item.image}
                 alt={item.title}
                 fill
-                className="object-contain transition-transform duration-700"
+                className="object-cover transition-transform duration-700"
               />
             </motion.div>
           </AnimatePresence>

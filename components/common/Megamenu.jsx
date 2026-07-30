@@ -27,7 +27,7 @@ export default function MegaMenu({ item }) {
       transition={{ duration: 0.2, ease: "easeOut" }}
       className="fixed left-0 right-0 top-full w-full bg-transparent z-[999] pointer-events-auto"
     >
-      <div className="w-full bg-[#C5B9AB] text-[#393938] shadow-lg border-t border-[#b3a696]/40">
+      <div className="w-full bg-[#C5B9AB] text-[#393938] shadow-lg">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-7 lg:py-8">
           <div className="flex items-start justify-between gap-8 lg:gap-12">
             {/* Categories Grid */}
@@ -65,7 +65,7 @@ export default function MegaMenu({ item }) {
 
             {/* Images */}
             {visibleImages.length > 0 && (
-              <div className="flex items-start gap-7 shrink-0 border-l border-[#b3a696]/40 pl-7 lg:pl-9">
+              <div className="flex items-start gap-7 shrink-0 pl-7 lg:pl-9">
                 {visibleImages.map((img, index) => (
                   <a
                     key={img.image || index}

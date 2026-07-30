@@ -1,4 +1,5 @@
 import path from "path";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { connectDB } from "@/lib/databaseConnection";
 import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
@@ -122,6 +123,10 @@ export async function POST(request) {
         inserted++;
       }
     }
+
+    revalidateTag("layout-categories");
+    revalidateTag("public-categories");
+    revalidatePath("/", "layout");
 
     return response(true, 200, "Bulk product import completed successfully", {
       productsProcessed: products.length,
