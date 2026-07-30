@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 
 export default function PageWrapper({ children }) {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
+  const normalizedPath = (pathname || "").replace(/\/$/, "");
+  const isHomePage = normalizedPath === "";
 
   return (
     <main
