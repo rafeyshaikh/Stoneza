@@ -196,7 +196,7 @@ export default function Header() {
                 />
               ) : (
                 <Image
-                  src="/assets/logo/The-Stoneza-Logo.webp"
+                  src="/assets/logo/The-Stoneza-Logo-light.png"
                   alt="Logo"
                   width={210}
                   height={60}
