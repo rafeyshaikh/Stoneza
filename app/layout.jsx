@@ -15,38 +15,55 @@ import Seo from "@/models/Seo.model";
 import Script from "next/script";
 
 export async function generateMetadata() {
-  await connectDB();
-  const seo = await Seo.findOne().lean();
-  return {
-    title: {
-      default: seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
-      template: `%s | ${seo?.metaTitle || "Stoneza"}`,
-    },
-    description: seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
-    keywords: seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
-    verification: seo?.searchConsoleVerification ? {
-      google: seo.searchConsoleVerification,
-    } : undefined,
-    openGraph: seo?.ogImage ? {
-      images: [
-        {
-          url: seo.ogImage,
-          width: 1200,
-          height: 630,
-          alt: seo.metaTitle || "Stoneza",
-        }
-      ]
-    } : undefined,
-  };
+  try {
+    await connectDB();
+    const seo = await Seo.findOne().lean();
+    return {
+      title: {
+        default: seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
+        template: `%s | ${seo?.metaTitle || "Stoneza"}`,
+      },
+      description: seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+      keywords: seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
+      verification: seo?.searchConsoleVerification ? {
+        google: seo.searchConsoleVerification,
+      } : undefined,
+      openGraph: seo?.ogImage ? {
+        images: [
+          {
+            url: seo.ogImage,
+            width: 1200,
+            height: 630,
+            alt: seo.metaTitle || "Stoneza",
+          }
+        ]
+      } : undefined,
+    };
+  } catch (error) {
+    console.error("Layout generateMetadata DB error:", error.message);
+    return {
+      title: {
+        default: "Stoneza - Natural Stone Showcase & Enquiry",
+        template: "%s | Stoneza",
+      },
+      description: "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+      keywords: "natural stone, stoneza, marble, granite, flooring, wall cladding",
+    };
+  }
 }
 
 export default async function RootLayout({ children }) {
   const categories = await getCategoriesForLayout();
   const contactDetails = await getContactDetails();
 
-  await connectDB();
-  const seo = await Seo.findOne().lean();
-  const gaId = seo?.googleAnalyticsId || "";
+  let gaId = "";
+  try {
+    await connectDB();
+    const seo = await Seo.findOne().lean();
+    gaId = seo?.googleAnalyticsId || "";
+  } catch (error) {
+    console.error("RootLayout DB error:", error.message);
+  }
 
   return (
     <html

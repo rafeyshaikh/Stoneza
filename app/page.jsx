@@ -1,8 +1,4 @@
-import { Button } from "@/components/ui/button";
 import HeroSection from "@/components/home/HeroSection";
-import Container from "@/components/common/Container";
-import { shopGiftStyleData } from "@/data/ShopGiftStyleData";
-import { collectionData } from "@/data/CollectionHomeData";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Product from "@/models/Product.model";
 import Blog from "@/models/Blog.model";
@@ -21,43 +17,61 @@ import BrandPromo from "@/components/home/BrandPromo";
 import RecentBlogs from "@/components/home/RecentBlogs";
 import MiddleBanner from "@/components/home/MiddleBanner";
 import HomeAboutSection from "@/components/home/HomeAboutSection";
-
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 
 export async function generateMetadata() {
-  await connectDB();
-  const seo = await Seo.findOne().lean();
-  return {
-    title: seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
-    description: seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
-    keywords: seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
-  };
+  try {
+    await connectDB();
+    const seo = await Seo.findOne().lean();
+    return {
+      title: seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
+      description: seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+      keywords: seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
+    };
+  } catch (err) {
+    return {
+      title: "Stoneza - Natural Stone Showcase & Enquiry",
+      description: "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+      keywords: "natural stone, stoneza, marble, granite, flooring, wall cladding",
+    };
+  }
 }
 
 export default async function Home() {
-  await connectDB();
-  const categories = await getCategoriesForLayout();
+  let categories = [];
+  let safeHomepage = null;
+  let safeAbout = null;
+  let safeFeatured = [];
+  let safeNewArrivals = [];
+  let safeLatestBlogs = [];
 
-  const homepage = await Homepage.findOne().lean();
-  const safeHomepage = homepage ? JSON.parse(JSON.stringify(homepage)) : null;
+  try {
+    await connectDB();
+    categories = await getCategoriesForLayout();
 
-  const safeAbout = await getAboutData();
+    const homepage = await Homepage.findOne().lean();
+    safeHomepage = homepage ? JSON.parse(JSON.stringify(homepage)) : null;
 
-  const featured = await Product.find({ isFeatured: true, status: "published" })
-    .select("name slug images hoverImage price")
-    .lean();
-  const safeFeatured = JSON.parse(JSON.stringify(featured));
+    safeAbout = await getAboutData();
 
-  const newArrivals = await Product.find({ isNewArrival: true, status: "published" })
-    .select("name slug images hoverImage price")
-    .lean();
-  const safeNewArrivals = JSON.parse(JSON.stringify(newArrivals));
+    const featured = await Product.find({ isFeatured: true, status: "published" })
+      .select("name slug images hoverImage price")
+      .lean();
+    safeFeatured = featured ? JSON.parse(JSON.stringify(featured)) : [];
 
-  const latestBlogs = await Blog.find({ status: "published" })
-    .sort({ publishedAt: -1 })
-    .limit(2)
-    .lean();
-  const safeLatestBlogs = JSON.parse(JSON.stringify(latestBlogs));
+    const newArrivals = await Product.find({ isNewArrival: true, status: "published" })
+      .select("name slug images hoverImage price")
+      .lean();
+    safeNewArrivals = newArrivals ? JSON.parse(JSON.stringify(newArrivals)) : [];
+
+    const latestBlogs = await Blog.find({ status: "published" })
+      .sort({ publishedAt: -1 })
+      .limit(2)
+      .lean();
+    safeLatestBlogs = latestBlogs ? JSON.parse(JSON.stringify(latestBlogs)) : [];
+  } catch (err) {
+    console.error("Home page DB error:", err.message);
+  }
 
   const newArrivalsData = safeNewArrivals.length > 0
     ? safeNewArrivals.map((prod) => ({
@@ -114,7 +128,7 @@ export default async function Home() {
       <HomeAboutSection storyData={safeAbout?.story} imageleft={true} />
       <ThreeBanner banners={safeHomepage?.threeBanners} />
       {subCategoryData.length > 0 && (
-        <Carousel title="Sub Categories" data={subCategoryData}  />
+        <Carousel title="Sub Categories" data={subCategoryData} />
       )}
       <EnquiryForm />
       <BrandPromo promos={safeHomepage?.brandPromos} />
