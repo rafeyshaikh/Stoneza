@@ -40,7 +40,7 @@ export async function GET() {
     const categories = await Category.find().select("slug updatedAt").lean();
     categories.forEach((c) => {
       urls.push({
-        loc: `${domain}/collections/${c.slug}`,
+        loc: `${domain}/categories/${c.slug}`,
         lastmod: c.updatedAt ? new Date(c.updatedAt).toISOString() : new Date().toISOString(),
       });
     });

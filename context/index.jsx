@@ -5,10 +5,10 @@ import { AuthProvider } from "./AuthContext";
 import { CategoriesProvider } from "./CategoriesContext";
 import { ContactProvider } from "./ContactContext";
 
-export default function Providers({ children, initialCategories = [], initialContactDetails = {} }) {
+export default function Providers({ children, initialCategories = [], initialCollections = null, initialContactDetails = {} }) {
   return (
     // <ThemeProvider>
-      <CategoriesProvider initialCategories={initialCategories}>
+      <CategoriesProvider initialCategories={initialCategories} initialCollections={initialCollections}>
         <ContactProvider initialContactDetails={initialContactDetails}>
           <AuthProvider>
             {children}

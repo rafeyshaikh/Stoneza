@@ -18,13 +18,16 @@ export default function MiddleBanner({
       aria-label={`${title} collection`}
     >
       {/* Background image */}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="100vw"
-        className="object-cover transition-transform duration-[1500ms] ease-out hover:scale-[1.02]"
-      />
+      {src && (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="100vw"
+          className="object-cover transition-transform duration-[1500ms] ease-out hover:scale-[1.02]"
+          unoptimized={Boolean(src && src.startsWith("http"))}
+        />
+      )}
 
       {/* Dark gradient for text readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-transparent" />

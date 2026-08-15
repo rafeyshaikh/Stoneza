@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 
 const staticBanners = [
@@ -47,7 +47,7 @@ export default function ThreeBanner({ banners }) {
 
   const displayBanners = banners && banners.length > 0
     ? banners.map((b) => ({
-        image: b.image?.url || "/assets/placeholder.jpg",
+        image: b.image?.url || "",
         title: b.title || "",
         link: b.buttonLink || "/products",
       }))
@@ -63,12 +63,13 @@ export default function ThreeBanner({ banners }) {
               key={index}
               className="relative w-full h-[450px] shrink-0 group overflow-hidden"
             >
-              <Image
+              <ImageWithLoader
                 src={item.image}
                 alt={item.title || "Stoneza Banner"}
                 fill
                 className="object-cover"
-                unoptimized={Boolean(item.image && (item.image.startsWith("http") || item.image.startsWith("data:")))}
+                seedIndex={index}
+                placeholderTitle={item.title}
               />
 
               {item.title && (
@@ -106,12 +107,13 @@ export default function ThreeBanner({ banners }) {
             key={index}
             className="group relative w-full h-[500px] flex-1 overflow-hidden"
           >
-            <Image
+            <ImageWithLoader
               src={item.image}
               alt={item.title || "Stoneza Banner"}
               fill
               className="object-cover transition-transform duration-[4000ms] group-hover:scale-110"
-              unoptimized={Boolean(item.image && (item.image.startsWith("http") || item.image.startsWith("data:")))}
+              seedIndex={index}
+              placeholderTitle={item.title}
             />
 
             {item.title && (

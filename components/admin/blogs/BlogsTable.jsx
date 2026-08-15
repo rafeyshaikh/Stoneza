@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -64,11 +64,12 @@ export default function BlogsTable({ blogs = [] }) {
             >
               <td className="py-4 pr-3">
                 <div className="relative h-14 w-24 overflow-hidden rounded-lg border dark:border-stone-800">
-                  <Image
+                  <ImageWithLoader
                     src={blog.bannerImage?.url}
                     alt={blog.title}
                     fill
                     className="object-cover"
+                    placeholderTitle={blog.title}
                   />
                 </div>
               </td>

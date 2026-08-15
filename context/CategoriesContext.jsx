@@ -4,11 +4,12 @@ import { createContext, useContext, useState } from "react";
 
 const CategoriesContext = createContext();
 
-export function CategoriesProvider({ children, initialCategories = [] }) {
+export function CategoriesProvider({ children, initialCategories = [], initialCollections = null }) {
   const [categories, setCategories] = useState(initialCategories);
+  const [collections, setCollections] = useState(initialCollections);
 
   return (
-    <CategoriesContext.Provider value={{ categories, setCategories }}>
+    <CategoriesContext.Provider value={{ categories, setCategories, collections, setCollections }}>
       {children}
     </CategoriesContext.Provider>
   );

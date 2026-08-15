@@ -6,7 +6,7 @@ import { Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import HeroManager from "./HeroManager";
-import FeaturedCollectionsManager from "./FeaturedCollectionsManager";
+import FeaturedCategoriesManager from "./FeaturedCategoriesManager";
 import NewArrivalsManager from "./NewArrivalsManager";
 import TestimonialsManager from "./TestimonialsManager";
 import SectionManager from "./SectionManager";
@@ -216,7 +216,7 @@ export default function HomepageEditor() {
         uploadImage={uploadImage}
       />
 
-      <FeaturedCollectionsManager
+      <FeaturedCategoriesManager
         data={data.featuredProducts}
         onChange={(val) => setData((prev) => ({ ...prev, featuredProducts: val }))}
         uploadImage={uploadImage}

@@ -2,18 +2,32 @@ import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
 
 export async function generateMetadata() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  return {
-    title: pages?.privacyPolicy?.title || "Privacy Policy - Stoneza",
-    description: "Read the Privacy Policy of Stoneza.",
-  };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    return {
+      title: pages?.privacyPolicy?.title || "Privacy Policy - Stoneza",
+      description: "Read the Privacy Policy of Stoneza.",
+    };
+  } catch {
+    return {
+      title: "Privacy Policy - Stoneza",
+      description: "Read the Privacy Policy of Stoneza.",
+    };
+  }
 }
 
 export default async function PrivacyPolicyPage() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  const policy = pages?.privacyPolicy || { title: "Privacy Policy", content: "" };
+  let policy = { title: "Privacy Policy", content: "" };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    if (pages?.privacyPolicy) {
+      policy = pages.privacyPolicy;
+    }
+  } catch (error) {
+    console.error("PrivacyPolicyPage error:", error.message);
+  }
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">

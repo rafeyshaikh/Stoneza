@@ -9,6 +9,7 @@ import {
 import Providers from "@/context";
 import AppChrome from "@/components/common/AppChrome";
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
+import { getCollectionsForLayout } from "@/lib/getCollectionsForLayout";
 import { getContactDetails } from "@/lib/getContactDetails";
 import { connectDB } from "@/lib/databaseConnection";
 import Seo from "@/models/Seo.model";
@@ -54,6 +55,7 @@ export async function generateMetadata() {
 
 export default async function RootLayout({ children }) {
   const categories = await getCategoriesForLayout();
+  const collections = await getCollectionsForLayout();
   const contactDetails = await getContactDetails();
 
   let gaId = "";
@@ -91,7 +93,7 @@ export default async function RootLayout({ children }) {
             </Script>
           </>
         )}
-        <Providers initialCategories={categories} initialContactDetails={contactDetails}>
+        <Providers initialCategories={categories} initialCollections={collections} initialContactDetails={contactDetails}>
           <AppChrome>{children}</AppChrome>
         </Providers>
         <Toaster

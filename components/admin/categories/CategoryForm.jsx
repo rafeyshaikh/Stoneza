@@ -356,7 +356,7 @@ export default function CategoryForm({
                 }));
               }}
               uploading={uploadingImages}
-              hint="Used in category cards and collection sections."
+              hint="Used in category cards and category sections."
             />
           </Field>
 

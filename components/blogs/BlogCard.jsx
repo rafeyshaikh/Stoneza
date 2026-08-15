@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 
 export default function BlogCard({ blog }) {
@@ -6,11 +6,12 @@ export default function BlogCard({ blog }) {
     <article className="group">
       <Link href={`/blogs/${blog.slug}`} className="block">
         <div className="relative aspect-[3/2] overflow-hidden bg-stone-100">
-          <Image
-            src={blog.bannerImage.url}
-            alt={blog.title}
+          <ImageWithLoader
+            src={blog?.bannerImage?.url || ""}
+            alt={blog?.title || "Blog post"}
             fill
             className="object-cover transition duration-500 ease-out group-hover:scale-[1.03]"
+            placeholderTitle={blog?.title}
           />
         </div>
 

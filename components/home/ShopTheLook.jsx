@@ -10,6 +10,8 @@ import { PiCaretLeftThin, PiCaretRightThin } from "react-icons/pi";
 import { shopTheLookData } from "@/data/ShopTheLookData";
 
 export default function ShopTheLook() {
+  if (!shopTheLookData || shopTheLookData.length === 0) return null;
+
   const [slideIndex, setSlideIndex] = useState(0);
   const [productIndex, setProductIndex] = useState(0);
   const [hovered, setHovered] = useState(false);

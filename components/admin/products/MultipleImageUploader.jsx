@@ -102,37 +102,53 @@ export default function MultipleImageUploader({
       </div>
 
       {previewImages.length > 0 && (
-        <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {previewImages.map((image, index) => (
             <div
-              key={image.publicId || image.url}
-              className="relative aspect-square overflow-hidden rounded-xl border"
+              key={image.publicId || image.url || index}
+              className="flex flex-col gap-2 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-2 shadow-xs"
             >
-              <Image
-                src={image.url}
-                alt={`Product ${index + 1}`}
-                fill
-                className="object-cover"
-                unoptimized={image.isLocal}
-              />
+              <div className="relative aspect-square overflow-hidden rounded-lg border border-stone-100 dark:border-stone-800 bg-stone-100 dark:bg-stone-950">
+                <Image
+                  src={image.url}
+                  alt={`Product ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  unoptimized={image.isLocal}
+                />
 
-              {index === 0 && (
-                <div className="absolute left-2 top-2 flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs text-white">
-                  <Star className="size-3 fill-white" />
-                  Thumbnail
-                </div>
+                {index === 0 && (
+                  <div className="absolute left-2 top-2 flex items-center gap-1 rounded-md bg-black/70 px-2 py-1 text-xs text-white">
+                    <Star className="size-3 fill-white" />
+                    Thumbnail
+                  </div>
+                )}
+
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="destructive"
+                  className="absolute right-2 top-2 h-7 w-7"
+                  disabled={uploading}
+                  onClick={() => removeImage(index)}
+                >
+                  <Trash2 className="size-3.5" />
+                </Button>
+              </div>
+
+              {!image.isLocal && (
+                <input
+                  type="text"
+                  placeholder="Image caption..."
+                  value={existingImages[index]?.caption || ''}
+                  onChange={(e) => {
+                    const updated = [...existingImages];
+                    updated[index] = { ...updated[index], caption: e.target.value };
+                    onExistingImagesChange(updated);
+                  }}
+                  className="w-full px-2 py-1 text-xs border border-stone-200 dark:border-stone-700 rounded bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400"
+                />
               )}
-
-              <Button
-                type="button"
-                size="icon"
-                variant="destructive"
-                className="absolute right-2 top-2"
-                disabled={uploading}
-                onClick={() => removeImage(index)}
-              >
-                <Trash2 className="size-4" />
-              </Button>
             </div>
           ))}
         </div>

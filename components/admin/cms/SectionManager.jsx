@@ -240,7 +240,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
                     <div className="space-y-1.5">
                       <Label className="text-xs">Redirect Link</Label>
                       <Input
-                        placeholder="e.g. /collections/frames"
+                        placeholder="e.g. /categories/frames"
                         value={banner.buttonLink || ""}
                         onChange={(e) => updateThreeBannerField(index, "buttonLink", e.target.value)}
                       />

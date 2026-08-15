@@ -2,18 +2,32 @@ import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
 
 export async function generateMetadata() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  return {
-    title: pages?.returnPolicy?.title || "Return Policy - Stoneza",
-    description: "Read the Return Policy of Stoneza.",
-  };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    return {
+      title: pages?.returnPolicy?.title || "Return Policy - Stoneza",
+      description: "Read the Return Policy of Stoneza.",
+    };
+  } catch {
+    return {
+      title: "Return Policy - Stoneza",
+      description: "Read the Return Policy of Stoneza.",
+    };
+  }
 }
 
 export default async function ReturnPolicyPage() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  const policy = pages?.returnPolicy || { title: "Return Policy", content: "" };
+  let policy = { title: "Return Policy", content: "" };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    if (pages?.returnPolicy) {
+      policy = pages.returnPolicy;
+    }
+  } catch (error) {
+    console.error("ReturnPolicyPage error:", error.message);
+  }
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">

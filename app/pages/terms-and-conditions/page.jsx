@@ -2,18 +2,32 @@ import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
 
 export async function generateMetadata() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  return {
-    title: pages?.termsAndConditions?.title || "Terms & Conditions - Stoneza",
-    description: "Read the Terms & Conditions of Stoneza.",
-  };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    return {
+      title: pages?.termsAndConditions?.title || "Terms & Conditions - Stoneza",
+      description: "Read the Terms & Conditions of Stoneza.",
+    };
+  } catch {
+    return {
+      title: "Terms & Conditions - Stoneza",
+      description: "Read the Terms & Conditions of Stoneza.",
+    };
+  }
 }
 
 export default async function TermsAndConditionsPage() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  const policy = pages?.termsAndConditions || { title: "Terms & Conditions", content: "" };
+  let policy = { title: "Terms & Conditions", content: "" };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    if (pages?.termsAndConditions) {
+      policy = pages.termsAndConditions;
+    }
+  } catch (error) {
+    console.error("TermsAndConditionsPage error:", error.message);
+  }
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">

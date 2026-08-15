@@ -1,38 +1,37 @@
 import { notFound } from "next/navigation";
-import { getCategoryDetails } from "@/lib/getCategoryDetails";
+import { getCollectionDetails } from "@/lib/getCollectionDetails";
 import CollectionPageClient from "./CollectionPageClient";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const data = await getCategoryDetails(slug);
+  const data = await getCollectionDetails(slug);
 
-  if (!data || !data.category) {
+  if (!data || !data.collection) {
     return {
       title: "Collection Not Found | Stoneza",
       description: "The requested stone collection could not be found.",
     };
   }
 
-  const category = data.category;
+  const collection = data.collection;
 
-  // Load SEO from category schema or fallback to details
-  const title = category.seo?.metaTitle?.trim() || `${category.name} Collection | Stoneza`;
+  const title = collection.seo?.metaTitle?.trim() || `${collection.name} Collection | Stoneza`;
   const description =
-    category.seo?.metaDescription?.trim() ||
-    (category.description?.replace(/<[^>]*>/g, "")?.slice(0, 160)?.trim() ||
-      `Explore our premium ${category.name} collection of natural stones at Stoneza.`);
+    collection.seo?.metaDescription?.trim() ||
+    (collection.description?.replace(/<[^>]*>/g, "")?.slice(0, 160)?.trim() ||
+      `Explore our premium ${collection.name} collection of natural stones at Stoneza.`);
 
   const ogImage =
-    category.seo?.ogImage?.trim() ||
-    (category.bannerImage?.square?.url ||
-      category.bannerImage?.wide?.[0]?.url ||
+    collection.seo?.ogImage?.trim() ||
+    (collection.bannerImage?.square?.url ||
+      collection.bannerImage?.wide?.[0]?.url ||
       "");
 
   const canonicalUrl =
-    category.seo?.canonicalUrl?.trim() ||
+    collection.seo?.canonicalUrl?.trim() ||
     `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/collections/${slug}`;
 
-  const keywords = category.seo?.keywords || [];
+  const keywords = collection.seo?.keywords || [];
 
   return {
     title,
@@ -59,7 +58,7 @@ export async function generateMetadata({ params }) {
 
 export default async function CollectionPage({ params }) {
   const { slug } = await params;
-  const data = await getCategoryDetails(slug);
+  const data = await getCollectionDetails(slug);
 
   if (!data) {
     notFound();

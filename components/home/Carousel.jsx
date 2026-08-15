@@ -9,8 +9,12 @@ import { PiCaretLeftThin, PiCaretRightThin } from "react-icons/pi";
 import ImageWithLoader from "../common/Loader";
 
 import Container from "@/components/common/Container";
+import { isValidImageUrl } from "@/lib/utils";
+import { getPlaceholderImage } from "@/lib/placeholderImage";
 
 export default function Carousel({ title, data, itemsPerView = 3, button = false }) {
+  if (!data || data.length === 0) return null;
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -81,15 +85,15 @@ export default function Carousel({ title, data, itemsPerView = 3, button = false
 
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
-              {data.map((item) => (
+              {data.map((item, idx) => (
                 <div
-                  key={item.id}
+                  key={item.id || idx}
                   className="px-3 flex-[0_0_70%] md:flex-[0_0_50%] lg:flex-[0_0_var(--slide-width)]"
                   style={{
                     "--slide-width": `${100 / itemsPerView}%`
                   }}
                 >
-                  <ProductCard item={item} button={button} />
+                  <ProductCard item={item} button={button} index={idx} />
                 </div>
               ))}
             </div>
@@ -100,8 +104,16 @@ export default function Carousel({ title, data, itemsPerView = 3, button = false
   );
 }
 
-function ProductCard({ item, button }) {
+function ProductCard({ item, button, index = 0 }) {
   const [hovered, setHovered] = useState(false);
+
+  const titleText = item.title || item.name || "Stoneza";
+  const rawImg = item.image;
+  const rawHoverImg = item.hoverImage;
+
+  const validImg = isValidImageUrl(rawImg) ? rawImg : getPlaceholderImage(titleText, index);
+  const validHoverImg = isValidImageUrl(rawHoverImg) ? rawHoverImg : validImg;
+  const currentImg = hovered ? validHoverImg : validImg;
 
   return (
     <div
@@ -109,14 +121,14 @@ function ProductCard({ item, button }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Link href={item.href}>
+      <Link href={item.href || "#"}>
         <div className="relative aspect-square overflow-hidden bg-[#f5f2ec]">
 
           {/* Images */}
 
           <AnimatePresence initial={false}>
             <motion.div
-              key={hovered ? (item.hoverImage ? item.hoverImage : item.image) : item.image}
+              key={currentImg}
               initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 1 }}
@@ -124,8 +136,8 @@ function ProductCard({ item, button }) {
               className="absolute inset-0"
             >
               <ImageWithLoader
-                src={hovered ? (item.hoverImage ? item.hoverImage : item.image) : item.image}
-                alt={item.title}
+                src={currentImg}
+                alt={titleText}
                 fill
                 className="object-cover transition-transform duration-700"
               />

@@ -2,18 +2,32 @@ import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
 
 export async function generateMetadata() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  return {
-    title: pages?.disclaimer?.title || "Disclaimer - Stoneza",
-    description: "Read the Disclaimer of Stoneza.",
-  };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    return {
+      title: pages?.disclaimer?.title || "Disclaimer - Stoneza",
+      description: "Read the Disclaimer of Stoneza.",
+    };
+  } catch {
+    return {
+      title: "Disclaimer - Stoneza",
+      description: "Read the Disclaimer of Stoneza.",
+    };
+  }
 }
 
 export default async function DisclaimerPage() {
-  await connectDB();
-  const pages = await Pages.findOne().lean();
-  const policy = pages?.disclaimer || { title: "Disclaimer", content: "" };
+  let policy = { title: "Disclaimer", content: "" };
+  try {
+    await connectDB();
+    const pages = await Pages.findOne().lean();
+    if (pages?.disclaimer) {
+      policy = pages.disclaimer;
+    }
+  } catch (error) {
+    console.error("DisclaimerPage error:", error.message);
+  }
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">

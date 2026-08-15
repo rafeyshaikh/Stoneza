@@ -264,7 +264,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
                     <Label htmlFor="hero-btn-link">Button Action Link</Label>
                     <Input
                       id="hero-btn-link"
-                      placeholder="e.g. /collections/flooring"
+                      placeholder="e.g. /categories/flooring"
                       value={slides[activeSlideIndex].buttonLink || ""}
                       onChange={(e) =>
                         updateSlideField(activeSlideIndex, "buttonLink", e.target.value)

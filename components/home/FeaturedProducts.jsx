@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-
 import Image from "next/image";
 import { PiCaretLeftLight } from "react-icons/pi";
 import { useState } from "react";
 import ImageWithLoader from "../common/Loader";
+import { isValidImageUrl } from "@/lib/utils";
+import { getPlaceholderImage } from "@/lib/placeholderImage";
 
 const largeShopData = [
   {
@@ -89,10 +90,10 @@ export default function FeaturedProducts({ products = [], cmsData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const displayProducts = products.length > 0
-    ? products.map((prod) => ({
+    ? products.map((prod, idx) => ({
         title: prod.name,
-        image: prod.images?.[0]?.url || "/assets/placeholder.jpg",
-        image_hover: prod.hoverImage?.url || prod.images?.[0]?.url || "/assets/placeholder.jpg",
+        image: isValidImageUrl(prod.images?.[0]?.url) ? prod.images[0].url : getPlaceholderImage(prod.name, idx),
+        image_hover: isValidImageUrl(prod.hoverImage?.url) ? prod.hoverImage.url : (isValidImageUrl(prod.images?.[0]?.url) ? prod.images[0].url : getPlaceholderImage(prod.name, idx + 50)),
         slug: prod.slug,
       }))
     : largeShopData;

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 
 const staticPromos = [
@@ -21,7 +21,7 @@ const staticPromos = [
 export default function BrandPromo({ promos }) {
   const displayPromos = promos && promos.length > 0
     ? promos.map((p) => ({
-        image: p.image?.url || "/assets/placeholder.jpg",
+        image: p.image?.url || "",
         title: p.title || "",
         caption: p.caption || "",
         buttonText: p.buttonText || "Learn More",
@@ -34,12 +34,13 @@ export default function BrandPromo({ promos }) {
       {displayPromos.map((item, index) => (
         <div key={index} className="w-full max-w-[650px] group">
           <div className="relative aspect-[700/440] w-full overflow-hidden">
-            <Image
+            <ImageWithLoader
               src={item.image}
               alt={item.title || "Brand Promo"}
               fill
               className="object-cover transition-transform duration-[2000ms] group-hover:scale-105"
-              unoptimized={item.image.startsWith("http")}
+              seedIndex={index}
+              placeholderTitle={item.title}
             />
           </div>
 

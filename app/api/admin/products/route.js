@@ -3,6 +3,7 @@ import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
 import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
+import Collection from "@/models/Collection.model";
 
 import { generateSlug } from "@/lib/generateSlug";
 import { generateSku } from "@/lib/generateSku";
@@ -23,9 +24,8 @@ export async function POST(req) {
       name,
       description,
       shortDescription,
-      stock,
       category,
-      price,
+      collection,
       
       images,
       hoverImage,
@@ -42,8 +42,10 @@ export async function POST(req) {
 
       dimensions,
       weight,
-      stoneDetails,
-      variants,
+      stoneDetails = {},
+      overview = {},
+      faqs = [],
+      variants = [],
     } = body;
 
     if (!name?.trim()) {
@@ -52,10 +54,6 @@ export async function POST(req) {
 
     if (!description?.trim()) {
       return response(false, 400, "Description is required");
-    }
-
-    if (price !== undefined && price !== null && price !== "" && Number(price) <= 0) {
-      return response(false, 400, "Valid price is required");
     }
 
     if (!stoneDetails || !stoneDetails.stoneType?.trim()) {
@@ -97,6 +95,28 @@ export async function POST(req) {
       return response(false, 400, "Please select a final category");
     }
 
+    if (collection) {
+      const collectionExists = await Collection.findById(collection);
+      if (!collectionExists) {
+        return response(false, 404, "Collection not found");
+      }
+      if (collectionExists.collectionLevel !== 2) {
+        return response(false, 400, "Product must belong to a level 2 collection");
+      }
+    }
+
+    const sanitizedImages = Array.isArray(images)
+      ? images.map((img) =>
+          typeof img === "string"
+            ? { url: img, publicId: "", caption: "" }
+            : {
+                url: img.url || "",
+                publicId: img.publicId || "",
+                caption: img.caption?.trim() || "",
+              }
+        )
+      : [];
+
     const product = await Product.create({
       name: name.trim(),
 
@@ -106,17 +126,14 @@ export async function POST(req) {
 
       description: description.trim(),
 
-      shortDescription,
-
-      price: price ? Number(price) : undefined,
-
-      stock: Number(stock) || 0,
+      shortDescription: shortDescription?.trim() || "",
 
       tags: tags || [],
 
       category,
+      collection,
 
-      images,
+      images: sanitizedImages,
 
       hoverImage,
 
@@ -136,10 +153,15 @@ export async function POST(req) {
 
       stoneDetails: {
         stoneType: stoneDetails.stoneType.trim(),
+        tradeName: stoneDetails.tradeName?.trim() || "",
         productForm: stoneDetails.productForm?.trim() || "",
+        pieceSize: stoneDetails.pieceSize?.trim() || "",
         calibratedThickness: stoneDetails.calibratedThickness?.trim() || "",
         faceTexture: stoneDetails.faceTexture?.trim() || "",
+        edges: stoneDetails.edges?.trim() || "",
         cornerPieces: stoneDetails.cornerPieces?.trim() || "",
+        blend: stoneDetails.blend?.trim() || "",
+        joint: stoneDetails.joint?.trim() || "",
         coveragePerUnit: stoneDetails.coveragePerUnit?.trim() || "",
         waterAbsorption: stoneDetails.waterAbsorption?.trim() || "",
         density: stoneDetails.density ? Number(stoneDetails.density) : null,
@@ -155,13 +177,36 @@ export async function POST(req) {
         leadTime: stoneDetails.leadTime?.trim() || "",
         sampleAvailable: typeof stoneDetails.sampleAvailable === "boolean" ? stoneDetails.sampleAvailable : true,
       },
+
+      overview: {
+        specifyFor: overview.specifyFor?.trim() || "",
+        steerElsewhereFor: overview.steerElsewhereFor?.trim() || "",
+        howItReads: {
+          atDistance: overview.howItReads?.atDistance?.trim() || "",
+          closeUp: overview.howItReads?.closeUp?.trim() || "",
+          throughDay: overview.howItReads?.throughDay?.trim() || "",
+          whenWet: overview.howItReads?.whenWet?.trim() || "",
+        },
+      },
+
+      faqs: Array.isArray(faqs)
+        ? faqs
+            .map((f) => ({
+              question: f.question?.trim() || "",
+              answer: f.answer?.trim() || "",
+            }))
+            .filter((f) => f.question && f.answer)
+        : [],
+
       variants: Array.isArray(variants)
-        ? variants.map((v) => ({
-            name: v.name?.trim() || "",
-            options: Array.isArray(v.options)
-              ? v.options.map((o) => o.trim()).filter(Boolean)
-              : [],
-          })).filter((v) => v.name)
+        ? variants
+            .map((v) => ({
+              name: v.name?.trim() || "",
+              options: Array.isArray(v.options)
+                ? v.options.map((o) => o.trim()).filter(Boolean)
+                : [],
+            }))
+            .filter((v) => v.name)
         : [],
     });
 
@@ -260,6 +305,7 @@ export async function GET(req) {
     const [products, total] = await Promise.all([
       Product.find(filter)
         .populate("category", "name")
+        .populate("collection", "name")
         .sort(sortOption)
         .skip((page - 1) * limit)
         .limit(limit)

@@ -4,6 +4,8 @@ import BlogsPagination from "@/components/blogs/BlogsPagination";
 import { connectDB } from "@/lib/databaseConnection";
 import Blog from "@/models/Blog.model";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Stories | Stoneza",
   description:
@@ -12,24 +14,31 @@ export const metadata = {
 
 export default async function BlogsPage(props) {
   const searchParams = await props.searchParams;
-  await connectDB();
-
   const page = Number(searchParams.page || 1);
   const limit = 9;
   const skip = (page - 1) * limit;
 
-  const [blogs, totalBlogs] = await Promise.all([
-    Blog.find({ status: "published" })
-      .sort({ publishedAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean(),
+  let safeBlogs = [];
+  let totalBlogs = 0;
 
-    Blog.countDocuments({ status: "published" }),
-  ]);
+  try {
+    await connectDB();
+    const [blogs, count] = await Promise.all([
+      Blog.find({ status: "published" })
+        .sort({ publishedAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
 
-  const totalPages = Math.ceil(totalBlogs / limit);
-  const safeBlogs = JSON.parse(JSON.stringify(blogs));
+      Blog.countDocuments({ status: "published" }),
+    ]);
+    safeBlogs = JSON.parse(JSON.stringify(blogs));
+    totalBlogs = count;
+  } catch (error) {
+    console.error("BlogsPage error:", error.message);
+  }
+
+  const totalPages = Math.ceil(totalBlogs / limit) || 1;
 
   return (
     <section className="py-14 lg:py-16">

@@ -78,8 +78,8 @@ export default async function Home() {
         id: prod._id,
         title: prod.name,
         price: prod.price,
-        image: prod.images?.[0]?.url || "/assets/placeholder.jpg",
-        hoverImage: prod.hoverImage?.url || prod.images?.[0]?.url || "/assets/placeholder.jpg",
+        image: prod.images?.[0]?.url || "",
+        hoverImage: prod.hoverImage?.url || prod.images?.[0]?.url || "",
         href: `/products/${prod.slug}`,
       }))
     : whatsNewData;
@@ -89,8 +89,8 @@ export default async function Home() {
         id: cat.slug || idx,
         title: cat.title,
         titleStyle: "font-body uppercase tracking-[2px]",
-        image: cat.squareImage || "/assets/placeholder.jpg",
-        href: `/collections/${cat.slug}`,
+        image: cat.squareImage || "",
+        href: `/categories/${cat.slug}`,
       }))
     : [];
 
@@ -100,8 +100,8 @@ export default async function Home() {
         id: sub.slug || `${cat.slug}-sub-${idx}`,
         title: sub.title,
         titleStyle: "font-body uppercase tracking-[2px]",
-        image: sub.squareImage || "/assets/placeholder.jpg",
-        href: `/collections/${sub.slug}`,
+        image: sub.squareImage || "",
+        href: `/categories/${sub.slug}`,
       }));
       acc.push(...mappedSubs);
     }
@@ -111,8 +111,9 @@ export default async function Home() {
   return (
     <div>
       <HeroSection slides={safeHomepage?.heroSlides} />
+      
       {mainCategoryData.length > 0 && (
-        <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
+      <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
       )}
       <FeaturedProducts products={safeFeatured} cmsData={safeHomepage?.featuredProducts} />
       <HomeAboutSection storyData={safeAbout?.story} />

@@ -1,0 +1,95 @@
+import { notFound } from "next/navigation";
+import { connectDB } from "@/lib/databaseConnection";
+import Product from "@/models/Product.model";
+import Category from "@/models/Category.model"; // Ensure Category model is loaded for populate
+import CategoryProductDetailClient from "./CategoryProductDetailClient";
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }) {
+  try {
+    const { slug, productSlug } = await params;
+    await connectDB();
+    const product = await Product.findOne({ slug: productSlug }).lean();
+
+    if (!product) {
+      return {
+        title: "Product Not Found | Stoneza",
+        description: "The requested stone product could not be found.",
+      };
+    }
+
+    const title = product.seo?.metaTitle?.trim() || `${product.name} | Stoneza`;
+    const description =
+      product.seo?.metaDescription?.trim() ||
+      product.shortDescription?.trim() ||
+      (product.description?.replace(/<[^>]*>/g, "")?.slice(0, 160)?.trim() ||
+        "Explore premium natural stone products from Stoneza.");
+
+    const ogImage =
+      product.seo?.ogImage?.trim() ||
+      (product.images?.length ? product.images[0].url : "");
+
+    const canonicalUrl =
+      product.seo?.canonicalUrl?.trim() ||
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/categories/${slug}/products/${productSlug}`;
+
+    const keywords =
+      product.seo?.keywords?.length
+        ? product.seo.keywords
+        : product.tags || [];
+
+    return {
+      title,
+      description,
+      keywords: keywords.join(", "),
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        images: ogImage ? [{ url: ogImage }] : [],
+        url: canonicalUrl,
+        type: "article",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: ogImage ? [ogImage] : [],
+      },
+    };
+  } catch {
+    return {
+      title: "Product | Stoneza",
+      description: "Explore premium natural stone products from Stoneza.",
+    };
+  }
+}
+
+export default async function ProductPage({ params }) {
+  const { productSlug } = await params;
+  let safeProduct = null;
+
+  try {
+    await connectDB();
+    const product = await Product.findOne({
+      slug: productSlug,
+    })
+      .populate("category", "name slug")
+      .lean();
+
+    if (product) {
+      safeProduct = JSON.parse(JSON.stringify(product));
+    }
+  } catch (error) {
+    console.error("ProductPage error:", error.message);
+  }
+
+  if (!safeProduct) {
+    notFound();
+  }
+
+  return <CategoryProductDetailClient productData={safeProduct} />;
+}

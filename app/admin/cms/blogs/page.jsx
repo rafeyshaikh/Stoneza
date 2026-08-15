@@ -7,13 +7,16 @@ import Blog from "@/models/Blog.model";
 import { connectDB } from "@/lib/databaseConnection";
 
 export default async function AdminBlogPage() {
-  await connectDB();
-
-  const blogs = await Blog.find()
-    .sort({ createdAt: -1 })
-    .lean();
-
-  const safeBlogs = JSON.parse(JSON.stringify(blogs));
+  let safeBlogs = [];
+  try {
+    await connectDB();
+    const blogs = await Blog.find()
+      .sort({ createdAt: -1 })
+      .lean();
+    safeBlogs = JSON.parse(JSON.stringify(blogs));
+  } catch (error) {
+    console.error("AdminBlogPage error:", error.message);
+  }
 
   return (
     <>

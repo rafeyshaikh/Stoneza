@@ -5,6 +5,7 @@ import PageHeader from "@/components/admin/shared/PageHeader";
 import ProductForm from "@/components/admin/products/ProductForm";
 
 import Category from "@/models/Category.model";
+import Collection from "@/models/Collection.model";
 import { connectDB } from "@/lib/databaseConnection";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +18,12 @@ export default async function NewProductPage() {
     .sort({ sortOrder: 1, createdAt: -1 })
     .lean();
 
+  const collections = await Collection.find({})
+    .sort({ sortOrder: 1, createdAt: -1 })
+    .lean();
+
   const safeCategories = JSON.parse(JSON.stringify(categories));
+  const safeCollections = JSON.parse(JSON.stringify(collections));
 
   return (
     <>
@@ -28,7 +34,7 @@ export default async function NewProductPage() {
         description="Create a new product with images and SEO details."
       />
 
-      <ProductForm categories={safeCategories} />
+      <ProductForm categories={safeCategories} collections={safeCollections} />
     </>
   );
 }

@@ -27,21 +27,10 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
-    price: {
-      type: Number,
-      min: 0,
-    },
-
     sku: {
       type: String,
       unique: true,
       required: true,
-    },
-
-    stock: {
-      type: Number,
-      default: 0,
-      min: 0,
     },
 
     category: {
@@ -50,10 +39,16 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    collection: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Collection",
+    },
+
     images: [
       {
         url: String,
         publicId: String,
+        caption: String,
       },
     ],
 
@@ -105,13 +100,24 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    
     stoneDetails: {
       stoneType: {
         type: String,
         required: true,
         trim: true,
       },
+      tradeName: {
+        type: String,
+        trim: true,
+        default: "",
+      },
       productForm: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      pieceSize: {
         type: String,
         trim: true,
         default: "",
@@ -126,7 +132,22 @@ const productSchema = new mongoose.Schema(
         trim: true,
         default: "",
       },
+      edges: {
+        type: String,
+        trim: true,
+        default: "",
+      },
       cornerPieces: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      blend: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      joint: {
         type: String,
         trim: true,
         default: "",
@@ -191,6 +212,31 @@ const productSchema = new mongoose.Schema(
         default: true,
       },
     },
+
+    overview: {
+      specifyFor: {
+        type: String,
+        default: "",
+      },
+      steerElsewhereFor: {
+        type: String,
+        default: "",
+      },
+      howItReads: {
+        atDistance: { type: String, default: "" },
+        closeUp: { type: String, default: "" },
+        throughDay: { type: String, default: "" },
+        whenWet: { type: String, default: "" },
+      },
+    },
+
+    faqs: [
+      {
+        question: { type: String, trim: true },
+        answer: { type: String, trim: true },
+      },
+    ],
+
     variants: [
       {
         name: {
@@ -210,8 +256,10 @@ const productSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    suppressReservedKeysWarning: true,
   },
 );
 
 export default mongoose.models.Product ||
   mongoose.model("Product", productSchema);
+

@@ -15,7 +15,7 @@ export default async function AdminCategoriesPage() {
   return (
     <>
       <Breadcrumbs />
-      <PageHeader title="Categories" description="Manage nested categories, featured collections, and category SEO." actionLabel="Add Category" onAction="/admin/categories/new" />
+      <PageHeader title="Categories" description="Manage nested categories, featured categories, and category SEO." actionLabel="Add Category" onAction="/admin/categories/new" />
       <CategoryTable categories={JSON.parse(JSON.stringify(categories))} />
     </>
   );

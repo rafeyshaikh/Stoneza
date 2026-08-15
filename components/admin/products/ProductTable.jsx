@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -219,8 +219,6 @@ export default function ProductTable({ products = [], categories = [] }) {
             <tr className="border-b border-stone-300/70 text-stone-500 dark:border-stone-800 dark:text-stone-400">
               <th className="pb-3 pr-3 font-medium">Product</th>
               <th className="pb-3 pr-3 font-medium">Category</th>
-              <th className="pb-3 pr-3 font-medium">Price</th>
-              <th className="pb-3 pr-3 font-medium">Stock</th>
               <th className="pb-3 pr-3 font-medium">Status</th>
               <th className="pb-3 text-right font-medium">Actions</th>
             </tr>
@@ -228,7 +226,7 @@ export default function ProductTable({ products = [], categories = [] }) {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan="6">
+                <td colSpan="4">
                   <p className="py-10 text-center text-sm text-stone-500 dark:text-stone-400">
                     Loading...
                   </p>
@@ -246,18 +244,13 @@ export default function ProductTable({ products = [], categories = [] }) {
                   <td className="py-4 pr-4">
                     <div className="flex items-center gap-4">
                       <div className="relative h-16 w-16 overflow-hidden rounded-xl border bg-stone-100 dark:bg-stone-900">
-                        {isValidImageUrl(product.images?.[0]?.url) ? (
-                          <Image
-                            src={product.images[0].url}
-                            alt={product.name}
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-xs text-stone-400">
-                            No Image
-                          </div>
-                        )}
+                        <ImageWithLoader
+                          src={product.images?.[0]?.url}
+                          alt={product.name}
+                          fill
+                          className="object-cover"
+                          placeholderTitle={product.name}
+                        />
                       </div>
 
                       <div>
@@ -273,32 +266,6 @@ export default function ProductTable({ products = [], categories = [] }) {
 
                   {/* Category */}
                   <td className="py-4 pr-4">{product.category?.name || "-"}</td>
-
-                  {/* Price */}
-                  <td className="py-4 pr-4">
-                    {product.discountPrice ? (
-                      <div>
-                        <p className="font-semibold text-stone-900 dark:text-stone-100">
-                          ₹
-                          {Number(product.discountPrice).toLocaleString(
-                            "en-IN",
-                          )}
-                        </p>
-                        <p className="text-xs text-stone-500 dark:text-stone-400 line-through">
-                          ₹{Number(product.price).toLocaleString("en-IN")}
-                        </p>
-                      </div>
-                    ) : (
-                      <span className="font-medium">
-                        ₹{Number(product.price).toLocaleString("en-IN")}
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Stock */}
-                  <td className="py-4 pr-4">
-                    <StockBadge stock={product.stock} />
-                  </td>
 
                   {/* Status */}
                   <td className="py-4 pr-4">
@@ -372,29 +339,7 @@ export default function ProductTable({ products = [], categories = [] }) {
   );
 }
 
-function StockBadge({ stock }) {
-  if (stock <= 0) {
-    return (
-      <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
-        Out of Stock
-      </span>
-    );
-  }
 
-  if (stock <= 10) {
-    return (
-      <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-        Low ({stock})
-      </span>
-    );
-  }
-
-  return (
-    <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
-      {stock} In Stock
-    </span>
-  );
-}
 
 function StatusBadge({ status }) {
   return (

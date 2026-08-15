@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import MultipleImageUploader from "@/components/admin/products/MultipleImageUploader";
 import ProductSeoForm from "@/components/admin/products/ProductSeoForm";
 import TipTapEditor from "@/components/admin/editor/TipTapEditor";
 import VariantManager from "@/components/admin/products/VariantManager";
@@ -22,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import MultipleImageUploader from "./MultipleImageUploader";
+import FaqManager from "@/components/admin/products/FaqManager";
 
 const getEmptyForm = () => ({
   name: "",
@@ -33,8 +34,9 @@ const getEmptyForm = () => ({
   categoryLevel2: "",
   categoryLevel3: "",
 
-  price: "",
-  stock: 0,
+  collectionLevel1: "",
+  collectionLevel2: "",
+
   sku: "",
   weight: 0,
 
@@ -61,11 +63,20 @@ const getEmptyForm = () => ({
 
   stoneDetails: {
     stoneType: "",
+    tradeName: "",
     productForm: "",
+    pieceSize: "",
     calibratedThickness: "",
-    finishOptions: "",
-    primaryColor: "",
-    suitability: "",
+    faceTexture: "",
+    edges: "",
+    cornerPieces: "",
+    blend: "",
+    joint: "",
+    coveragePerUnit: "",
+    waterAbsorption: "",
+    density: "",
+    weatherResistance: "",
+    application: "",
     installationMethod: "",
     moq: "Project-based — ask us",
     weightPerSqM: "",
@@ -74,6 +85,19 @@ const getEmptyForm = () => ({
     leadTime: "",
     sampleAvailable: true,
   },
+
+  overview: {
+    specifyFor: "",
+    steerElsewhereFor: "",
+    howItReads: {
+      atDistance: "",
+      closeUp: "",
+      throughDay: "",
+      whenWet: "",
+    },
+  },
+
+  faqs: [],
 
   variants: [],
 
@@ -95,6 +119,7 @@ function parentIdOf(category) {
 
 export default function ProductForm({
   categories = [],
+  collections = [],
   initialData = null,
   isEdit = false,
 }) {
@@ -113,9 +138,8 @@ export default function ProductForm({
       categoryLevel2: initialData.categoryLevel2 || "",
       categoryLevel3: initialData.categoryLevel3 || "",
 
-      price: initialData.price || "",
-
-      stock: initialData.stock || 0,
+      collectionLevel1: initialData.collectionLevel1 || "",
+      collectionLevel2: initialData.collectionLevel2 || "",
 
       sku: initialData.sku || "",
 
@@ -138,10 +162,15 @@ export default function ProductForm({
 
       stoneDetails: {
         stoneType: initialData.stoneDetails?.stoneType || "",
+        tradeName: initialData.stoneDetails?.tradeName || "",
         productForm: initialData.stoneDetails?.productForm || "",
+        pieceSize: initialData.stoneDetails?.pieceSize || "",
         calibratedThickness: initialData.stoneDetails?.calibratedThickness || "",
         faceTexture: initialData.stoneDetails?.faceTexture || "",
+        edges: initialData.stoneDetails?.edges || "",
         cornerPieces: initialData.stoneDetails?.cornerPieces || "",
+        blend: initialData.stoneDetails?.blend || "",
+        joint: initialData.stoneDetails?.joint || "",
         coveragePerUnit: initialData.stoneDetails?.coveragePerUnit || "",
         waterAbsorption: initialData.stoneDetails?.waterAbsorption || "",
         density: initialData.stoneDetails?.density || "",
@@ -157,6 +186,21 @@ export default function ProductForm({
         leadTime: initialData.stoneDetails?.leadTime || "",
         sampleAvailable: initialData.stoneDetails?.sampleAvailable !== undefined ? initialData.stoneDetails?.sampleAvailable : true,
       },
+
+      overview: {
+        specifyFor: initialData.overview?.specifyFor || "",
+        steerElsewhereFor: initialData.overview?.steerElsewhereFor || "",
+        howItReads: {
+          atDistance: initialData.overview?.howItReads?.atDistance || "",
+          closeUp: initialData.overview?.howItReads?.closeUp || "",
+          throughDay: initialData.overview?.howItReads?.throughDay || "",
+          whenWet: initialData.overview?.howItReads?.whenWet || "",
+        },
+      },
+
+      faqs: initialData.faqs || [],
+
+      variants: initialData.variants || [],
 
       dimensions: {
         length: initialData.dimensions?.length || "",
@@ -208,6 +252,18 @@ export default function ProductForm({
     );
   }, [categories, formData.categoryLevel2]);
 
+  const level1Collections = useMemo(() => {
+    return collections.filter((col) => !col.parentCollection || col.collectionLevel === 1);
+  }, [collections]);
+
+  const level2Collections = useMemo(() => {
+    if (!formData.collectionLevel1) return [];
+    return collections.filter((col) => {
+      const parentId = typeof col.parentCollection === "object" ? col.parentCollection?._id : col.parentCollection;
+      return parentId === formData.collectionLevel1;
+    });
+  }, [collections, formData.collectionLevel1]);
+
   const handleChange = (key, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -245,6 +301,29 @@ export default function ProductForm({
     }));
   };
 
+  const handleOverviewChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      overview: {
+        ...prev.overview,
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleHowItReadsChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      overview: {
+        ...prev.overview,
+        howItReads: {
+          ...prev.overview?.howItReads,
+          [key]: value,
+        },
+      },
+    }));
+  };
+
   const handleLevel1Change = (value) => {
     setFormData((prev) => ({
       ...prev,
@@ -259,6 +338,14 @@ export default function ProductForm({
       ...prev,
       categoryLevel2: value,
       categoryLevel3: "",
+    }));
+  };
+
+  const handleColLevel1Change = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      collectionLevel1: value,
+      collectionLevel2: "",
     }));
   };
 
@@ -324,6 +411,16 @@ export default function ProductForm({
         uploadedHoverImage = await uploadImage(hoverImage, "products/hover");
       }
 
+      if (!formData.categoryLevel3 && !formData.categoryLevel2 && !formData.categoryLevel1) {
+        toast.error("Category is required");
+        return;
+      }
+
+      if (!formData.collectionLevel2) {
+        toast.error("Level 2 Collection is required for every product");
+        return;
+      }
+
       const finalCategory =
         formData.categoryLevel3 ||
         formData.categoryLevel2 ||
@@ -333,6 +430,7 @@ export default function ProductForm({
         ...formData,
 
         category: finalCategory,
+        collection: formData.collectionLevel2,
 
         images: uploadedImages,
 
@@ -373,6 +471,8 @@ export default function ProductForm({
       delete payload.categoryLevel1;
       delete payload.categoryLevel2;
       delete payload.categoryLevel3;
+      delete payload.collectionLevel1;
+      delete payload.collectionLevel2;
 
       const response = await fetch(
         isEdit
@@ -457,6 +557,25 @@ export default function ProductForm({
             />
           </Field>
 
+          <Field label="Top Collection *">
+            <CategorySelect
+              value={formData.collectionLevel1}
+              categories={level1Collections}
+              onChange={handleColLevel1Change}
+              placeholder="Select Top Collection"
+            />
+          </Field>
+
+          <Field label="Sub Collection (Level 2) *">
+            <CategorySelect
+              value={formData.collectionLevel2}
+              categories={level2Collections}
+              onChange={(value) => handleChange("collectionLevel2", value)}
+              disabled={!formData.collectionLevel1}
+              placeholder="Select Sub Collection"
+            />
+          </Field>
+
           <Field label="Description *" className="md:col-span-2">
             <TipTapEditor
               value={formData.description}
@@ -482,26 +601,10 @@ export default function ProductForm({
       </section>
 
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
-        <h3 className="mb-5 text-lg font-semibold">Pricing & Inventory</h3>
+        <h3 className="mb-5 text-lg font-semibold">Weight</h3>
 
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Price">
-            <Input
-              type="number"
-              value={formData.price}
-              onChange={(e) => handleChange("price", e.target.value === "" ? "" : Number(e.target.value))}
-            />
-          </Field>
-
-          <Field label="Stock">
-            <Input
-              type="number"
-              value={formData.stock}
-              onChange={(e) => handleChange("stock", Number(e.target.value))}
-            />
-          </Field>
-
-          <Field label="Weight">
+        <div className="grid gap-5 md:grid-cols-1">
+          <Field label="Weight (kg)">
             <Input
               type="number"
               value={formData.weight}
@@ -546,11 +649,27 @@ export default function ProductForm({
             />
           </Field>
 
+          <Field label="Trade Name">
+            <Input
+              placeholder="e.g. Monsoon Black"
+              value={formData.stoneDetails.tradeName}
+              onChange={(e) => handleStoneChange("tradeName", e.target.value)}
+            />
+          </Field>
+
           <Field label="Product Form">
             <Input
               placeholder="e.g. Loose rubble panels, crated"
               value={formData.stoneDetails.productForm}
               onChange={(e) => handleStoneChange("productForm", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Piece Size">
+            <Input
+              placeholder="e.g. 4″ – 18″ random"
+              value={formData.stoneDetails.pieceSize}
+              onChange={(e) => handleStoneChange("pieceSize", e.target.value)}
             />
           </Field>
 
@@ -570,11 +689,35 @@ export default function ProductForm({
             />
           </Field>
 
+          <Field label="Edges">
+            <Input
+              placeholder="e.g. Sawn / tumbled / natural"
+              value={formData.stoneDetails.edges}
+              onChange={(e) => handleStoneChange("edges", e.target.value)}
+            />
+          </Field>
+
           <Field label="Corner Pieces">
             <Input
               placeholder="e.g. L-shaped, pre-fabricated"
               value={formData.stoneDetails.cornerPieces}
               onChange={(e) => handleStoneChange("cornerPieces", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Blend">
+            <Input
+              placeholder="e.g. Pre-blended, fixed ratio"
+              value={formData.stoneDetails.blend}
+              onChange={(e) => handleStoneChange("blend", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Joint">
+            <Input
+              placeholder="e.g. 2–4 mm recessed joint"
+              value={formData.stoneDetails.joint}
+              onChange={(e) => handleStoneChange("joint", e.target.value)}
             />
           </Field>
 
@@ -677,6 +820,76 @@ export default function ProductForm({
             </span>
           </div>
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70 space-y-5">
+        <h3 className="text-lg font-semibold">Product Overview &amp; Visual Characteristics</h3>
+        
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field label="Specify It For">
+            <Textarea
+              rows={3}
+              placeholder="e.g. Feature walls, boundary walls, large elevations..."
+              value={formData.overview.specifyFor}
+              onChange={(e) => handleOverviewChange("specifyFor", e.target.value)}
+            />
+          </Field>
+
+          <Field label="Steer Elsewhere For">
+            <Textarea
+              rows={3}
+              placeholder="e.g. Small tight panels below 40 sq ft..."
+              value={formData.overview.steerElsewhereFor}
+              onChange={(e) => handleOverviewChange("steerElsewhereFor", e.target.value)}
+            />
+          </Field>
+        </div>
+
+        <div className="pt-3 border-t border-stone-200 dark:border-stone-800">
+          <h4 className="text-sm font-semibold text-amber-700 dark:text-amber-500 uppercase tracking-wider mb-4">
+            How It Reads (Visual Experience)
+          </h4>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field label="At a Distance">
+              <Input
+                placeholder="e.g. Monolithic warm brown anchoring the building to ground"
+                value={formData.overview.howItReads?.atDistance || ""}
+                onChange={(e) => handleHowItReadsChange("atDistance", e.target.value)}
+              />
+            </Field>
+
+            <Field label="Close Up">
+              <Input
+                placeholder="e.g. Mineral movement: iron streaks, tan patches, rust veining"
+                value={formData.overview.howItReads?.closeUp || ""}
+                onChange={(e) => handleHowItReadsChange("closeUp", e.target.value)}
+              />
+            </Field>
+
+            <Field label="Through the Day">
+              <Input
+                placeholder="e.g. Holds colour steadily and comes forward at sunset"
+                value={formData.overview.howItReads?.throughDay || ""}
+                onChange={(e) => handleHowItReadsChange("throughDay", e.target.value)}
+              />
+            </Field>
+
+            <Field label="When Wet">
+              <Input
+                placeholder="e.g. Deepens to a rich chocolate undertone"
+                value={formData.overview.howItReads?.whenWet || ""}
+                onChange={(e) => handleHowItReadsChange("whenWet", e.target.value)}
+              />
+            </Field>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
+        <FaqManager
+          faqs={formData.faqs}
+          onChange={(faqs) => handleChange("faqs", faqs)}
+        />
       </section>
 
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
@@ -809,11 +1022,11 @@ function SwitchField({ label, checked, onChange }) {
   );
 }
 
-function CategorySelect({ categories, value, onChange, disabled = false }) {
+function CategorySelect({ categories, value, onChange, disabled = false, placeholder = "Select Category" }) {
   return (
     <Select value={value} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger className="min-w-[220px] w-full">
-        <SelectValue placeholder="Select Category" />
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
       <SelectContent

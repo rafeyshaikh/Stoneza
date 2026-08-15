@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 import { Pencil, Trash2, Search, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
@@ -262,18 +262,13 @@ export default function CategoryTable({ categories = [] }) {
               >
                 <td className="py-4 pr-3">
                   <div className="relative h-16 w-16 overflow-hidden rounded-lg border dark:border-stone-800">
-                    {category.bannerImage?.square?.url ? (
-                      <Image
-                        src={category.bannerImage.square.url}
-                        alt={category.name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-xs text-stone-400">
-                        No Image
-                      </div>
-                    )}
+                    <ImageWithLoader
+                      src={category.bannerImage?.square?.url || category.bannerImage?.landscape?.url}
+                      alt={category.name}
+                      fill
+                      className="object-cover"
+                      placeholderTitle={category.name}
+                    />
                   </div>
                 </td>
 

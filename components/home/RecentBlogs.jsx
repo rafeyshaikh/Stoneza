@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 
 export default function RecentBlogs({ blogs = [] }) {
@@ -10,7 +10,7 @@ export default function RecentBlogs({ blogs = [] }) {
     uniqueBlogs.push({
       id: b._id,
       title: b.title,
-      image: b.bannerImage?.url || "/assets/placeholder.jpg",
+      image: b.bannerImage?.url || "",
       href: `/blogs/${b.slug}`,
     });
     titles.add(b.title.toLowerCase());
@@ -48,15 +48,16 @@ export default function RecentBlogs({ blogs = [] }) {
       </h1>
 
       <div className="mx-auto mt-10 md:mt-14 max-w-[1360px] grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-x-16">
-        {displayBlogs.map((blog) => (
+        {displayBlogs.map((blog, idx) => (
           <div key={blog.id}>
             <Link href={blog.href} className="block group">
               <div className="group overflow-hidden aspect-[650/380] relative">
-                <Image
+                <ImageWithLoader
                   src={blog.image}
                   alt={blog.title}
                   fill
                   className="object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                  seedIndex={idx}
                 />
               </div>
 

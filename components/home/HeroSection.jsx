@@ -11,8 +11,8 @@ const heroItems = [
     heading: "Natural stone for spaces that inspire.",
     paragraph:
       "Transform open spaces with natural stone crafted for lasting beauty, enduring performance, and effortless outdoor living.",
-    primaryButtonText: "EXPLORE THE COLLECTION",
-    primaryButtonLink: "/collections/landscape-and-outdoor-living",
+    primaryButtonText: "EXPLORE THE CATEGORY",
+    primaryButtonLink: "/categories/landscape-and-outdoor-living",
     image: "/assets/hero/NewSlide1.png",
   },
   {
@@ -20,8 +20,8 @@ const heroItems = [
     heading: "Natural stone for every step you take.",
     paragraph:
       "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
-    primaryButtonText: "EXPLORE THE COLLECTION",
-    primaryButtonLink: "/collections/flooring-paving-surfaces",
+    primaryButtonText: "EXPLORE THE CATEGORY",
+    primaryButtonLink: "/categories/flooring-paving-surfaces",
     image: "/assets/hero/NewSlide2.png",
   },
   {
@@ -29,8 +29,8 @@ const heroItems = [
     heading: "Stone that shapes architectural identity.",
     paragraph:
       "Transform walls into lasting architectural statements with natural stone crafted for depth, distinction, and timeless exterior beauty.",
-    primaryButtonText: "EXPLORE THE COLLECTION",
-    primaryButtonLink: "/collections/wall-cladding-facade-stones",
+    primaryButtonText: "EXPLORE THE CATEGORY",
+    primaryButtonLink: "/categories/wall-cladding-facade-stones",
     image: "/assets/hero/NewSlide3.png",
   },
   {
@@ -38,8 +38,8 @@ const heroItems = [
     heading: "Crafted details that bring stone to life.",
     paragraph:
       "Discover distinctive patterns and refined finishes designed to add depth, texture, and timeless character to every surface.",
-    primaryButtonText: "EXPLORE THE COLLECTION",
-    primaryButtonLink: "/collections/patterns-finishes",
+    primaryButtonText: "EXPLORE THE CATEGORY",
+    primaryButtonLink: "/categories/patterns-finishes",
     image: "/assets/hero/NewSlide4.png",
   }
 ];
@@ -146,7 +146,7 @@ export default function HeroSection({ slides = [] }) {
             fill
             priority={index === 0}
             className="object-cover"
-            unoptimized={item.image.startsWith("http")}
+            unoptimized={Boolean(item.image && item.image.startsWith("http"))}
           />
 
           {/* Dark gradient overlay for text legibility */}

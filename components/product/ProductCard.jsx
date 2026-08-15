@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import { redirectToWhatsApp } from "@/lib/whatsapp";
 import { isValidImageUrl } from "@/lib/utils";
 
@@ -11,14 +11,16 @@ export default function ProductCard({ item, setHoveredId, hoveredId, slug, butto
   const productId = (item?.id || item?._id)?.toString();
 
   const rawImage = item?.image || item?.thumbnail?.url || (item?.images?.length ? item?.images[0].url : "");
-  const image = isValidImageUrl(rawImage) ? rawImage : "/assets/placeholder.jpg";
+  const image = rawImage;
 
   const rawHover = item?.imageHover || item?.hoverImage?.url || "";
   const imageHover = isValidImageUrl(rawHover) ? rawHover : image;
 
   const targetUrl = slug
-    ? `/collections/${slug}/products/${productSlug}`
+    ? `/categories/${slug}/products/${productSlug}`
     : `/products/${productSlug}`;
+
+  const currentSrc = setHoveredId && hoveredId === productId ? imageHover : image;
 
   return (
     <div className="w-full h-auto cursor-pointer" onClick={() => {
@@ -30,11 +32,12 @@ export default function ProductCard({ item, setHoveredId, hoveredId, slug, butto
           onMouseEnter={() => setHoveredId && setHoveredId(productId)}
           onMouseLeave={() => setHoveredId && setHoveredId(null)}
         >
-          <Image
-            src={setHoveredId && hoveredId === productId ? imageHover : image}
+          <ImageWithLoader
+            src={currentSrc}
             alt={name}
             fill
             className="h-full w-full object-cover"
+            placeholderTitle={name}
           />
 
           {button && setHoveredId && hoveredId === productId && (

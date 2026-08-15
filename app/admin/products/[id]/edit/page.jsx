@@ -8,6 +8,7 @@ import { connectDB } from "@/lib/databaseConnection";
 
 import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
+import Collection from "@/models/Collection.model";
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +66,24 @@ export default async function EditProductPage({ params }) {
     }
   }
 
+  let colLevel1 = "";
+  let colLevel2 = "";
+
+  if (product.collection) {
+    const finalCol = await Collection.findById(product.collection)
+      .populate("parentCollection")
+      .lean();
+
+    if (finalCol) {
+      if (finalCol.collectionLevel === 1) {
+        colLevel1 = finalCol._id.toString();
+      } else if (finalCol.collectionLevel === 2) {
+        colLevel2 = finalCol._id.toString();
+        colLevel1 = finalCol.parentCollection?._id?.toString() || "";
+      }
+    }
+  }
+
   const categories = (
     await Category.find({
       isActive: true,
@@ -80,12 +99,30 @@ export default async function EditProductPage({ params }) {
     : null,
   }));
 
+  const collections = (
+    await Collection.find({
+      isActive: true,
+    })
+      .select("name collectionLevel parentCollection")
+      .sort({ name: 1 })
+      .lean()
+  ).map((col) => ({
+    _id: col._id.toString(),
+    name: col.name,
+    collectionLevel: col.collectionLevel,
+    parentCollection: col.parentCollection
+      ? col.parentCollection.toString()
+      : null,
+  }));
+
   const safeProduct = JSON.parse(
     JSON.stringify({
       ...product,
       categoryLevel1: level1,
       categoryLevel2: level2,
       categoryLevel3: level3,
+      collectionLevel1: colLevel1,
+      collectionLevel2: colLevel2,
     }),
   );
 
@@ -98,7 +135,7 @@ export default async function EditProductPage({ params }) {
         description="Update product details and media."
       />
 
-      <ProductForm categories={categories} initialData={safeProduct} isEdit />
+      <ProductForm categories={categories} collections={collections} initialData={safeProduct} isEdit />
     </>
   );
 }

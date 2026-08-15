@@ -6,6 +6,7 @@ import cloudinary from "@/lib/cloudinary";
 
 import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
+import Collection from "@/models/Collection.model";
 
 export async function GET(request, { params }) {
   try {
@@ -23,6 +24,7 @@ export async function GET(request, { params }) {
       _id: id,
     })
       .populate("category", "name slug")
+      .populate("collection", "name slug collectionLevel")
       .lean();
 
     if (!product) {
@@ -55,9 +57,8 @@ export async function PATCH(request, { params }) {
       name,
       description,
       shortDescription,
-      price,
-      stock,
       category,
+      collection,
 
       images,
       hoverImage,
@@ -74,8 +75,10 @@ export async function PATCH(request, { params }) {
 
       dimensions,
       weight,
-      stoneDetails,
-      variants,
+      stoneDetails = {},
+      overview = {},
+      faqs = [],
+      variants = [],
     } = body;
 
     const product = await Product.findOne({
@@ -93,10 +96,6 @@ export async function PATCH(request, { params }) {
 
     if (!description?.trim()) {
       return response(false, 400, "Description is required");
-    }
-
-    if (price !== undefined && price !== null && price !== "" && Number(price) <= 0) {
-      return response(false, 400, "Valid price is required");
     }
 
     if (!stoneDetails || !stoneDetails.stoneType?.trim()) {
@@ -138,21 +137,40 @@ export async function PATCH(request, { params }) {
       return response(false, 400, "Please select a final category");
     }
 
+    if (collection) {
+      const collectionExists = await Collection.findById(collection);
+      if (!collectionExists) {
+        return response(false, 404, "Collection not found");
+      }
+      if (collectionExists.collectionLevel !== 2) {
+        return response(false, 400, "Product must belong to a level 2 collection");
+      }
+    }
+
 
     product.name = name.trim();
     product.slug = slug;
 
     product.description = description.trim();
-    product.shortDescription = shortDescription;
-
-    product.price = price ? Number(price) : undefined;
-
-    product.stock = Number(stock) || 0;
+    product.shortDescription = shortDescription?.trim() || "";
 
     product.category = category;
+    product.collection = collection || null;
+    product.status = status;
 
     const oldImageIds = (product.images || []).map(img => img.publicId).filter(Boolean);
-    product.images = images;
+    
+    product.images = Array.isArray(images)
+      ? images.map((img) =>
+          typeof img === "string"
+            ? { url: img, publicId: "", caption: "" }
+            : {
+                url: img.url || "",
+                publicId: img.publicId || "",
+                caption: img.caption?.trim() || "",
+              }
+        )
+      : [];
 
     const oldHoverPublicId = product.hoverImage?.publicId;
 
@@ -174,10 +192,15 @@ export async function PATCH(request, { params }) {
 
     product.stoneDetails = {
       stoneType: stoneDetails.stoneType.trim(),
+      tradeName: stoneDetails.tradeName?.trim() || "",
       productForm: stoneDetails.productForm?.trim() || "",
+      pieceSize: stoneDetails.pieceSize?.trim() || "",
       calibratedThickness: stoneDetails.calibratedThickness?.trim() || "",
       faceTexture: stoneDetails.faceTexture?.trim() || "",
+      edges: stoneDetails.edges?.trim() || "",
       cornerPieces: stoneDetails.cornerPieces?.trim() || "",
+      blend: stoneDetails.blend?.trim() || "",
+      joint: stoneDetails.joint?.trim() || "",
       coveragePerUnit: stoneDetails.coveragePerUnit?.trim() || "",
       waterAbsorption: stoneDetails.waterAbsorption?.trim() || "",
       density: stoneDetails.density ? Number(stoneDetails.density) : null,
@@ -194,13 +217,35 @@ export async function PATCH(request, { params }) {
       sampleAvailable: typeof stoneDetails.sampleAvailable === "boolean" ? stoneDetails.sampleAvailable : true,
     };
 
+    product.overview = {
+      specifyFor: overview.specifyFor?.trim() || "",
+      steerElsewhereFor: overview.steerElsewhereFor?.trim() || "",
+      howItReads: {
+        atDistance: overview.howItReads?.atDistance?.trim() || "",
+        closeUp: overview.howItReads?.closeUp?.trim() || "",
+        throughDay: overview.howItReads?.throughDay?.trim() || "",
+        whenWet: overview.howItReads?.whenWet?.trim() || "",
+      },
+    };
+
+    product.faqs = Array.isArray(faqs)
+      ? faqs
+          .map((f) => ({
+            question: f.question?.trim() || "",
+            answer: f.answer?.trim() || "",
+          }))
+          .filter((f) => f.question && f.answer)
+      : [];
+
     product.variants = Array.isArray(variants)
-      ? variants.map((v) => ({
-          name: v.name?.trim() || "",
-          options: Array.isArray(v.options)
-            ? v.options.map((o) => o.trim()).filter(Boolean)
-            : [],
-        })).filter((v) => v.name)
+      ? variants
+          .map((v) => ({
+            name: v.name?.trim() || "",
+            options: Array.isArray(v.options)
+              ? v.options.map((o) => o.trim()).filter(Boolean)
+              : [],
+          }))
+          .filter((v) => v.name)
       : [];
 
     await product.save();

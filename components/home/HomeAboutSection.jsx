@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 
 export default function HomeAboutSection({ storyData, imageleft = false }) {
@@ -12,7 +12,7 @@ export default function HomeAboutSection({ storyData, imageleft = false }) {
     ? storyData.paragraphs
     : defaultParagraphs;
 
-  const imageUrl = storyData?.image?.url || "/assets/others/Below_Banner_2.jpg";
+  const imageUrl = storyData?.image?.url || "";
 
   return (
     <section className="py-16 lg:py-24 bg-white">
@@ -41,12 +41,12 @@ export default function HomeAboutSection({ storyData, imageleft = false }) {
 
           {/* RIGHT IMAGE COLUMN */}
           <div className="relative aspect-[4/3] sm:aspect-[14/10] w-full overflow-hidden rounded-2xl shadow-md border border-stone-200 h-[35rem]">
-            <Image
+            <ImageWithLoader
               src={imageUrl}
               alt="Stoneza About Us"
               fill
               className="object-cover"
-              unoptimized={Boolean(imageUrl && imageUrl.startsWith("http"))}
+              placeholderTitle="STONEZA ABOUT US"
             />
           </div>
         </div>

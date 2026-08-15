@@ -1,26 +1,31 @@
-import Image from "next/image";
+import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 
-export default function BigBanner({src,alt,title,button,height,link="#"}) {
+export default function BigBanner({src, alt = "Stoneza Banner", title, button, height = 500, link = "#"}) {
   return (
     <div className="relative w-full overflow-hidden"
     style={{ height: `${height}px` }}>
-      <Image
+      <ImageWithLoader
         src={src}
         alt={alt}
         fill
         className="object-cover"
         priority
+        placeholderTitle={title || alt}
       />
 
       <div className="absolute left-4 md:left-9 bottom-8 md:bottom-18 z-10 px-6 text-white">
-        <h1 className="font-display text-3xl md:text-[52px] font-light tracking-wide capitalize pb-6">
-          {title}
-        </h1>
+        {title && (
+          <h1 className="font-display text-3xl md:text-[52px] font-light tracking-wide capitalize pb-6">
+            {title}
+          </h1>
+        )}
 
-        {button&& (<Link href={link} className="cursor-pointer border border-white px-6 md:px-8 py-3 font-heading text-[11px] font-medium uppercase tracking-[0.3em] transition-all duration-300 hover:bg-white hover:text-black">
-          {button}
-        </Link>)}
+        {button && (
+          <Link href={link} className="cursor-pointer border border-white px-6 md:px-8 py-3 font-heading text-[11px] font-medium uppercase tracking-[0.3em] transition-all duration-300 hover:bg-white hover:text-black">
+            {button}
+          </Link>
+        )}
       </div>
     </div>
   );

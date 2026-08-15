@@ -17,7 +17,7 @@ export default function ProductsClient({ products }) {
   const [isSortOpen, setIsSortOpen] = useState(false);
 
   const stoneType = searchParams.get('stoneType');
-  const currentTitle = stoneType == "marble" ? "Marble Collection" : stoneType == "granite" ? "Granite Collection" : stoneType == "quartzite" ? "Quartzite Collection" : stoneType == "limestone" ? "Limestone Collection" : stoneType == "sandstone" ? "Sandstone Collection" : stoneType == "slate" ? "Slate Collection" : "All Products";
+  const currentTitle = stoneType == "marble" ? "Marble Category" : stoneType == "granite" ? "Granite Category" : stoneType == "quartzite" ? "Quartzite Category" : stoneType == "limestone" ? "Limestone Category" : stoneType == "sandstone" ? "Sandstone Category" : stoneType == "slate" ? "Slate Category" : "All Products";
   
   // Filter states
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -370,9 +370,9 @@ export default function ProductsClient({ products }) {
                 </div>
               </div>
 
-              {/* Badges / Collections */}
+              {/* Badges / Categories */}
               <div>
-                <h4 className="text-[11px] font-bold uppercase tracking-[2px] text-[#8A7F73] mb-4">Collections</h4>
+                <h4 className="text-[11px] font-bold uppercase tracking-[2px] text-[#8A7F73] mb-4">Categories</h4>
                 <div className="flex flex-wrap gap-2">
                   {["Featured", "Best Seller", "New Arrival"].map((badge) => {
                     const isActive = activeFilters.badges.includes(badge);

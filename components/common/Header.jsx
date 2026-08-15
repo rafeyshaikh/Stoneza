@@ -21,7 +21,7 @@ import { PiCaretDownThin } from "react-icons/pi";
 import ProductCard from "../product/ProductCard";
 
 export default function Header() {
-  const { categories, setCategories } = useCategories();
+  const { categories, setCategories, collections } = useCategories();
   const [activeMenu, setActiveMenu] = useState(null);
   const [logoHovered, setLogoHovered] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -130,7 +130,7 @@ export default function Header() {
 
 
 
-  const displayNavItems = categories;
+  const displayNavItems = collections ? [...categories, collections] : categories;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -237,7 +237,7 @@ export default function Header() {
                       }
                     >
                       <Link
-                        href={`/collections/${item.slug}` || "#"}
+                        href={item.href || `/categories/${item.slug}` || "#"}
                         className="relative block"
                       >
                         {item.title}
@@ -364,7 +364,13 @@ export default function Header() {
                                       <h4
                                         className="mb-3 text-[12px] font-semibold uppercase tracking-[2px]"
                                       >
-                                        {category.title}
+                                        <Link
+                                          href={category.href || `/categories/${category.slug}`}
+                                          onClick={() => setMobileMenuOpen(false)}
+                                          className="hover:text-black transition"
+                                        >
+                                          {category.title}
+                                        </Link>
                                       </h4>
 
                                       {/* LINKS */}
@@ -373,11 +379,13 @@ export default function Header() {
                                         {category.links.map(
                                           (link, linkIndex) => {
                                             const linkName = typeof link === "string" ? link : (link.name || link.title);
-                                            const linkSlug = typeof link === "string" ? link.toLowerCase().replace(/ /g, "-") : link.slug;
+                                            const linkHref = typeof link === "object" && link.href
+                                              ? link.href
+                                              : `/categories/${typeof link === "string" ? link.toLowerCase().replace(/ /g, "-") : link.slug}?categoryLevel=3`;
                                             return (
                                               <Link
                                                 key={linkIndex}
-                                                href={`/collections/${linkSlug}?categoryLevel=3`}
+                                                href={linkHref}
                                                 onClick={() =>
                                                   setMobileMenuOpen(false)
                                                 }
@@ -388,7 +396,7 @@ export default function Header() {
                                             );
                                           }
                                         )}
-                                        <Link href={`/collections/${category.slug}`} onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-[15px] font-semibold text-[#5e5e5e] transition hover:text-black uppe">View All</Link>
+                                        <Link href={category.href || `/categories/${category.slug}`} onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-[15px] font-semibold text-[#5e5e5e] transition hover:text-black uppercase">View All</Link>
                                       </div>
                                     </div>
                                   )
@@ -495,7 +503,7 @@ export default function Header() {
                             {uniqueCategories.map((cat) => (
                               <li key={cat.slug} className="w-auto lg:w-full">
                                 <Link
-                                  href={`/collections/${cat.slug}`}
+                                  href={`/categories/${cat.slug}`}
                                   className="text-xs lg:text-sm text-[#1c1714] bg-stone-200/50 hover:bg-[#9a4a2e] hover:text-white transition-all duration-300 block py-1.5 px-4 lg:px-3 lg:py-1 rounded-full lg:rounded-none lg:bg-transparent capitalize font-heading font-medium lg:font-normal"
                                   onClick={() => setIsSearchOpen(false)}
                                 >

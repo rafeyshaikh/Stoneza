@@ -1,5 +1,6 @@
 import ImageWithLoader from "./Loader";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function MegaMenu({ item }) {
   const sortedCategories = [...(item.categories || [])].sort((a, b) => {
@@ -32,44 +33,48 @@ export default function MegaMenu({ item }) {
           <div className="flex items-start justify-between gap-8 lg:gap-12">
             {/* Categories Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-7 xl:gap-10 flex-1 items-start">
-              {sortedCategories.map((section) => (
-                <div key={section.title} className="w-full min-w-0">
-                  <a
-                    className="text-[13px] uppercase tracking-[0.22em] text-[#393938] font-heading font-semibold hover:text-[#1c1b1b] transition-colors block truncate"
-                    href={`/collections/${section.slug}`}
-                    title={section.title}
-                  >
-                    {section.title}
-                  </a>
+              {sortedCategories.map((section) => {
+                const sectionHref = section.href || `/categories/${section.slug}`;
+                return (
+                  <div key={section.title} className="w-full min-w-0">
+                    <Link
+                      className="text-[13px] uppercase tracking-[0.22em] text-[#393938] font-heading font-semibold hover:text-[#1c1b1b] transition-colors block truncate"
+                      href={sectionHref}
+                      title={section.title}
+                    >
+                      {section.title}
+                    </Link>
 
-                  <ul className="space-y-2 mt-3">
-                    {section.links?.map((link) => {
-                      const linkName =
-                        typeof link === "string" ? link : link.name || link.title;
-                      return (
-                        <li key={link.slug || linkName}>
-                          <a
-                            href={`/collections/${link.slug}`}
-                            className="text-[14px] text-[#393938]/90 font-body transition-colors hover:text-[#111] hover:font-medium block truncate"
-                            title={linkName}
-                          >
-                            {linkName}
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ))}
+                    <ul className="space-y-2 mt-3">
+                      {section.links?.map((link) => {
+                        const linkName =
+                          typeof link === "string" ? link : link.name || link.title;
+                        const linkHref = typeof link === "object" && link.href ? link.href : `/categories/${link.slug}`;
+                        return (
+                          <li key={link.slug || linkName}>
+                            <Link
+                              href={linkHref}
+                              className="text-[14px] text-[#393938]/90 font-body transition-colors hover:text-[#111] hover:font-medium block truncate"
+                              title={linkName}
+                            >
+                              {linkName}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Images */}
             {visibleImages.length > 0 && (
               <div className="flex items-start gap-7 shrink-0 pl-7 lg:pl-9">
                 {visibleImages.map((img, index) => (
-                  <a
+                  <Link
                     key={img.image || index}
-                    href="#"
+                    href={img.href || "#"}
                     className={`group text-center ${index === 1 ? secondImageClass : ""}`}
                   >
                     <div className="relative w-[240px] lg:w-[280px] h-[160px] lg:h-[185px] overflow-hidden bg-[#d4c9b8] rounded-xs shadow-xs">
@@ -86,7 +91,7 @@ export default function MegaMenu({ item }) {
                         {img.title}
                       </p>
                     )}
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}
