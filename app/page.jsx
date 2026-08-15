@@ -118,7 +118,7 @@ export default async function Home() {
       <FeaturedProducts products={safeFeatured} cmsData={safeHomepage?.featuredProducts} />
       <HomeAboutSection storyData={safeAbout?.story} />
       <MiddleBanner
-        src={safeHomepage?.middleBanner?.image?.url || "/assets/hero/All-Products-Banner.png"}
+        src={safeHomepage?.middleBanner?.image?.url || "/assets/Banner/All_products_banner.png"}
         title={safeHomepage?.middleBanner?.title || "All Products"}
         eyebrow={safeHomepage?.middleBanner?.eyebrow || "The Stoneza Collection"}
         caption={safeHomepage?.middleBanner?.caption || "Natural stone. Timeless character. Endless possibilities."}
