@@ -12,7 +12,8 @@ import {
   FileText,
   Search,
   Settings,
-  NotebookPen
+  NotebookPen,
+  Building2,
 } from "lucide-react";
 import { BiSolidCommentDetail } from "react-icons/bi";
 
@@ -24,6 +25,7 @@ const navItems = [
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Grid2X2 },
   { label: "Collections", href: "/admin/collections", icon: Layers },
+  { label: "Projects CMS", href: "/admin/projects", icon: Building2 },
   { label: "Enquiries", href: "/admin/enquiries", icon: BiSolidCommentDetail },
   { label: "Users", href: "/admin/users", icon: Users },
   { label: "Homepage CMS", href: "/admin/cms/homepage", icon: FileText },

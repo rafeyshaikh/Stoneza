@@ -7,31 +7,23 @@ import { useContact } from "@/context/ContactContext";
 export default function Footer() {
   const { contactDetails } = useContact();
   return (
-    <footer className="bg-[#C5B9AB] border-t border-[#ddd4c8] text-[#4b433c] pt-10">
-      <div className="text-[22px] md:text-[28px] py-2 px-4 text-center text-[#393938] font-display">
-        BE IN THE KNOW
-      </div>
+    <footer className="bg-[#26221e] border-t border-[#696258] text-[#B2A99E] pt-10">
       <Container>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_2fr] gap-10 lg:gap-12 py-12 lg:py-16">
           {/* WHO WE ARE */}
           <div>
-            <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.18em]">
+            <h3 className="mb-5 text-[11px] text-white font-semibold uppercase tracking-[0.18em]">
               WHO WE ARE
             </h3>
 
             <p className="text-[13px] leading-7 text-left md:text-justify">
-              Address Home is India&apos;s iconic luxury home decor destination
-              that creates and curates world-class premium home decorative
-              collections for the discerning lifestyle enthusiast. From
-              cushions, bed linen, crockery and dinnerware to sculptures,
-              furniture and statement decor pieces, every collection is crafted
-              with global design sensibilities and timeless elegance.
+              Stoneza is a quarry-direct natural stone manufacturer and exporter operating from Bhilwara, Rajasthan since 1992. We own mines at Bijolia, Kota and Asind, and supply architects, PMC firms, resort developers and landscape designers across India and for export.
             </p>
           </div>
 
           {/* QUICK LINKS */}
           <div>
-            <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.18em]">
+            <h3 className="mb-5 text-[11px] text-white font-semibold uppercase tracking-[0.18em]">
               QUICK LINKS
             </h3>
 
@@ -85,7 +77,7 @@ export default function Footer() {
 
           {/* HELPDESK */}
           <div>
-            <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.18em]">
+            <h3 className="mb-5 text-[11px] font-semibold text-white uppercase tracking-[0.18em]">
               SHOP BY STONE TYPE
             </h3>
 
@@ -135,7 +127,7 @@ export default function Footer() {
 
           {/* CONNECT */}
           <div>
-            <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.18em]">
+            <h3 className="mb-5 text-[11px] font-semibold text-white uppercase tracking-[0.18em]">
               CONNECT
             </h3>
 
@@ -235,7 +227,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-[#ddd4c8] py-6 text-[11px] md:text-[12px] text-center md:text-left">
-          <p>© 2026 Stoneza Retail Pvt. Ltd. | All Rights Reserved.</p>
+          <p>© 2026 Anantay Exports Pvt. Ltd. — trading as Stoneza. All rights reserved.</p>
 
           <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             <Link
