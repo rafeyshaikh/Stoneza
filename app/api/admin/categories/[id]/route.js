@@ -58,6 +58,7 @@ export async function PATCH(request, { params }) {
       parentCategory = null,
       sortOrder = 0,
       isActive = true,
+      megamenu = null,
       seo = {},
     } = body;
 
@@ -162,24 +163,34 @@ export async function PATCH(request, { params }) {
       }
     }
 
-    category.name = normalizedName;
-    category.slug = slug;
-    category.bannerImage = bannerImage;
-    category.description = description;
-    category.parentCategory = parentCategory || null;
-    category.categoryLevel = categoryLevel;
-    category.sortOrder = sortOrder;
-    category.isActive = isActive;
-    category.seo = seo;
+    const updatedCategory = await Category.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          name: normalizedName,
+          slug,
+          bannerImage,
+          description,
+          parentCategory: parentCategory || null,
+          categoryLevel,
+          sortOrder,
+          isActive,
+          megamenu,
+          seo,
+        },
+      },
+      { new: true, runValidators: true }
+    );
 
-    await category.save();
-    await updateChildrenLevels(category._id, categoryLevel);
+    await updateChildrenLevels(id, categoryLevel);
 
     revalidateTag("layout-categories");
     revalidateTag("public-categories");
     revalidatePath("/", "layout");
+    revalidatePath("/admin/categories");
+    revalidatePath(`/admin/categories/${id}/edit`);
 
-    return response(true, 200, "Category updated successfully", category);
+    return response(true, 200, "Category updated successfully", updatedCategory);
   } catch (error) {
     console.error(error);
 

@@ -1,545 +1,427 @@
 "use client";
 
-import Container from "./Container";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import MegaMenu from "./Megamenu";
-import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
 import { useCategories } from "@/context/CategoriesContext";
-import { GoPlus } from "react-icons/go";
-import { LuMinus } from "react-icons/lu";
-
-import { useRef, useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-
-import { AnimatePresence, motion } from "framer-motion";
-
 import { CiSearch } from "react-icons/ci";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { PiXBold } from "react-icons/pi";
-import { PiCaretDownThin } from "react-icons/pi";
-import ProductCard from "../product/ProductCard";
+import { GoPlus } from "react-icons/go";
+import { LuMinus } from "react-icons/lu";
+import { AnimatePresence, motion } from "framer-motion";
+
+import HeaderSearchOverlay from "./HeaderSearchOverlay";
 
 export default function Header() {
-  const { categories, setCategories, collections } = useCategories();
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [logoHovered, setLogoHovered] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const { isLoggedIn, userRole } = useAuth();
-  const [hoveredId , setHoveredId] = useState(null);
-  const [isPastWhyChooseUs, setIsPastWhyChooseUs] = useState(false);
-
+  const [activeTab, setActiveTab] = useState(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
 
-  const pathname = usePathname();
-  const normalizedPath = (pathname || "").replace(/\/$/, "");
-  const isHomePage = normalizedPath === "";
-
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    if (!searchQuery.trim()) {
-      const timer = setTimeout(() => {
-        if (active) {
-          setSearchResults([]);
-          setLoading(false);
-        }
-      }, 0);
-      return () => {
-        active = false;
-        clearTimeout(timer);
-      };
-    }
-
-    const delayDebounce = setTimeout(async () => {
-      try {
-        if (active) setLoading(true);
-        const res = await fetch(`/api/public/products?search=${encodeURIComponent(searchQuery)}&limit=4`);
-        const data = await res.json();
-        if (active && data.success && data.data && data.data.items) {
-          setSearchResults(data.data.items);
-        }
-      } catch (err) {
-        console.error("Header search error:", err);
-      } finally {
-        if (active) setLoading(false);
-      }
-    }, 300);
-
-    return () => {
-      active = false;
-      clearTimeout(delayDebounce);
-    };
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsSearchOpen(false);
-      setSearchQuery("");
-      setSearchResults([]);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [pathname]);
-
-  const matchedCategories = [];
-  if (searchQuery.trim()) {
-    const q = searchQuery.toLowerCase();
-    categories.forEach((cat) => {
-      if (cat.title.toLowerCase().includes(q)) {
-        matchedCategories.push({ name: cat.title, slug: cat.slug });
-      }
-      cat.categories?.forEach((sub) => {
-        if (sub.title.toLowerCase().includes(q)) {
-          matchedCategories.push({ name: sub.title, slug: sub.slug });
-        }
-        sub.links?.forEach((third) => {
-          if (third.name.toLowerCase().includes(q)) {
-            matchedCategories.push({ name: third.name, slug: third.slug });
-          }
-        });
-      });
-    });
+  // Safely retrieve context categories & collections from DB
+  let categoriesFromDb = [];
+  let collectionsFromDb = null;
+  try {
+    const context = useCategories();
+    categoriesFromDb = context.categories || [];
+    collectionsFromDb = context.collections || null;
+  } catch (err) {
+    // Graceful fallback if rendered outside provider
   }
 
-  const uniqueCategories = [];
-  const seenSlugs = new Set();
-  matchedCategories.forEach((cat) => {
-    if (!seenSlugs.has(cat.slug)) {
-      seenSlugs.add(cat.slug);
-      uniqueCategories.push(cat);
-    }
-  });
-
-  const closeTimer = useRef(null);
-
-  const openMenu = (item) => {
-    clearTimeout(closeTimer.current);
-    setActiveMenu(item);
+  const handleMouseEnterTab = (index) => {
+    setActiveTab(index);
   };
 
-  const closeMenu = () => {
-    closeTimer.current = setTimeout(() => {
-      setActiveMenu(null);
-    }, 300);
+  const handleHeaderMouseLeave = () => {
+    setActiveTab(null);
   };
 
+  const toggleTab = (index) => {
+    setActiveTab((prev) => (prev === index ? null : index));
+  };
 
+  const displayNavItems =
+    categoriesFromDb && categoriesFromDb.length > 0
+      ? collectionsFromDb
+        ? [...categoriesFromDb, collectionsFromDb]
+        : categoriesFromDb
+      : [];
 
-  const displayNavItems = collections ? [...categories, collections] : categories;
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-
-      const element = document.getElementById("why-choose-us");
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        setIsPastWhyChooseUs(rect.top <= 106);
-      } else {
-        setIsPastWhyChooseUs(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isLoggedIn]);
-
-  const darkMode = !isHomePage || isScrolled || logoHovered || isSearchOpen;
+  const tabs = displayNavItems.map((item) => item.title);
 
   return (
-    <>
-      <header
-        className={`
-        fixed top-0 left-0 right-0 z-[9999]
-        transition-all duration-500 w-full
-        ${isPastWhyChooseUs ? "-translate-y-full pointer-events-none" : "translate-y-0"}
-        ${darkMode
-            ? "bg-[#C5B9AB] text-[#393938] shadow-sm"
-            : "bg-black/10 text-white"
-          }
-      `}
-        onMouseEnter={() => setLogoHovered(true)}
-        onMouseLeave={() => setLogoHovered(false)}
-      >
-        <Container>
-          {/* HEADER TOP */}
+    <header
+      className="fixed w-full top-0 z-[900] bg-[#C9BDB2] border-b border-[#B5A899] font-sans text-[#26221E] antialiased"
+      onMouseLeave={handleHeaderMouseLeave}
+    >
+      {/* Top Header Bar */}
+      <div className="max-w-[1440px] mx-auto px-[clamp(18px,4.5vw,64px)] py-[15px] flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        {/* Mobile Menu Toggle Button */}
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen(true)}
+          className="lg:hidden text-2xl text-[#26221E] p-1 cursor-pointer"
+          aria-label="Open mobile menu"
+        >
+          <HiOutlineMenuAlt3 />
+        </button>
 
-          <div className="relative flex h-[64px] items-center justify-center lg:h-20">
+        {/* Left Links (Desktop) */}
+        <div className="hidden lg:flex gap-5.5 items-center font-mono text-[10.5px] tracking-[0.17em] uppercase">
+          <Link
+            href="/projects"
+            className="text-[#26221E] no-underline opacity-80 hover:opacity-100 transition-opacity"
+          >
+            Projects
+          </Link>
+          <Link
+            href="/pages/about-us"
+            className="text-[#26221E] no-underline opacity-80 hover:opacity-100 transition-opacity"
+          >
+            About
+          </Link>
+        </div>
 
-            {/* MOBILE HAMBURGER */}
+        {/* Center Logo */}
+        <div className="flex justify-center items-center">
+          <Link href="/" className="inline-block cursor-pointer">
+            <Image
+              src="/assets/logo/The-Stoneza-Logo.webp"
+              alt="Stoneza - Timeless Surfaces"
+              width={200}
+              height={55}
+              priority
+              className="h-auto w-[150px] sm:w-[170px] lg:w-[210px]"
+            />
+          </Link>
+        </div>
 
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="absolute left-0 text-3xl lg:hidden"
-            >
-              <HiOutlineMenuAlt3 />
-            </button>
+        {/* Right Links & Search */}
+        <div className="flex gap-5.5 items-center justify-end font-mono text-[10.5px] tracking-[0.17em] uppercase">
+          <Link
+            href="/pages/contact"
+            className="hidden lg:block text-[#26221E] no-underline opacity-80 hover:opacity-100 transition-opacity font-body"
+          >
+            Contact
+          </Link>
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            className="text-2xl text-[#26221E] transition-colors cursor-pointer"
+            aria-label="Toggle search"
+          >
+            <CiSearch />
+          </button>
+        </div>
+      </div>
 
-            {/* LOGO */}
+      {/* Nav Tabs Row (Desktop) */}
+      {tabs.length > 0 && (
+        <div className="hidden lg:block border-t border-[#26221E]/12">
+          <ul className="list-none m-0 p-0 flex justify-center gap-4 sm:gap-8 md:gap-14 flex-wrap">
+            {tabs.map((tab, idx) => (
+              <li key={idx} onMouseEnter={() => handleMouseEnterTab(idx)}>
+                <button
+                  type="button"
+                  onClick={() => toggleTab(idx)}
+                  aria-expanded={activeTab === idx}
+                  className={`appearance-none bg-transparent border-0 cursor-pointer font-sans text-[15px] font-semibold tracking-[0.13em] uppercase text-[#26221E] py-3.5 px-1 border-b-[3px] transition-colors font-heading ${
+                    activeTab === idx
+                      ? "border-[#26221E]"
+                      : "border-transparent hover:border-[#26221E]/30"
+                  }`}
+                >
+                  {tab}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-            <Link href="/" className="absolute left-1/2 -translate-x-1/2 cursor-pointer cursor-pointer">
-              {darkMode ? (
-                <Image
-                  src="/assets/logo/The-Stoneza-Logo.webp"
-                  alt="Logo"
-                  width={210}
-                  height={60}
-                  priority
-                  className="h-auto w-[150px] lg:w-[210px]"
-                />
-              ) : (
-                <Image
-                  src="/assets/logo/The-Stoneza-Logo-light.png"
-                  alt="Logo"
-                  width={210}
-                  height={60}
-                  priority
-                  className="h-auto w-[150px] lg:w-[210px]"
-                />
-              )}
-            </Link>
-
-            {/* SEARCH */}
-            <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 lg:right-10 text-2xl transition-colors cursor-pointer"
-              aria-label="Toggle search"
-            >
-              <CiSearch />
-            </button>
-
-          </div>
-
-          {/* Navigation */}
-          <div className="hidden justify-center pb-2 lg:flex">
-            <div
-              className="relative"
-              onMouseLeave={closeMenu}
-            >
-              <nav>
-                <ul className="flex items-center gap-11 uppercase text-[12px] font-heading font-medium tracking-widest">
-                  {displayNavItems.map((item, index) => (
-                    <li
-                      key={`${item.title}-${index}`}
-                      className="group"
-                      onMouseEnter={() =>
-                        (item.categories && item.categories.length > 0)
-                          ? openMenu(item)
-                          : closeMenu()
-                      }
-                    >
+      {/* Mega Menu Overlay Wrapper (Absolute Positioning - Does not displace page layout) */}
+      {activeTab !== null && displayNavItems[activeTab] && (
+        <div className="hidden lg:block absolute top-full left-0 right-0 w-full bg-[#C9BDB2] border-t border-[#26221E]/16 px-4 md:px-8 shadow-[0_22px_40px_-26px_rgba(38,34,30,0.5)] z-[999] pointer-events-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(148px,1fr))_minmax(240px,336px)] gap-6 lg:gap-10 py-8.5 pb-11.5 max-w-[1620px] mx-auto items-start">
+            {/* Dynamic Columns */}
+            {displayNavItems[activeTab].categories?.map((col, cIdx) => (
+              <div key={cIdx} className="flex flex-col">
+                <Link href={col.href || `/categories/${col.slug}`}>
+                  <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.75 border-b border-[#26221E]/30 hover:underline underline-offset-4">
+                    {col.title}
+                  </h4>
+                </Link>
+                {col.subtitle && (
+                  <p className="font-mono text-[10.5px] tracking-[0.03em] text-[#26221E] opacity-50 mb-4 leading-normal">
+                    {col.subtitle}
+                  </p>
+                )}
+                <ul className="list-none m-0 p-0">
+                  {col.links?.map((link, lIdx) => (
+                    <li key={lIdx}>
                       <Link
-                        href={item.href || `/categories/${item.slug}` || "#"}
-                        className="relative block"
+                        href={link.href || `/categories/${link.slug}`}
+                        className="flex justify-between items-baseline gap-2.5 text-[#26221E] no-underline py-2 group"
                       >
-                        {item.title}
-
-                        <span
-                          className={`
-                          absolute left-0 -bottom-1 h-[1px] w-0
-                          transition-all duration-300 group-hover:w-full
-                          ${darkMode
-                              ? "bg-[#1C1B1B]"
-                              : "bg-white"
-                            }
-                        `}
-                        />
+                        <b className="font-sans text-[16px] font-normal flex items-center gap-2.25 group-hover:underline underline-offset-4">
+                          {link.name || link.title}
+                          {link.badge && (
+                            <em
+                              className={`font-mono text-[8.5px] not-italic tracking-[0.11em] px-1.5 py-0.75 relative -top-px ${
+                                link.badge === "NEW"
+                                  ? "text-white bg-[#8E4B2A]"
+                                  : "text-[#26221E] opacity-45 border border-[#26221E]/30"
+                              }`}
+                            >
+                              {link.badge}
+                            </em>
+                          )}
+                        </b>
+                        {link.count && (
+                          <span className="font-mono text-[11px] opacity-50">
+                            {link.count}
+                          </span>
+                        )}
                       </Link>
                     </li>
                   ))}
                 </ul>
-              </nav>
 
-              <AnimatePresence>
-                {activeMenu && <MegaMenu key={activeMenu.title} item={activeMenu} />}
-              </AnimatePresence>
-            </div>
-          </div>
-          {/* MOBILE MENU */}
-
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <>
-                {/* BACKDROP */}
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="fixed inset-0 z-[9998] bg-black/40 lg:hidden"
-                />
-
-                {/* DRAWER */}
-
-                <motion.div
-                  initial={{ x: "-100%" }}
-                  animate={{ x: 0 }}
-                  exit={{ x: "-100%" }}
-                  transition={{
-                    duration: 0.35,
-                    ease: "easeInOut",
-                  }}
-                  className="fixed left-0 top-0 z-[9999] h-screen w-[90%] max-w-[380px] overflow-y-auto bg-[#C5B9AB] text-[#393938] shadow-2xl lg:hidden"
-                >
-                  {/* CLOSE BUTTON */}
-
-                  <div className="flex justify-end p-6">
-                    <button
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="text-3xl"
-                    >
-                      <PiXBold />
-                    </button>
-                  </div>
-
-                  {/* NAVIGATION */}
-
-                  <nav className="px-5 pb-10">
-                    {displayNavItems.map((item, index) => (
-                      <div
-                        key={`${item.title}-${index}`}
-                        className="border-b border-[#b3a697] relative"
-                      >
-                        {/* MAIN CATEGORY */}
-
-                        <button
-                          onClick={() =>
-                            setOpenCategory(
-                              openCategory === index ? null : index
-                            )
-                          }
-                          className="flex w-full items-center justify-betweet py-5 text-left text-[13px] uppercase tracking-[2px] font-medium"
+                {/* Dynamic Quick Action Links (at bottom of column 4 / last column) */}
+                {cIdx === (displayNavItems[activeTab].categories.length - 1) &&
+                  displayNavItems[activeTab].actionLinks &&
+                  displayNavItems[activeTab].actionLinks.length > 0 && (
+                    <div className="mt-3.5 pt-3.75 border-t border-[#26221E]/30">
+                      {displayNavItems[activeTab].actionLinks.map((al, alIdx) => (
+                        <a
+                          key={alIdx}
+                          href={al.href}
+                          className="block font-sans text-[15px] text-[#26221E] no-underline py-1.75 opacity-82 hover:opacity-100 hover:underline underline-offset-4"
                         >
-                          <span>{item.title}</span>
+                          {al.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+              </div>
+            ))}
 
-                          {
-                            openCategory === index ? (
-                              <LuMinus className="text-xl transition-transform duration-300 rotate-180 opacity-100 absolute right-0" />
-                            ) : (
-                              <GoPlus className="text-xl transition-transform duration-300 opacity-100 absolute right-0" />
-                            )
-                          }
-                        </button>
-
-                        {/* SUBMENU */}
-
-                        <AnimatePresence initial={false}>
-                          {openCategory === index && (
-                            <motion.div
-                              initial={{
-                                height: 0,
-                                opacity: 0,
-                              }}
-                              animate={{
-                                height: "auto",
-                                opacity: 1,
-                              }}
-                              exit={{
-                                height: 0,
-                                opacity: 0,
-                              }}
-                              transition={{
-                                duration: 0.25,
-                              }}
-                              className="overflow-hidden"
-                            >
-                              <div className="pb-5">
-                                {item.categories?.map(
-                                  (category, categoryIndex) => (
-                                    <div
-                                      key={categoryIndex}
-                                      className="mb-6"
-                                    >
-                                      {/* CATEGORY TITLE */}
-
-                                      <h4
-                                        className="mb-3 text-[12px] font-semibold uppercase tracking-[2px]"
-                                      >
-                                        <Link
-                                          href={category.href || `/categories/${category.slug}`}
-                                          onClick={() => setMobileMenuOpen(false)}
-                                          className="hover:text-black transition"
-                                        >
-                                          {category.title}
-                                        </Link>
-                                      </h4>
-
-                                      {/* LINKS */}
-
-                                      <div className="space-y-2">
-                                        {category.links.map(
-                                          (link, linkIndex) => {
-                                            const linkName = typeof link === "string" ? link : (link.name || link.title);
-                                            const linkHref = typeof link === "object" && link.href
-                                              ? link.href
-                                              : `/categories/${typeof link === "string" ? link.toLowerCase().replace(/ /g, "-") : link.slug}?categoryLevel=3`;
-                                            return (
-                                              <Link
-                                                key={linkIndex}
-                                                href={linkHref}
-                                                onClick={() =>
-                                                  setMobileMenuOpen(false)
-                                                }
-                                                className="block pl-3 text-[14px] text-[#5e5e5e] transition hover:text-black"
-                                              >
-                                                {linkName}
-                                              </Link>
-                                            );
-                                          }
-                                        )}
-                                        <Link href={category.href || `/categories/${category.slug}`} onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-[15px] font-semibold text-[#5e5e5e] transition hover:text-black uppercase">View All</Link>
-                                      </div>
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
+            {/* Standalone Quick Action Links if no category columns exist */}
+            {(!displayNavItems[activeTab].categories ||
+              displayNavItems[activeTab].categories.length === 0) &&
+              displayNavItems[activeTab].actionLinks &&
+              displayNavItems[activeTab].actionLinks.length > 0 && (
+                <div className="flex flex-col">
+                  <div className="pt-1">
+                    {displayNavItems[activeTab].actionLinks.map((al, alIdx) => (
+                      <a
+                        key={alIdx}
+                        href={al.href}
+                        className="block font-sans text-[15px] text-[#26221E] no-underline py-1.75 opacity-82 hover:opacity-100 hover:underline underline-offset-4"
+                      >
+                        {al.label}
+                      </a>
                     ))}
-                  </nav>
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
-        </Container>
+                  </div>
+                </div>
+              )}
 
-        {/* SEARCH OVERLAY */}
-        <AnimatePresence>
-          {isSearchOpen && (
+            {/* Dynamic Spotlight Featured Card (5th Column) */}
+            {displayNavItems[activeTab].images?.[0] && (
+              <Link
+                href={displayNavItems[activeTab].images[0].href || "#"}
+                className="block no-underline text-inherit bg-[#F5F1EB] group overflow-hidden md:col-span-2 lg:col-span-1 border border-[#E4DDD3]/60 transition-shadow hover:shadow-md"
+              >
+                <div className="aspect-[16/11] relative bg-stone-300 overflow-hidden">
+                  {displayNavItems[activeTab].images[0].image ? (
+                    <Image
+                      src={displayNavItems[activeTab].images[0].image}
+                      alt={displayNavItems[activeTab].images[0].title || "Featured Product"}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-stone-300 text-stone-500 font-mono text-xs">
+                      {displayNavItems[activeTab].images[0].title}
+                    </div>
+                  )}
+                  <span className="absolute top-2.5 left-2.5 bg-[#9C7233] text-white font-mono text-[8.5px] uppercase tracking-[0.16em] px-2 py-0.5 font-bold shadow-xs">
+                    {displayNavItems[activeTab].images[0].eyebrow || "Featured Product"}
+                  </span>
+                  {displayNavItems[activeTab].images[0].badge && (
+                    <span className="absolute left-2.5 bottom-2 font-mono text-[9px] text-white/90 bg-black/40 px-2 py-0.5 rounded-xs backdrop-blur-xs">
+                      {displayNavItems[activeTab].images[0].badge}
+                    </span>
+                  )}
+                </div>
+                <div className="p-4.5 sm:p-5 md:p-5.5">
+                  <p className="font-mono text-[9.5px] tracking-[0.17em] uppercase text-[#9C7233] mb-2 font-bold">
+                    {displayNavItems[activeTab].title}
+                  </p>
+                  <h5 className="font-serif text-[21px] font-normal mb-2 text-[#26221E] group-hover:underline underline-offset-4 leading-tight">
+                    {displayNavItems[activeTab].images[0].title}
+                  </h5>
+                  <p className="font-serif text-[13.5px] leading-relaxed text-[#57504A] m-0 line-clamp-2">
+                    {displayNavItems[activeTab].images[0].description}
+                  </p>
+                </div>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MOBILE SLIDE-OUT DRAWER MENU */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="w-full bg-[#F5F3ED] text-[#393938] border-t border-[#cbc9c4] overflow-hidden shadow-lg relative z-[9999]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000]"
+            />
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "tween", duration: 0.3 }}
+              className="fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-[#C9BDB2] text-[#26221E] z-[10001] flex flex-col justify-between p-6 overflow-y-auto"
             >
-              <Container className="py-8">
-                {/* Search Bar Input Line */}
-                <div className="relative flex items-center justify-between transition-colors duration-300">
-                  <div className="flex items-center gap-4 flex-1 lg:h-18 my-auto">
-                    <CiSearch className="text-3xl text-[#8A7F73]" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Type to search products..."
-                      className="w-full bg-transparent border-none outline-none text-md md:text-lg font-light tracking-wide placeholder-[#B7AC9E] text-[#1c1714] capitalize"
-                      autoFocus
+              <div className="space-y-6">
+                <div className="flex items-center justify-between border-b border-[#26221E]/20 pb-4">
+                  <div className="relative w-32 h-9">
+                    <Image
+                      src="/assets/logo/The-Stoneza-Logo.webp"
+                      alt="Stoneza Logo"
+                      fill
+                      className="object-contain"
                     />
                   </div>
                   <button
-                    onClick={() => setIsSearchOpen(false)}
-                    className="text-2xl text-[#8A7F73] hover:text-[#9a4a2e] transition-colors pl-4 cursor-pointer"
-                    aria-label="Close search"
+                    type="button"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-2xl text-[#26221E] cursor-pointer"
+                    aria-label="Close menu"
                   >
                     <PiXBold />
                   </button>
                 </div>
 
-                {/* Live Search Results Scrollable Container */}
-                {searchQuery.trim() && (
-                  <div className="max-h-[60vh] overflow-y-auto pr-2 mt-8 scrollbar-thin scrollbar-thumb-stone-300 scrollbar-track-transparent">
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 text-left">
-                      
-                      {/* Products Column */}
-                      <div className="lg:col-span-3">
-                        <div className="flex items-center justify-between mb-6">
-                          <span className="text-xs uppercase tracking-[0.2em] font-semibold text-[#8A7F73]">
-                            {loading ? "Searching..." : `${searchResults.length} Products Found`}
-                          </span>
-                          {searchResults.length > 0 && (
-                            <Link
-                              href={`/products?search=${encodeURIComponent(searchQuery)}`}
-                              className="text-xs uppercase tracking-[0.2em] font-bold text-[#9a4a2e] hover:underline"
-                              onClick={() => setIsSearchOpen(false)}
+                <div className="space-y-4 font-heading text-sm tracking-widest uppercase">
+                  {displayNavItems.map((item) => {
+                    const isOpen = openCategory === item.title;
+                    return (
+                      <div
+                        key={item.title}
+                        className="border-b border-[#26221E]/15 pb-3"
+                      >
+                        <div className="flex items-center justify-between">
+                          <Link
+                            href={`/categories/${item.slug}`}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="font-bold text-[#26221E] hover:underline"
+                          >
+                            {item.title}
+                          </Link>
+                          {item.categories && item.categories.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setOpenCategory(isOpen ? null : item.title)
+                              }
+                              className="text-lg text-[#26221E] p-1 cursor-pointer"
+                              aria-label="Expand category"
                             >
-                              View All
-                            </Link>
+                              {isOpen ? <LuMinus /> : <GoPlus />}
+                            </button>
                           )}
                         </div>
 
-                        {searchResults.length > 0 ? (
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            {searchResults.map((product) => {
-                              return (
-                                <Link
-                                  key={product._id}
-                                  href={`/products/${product.slug}`}
-                                  className="group flex flex-col items-center text-center  p-4"
-                                  onClick={() => setIsSearchOpen(false)}
-                                >
-                                  <ProductCard item={product} setHoveredId={setHoveredId} hoveredId={hoveredId} button={false}/>
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          !loading && (
-                            <div className="text-sm text-[#8a7f73] py-8">
-                              No products found matching &quot;{searchQuery}&quot;.
-                            </div>
-                          )
-                        )}
+                        <AnimatePresence>
+                          {isOpen && item.categories && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden pl-4 pt-3 space-y-3 normal-case tracking-normal font-sans text-xs"
+                            >
+                              {item.categories.map((sub) => (
+                                <div key={sub.title} className="space-y-1">
+                                  <Link
+                                    href={sub.href || `/categories/${sub.slug}`}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="font-semibold text-[#26221E] block hover:underline"
+                                  >
+                                    {sub.title}
+                                  </Link>
+                                  {sub.links && (
+                                    <div className="pl-3 space-y-1 border-l border-[#26221E]/20">
+                                      {sub.links.map((link) => (
+                                        <Link
+                                          key={link.name}
+                                          href={link.href || `/categories/${link.slug}`}
+                                          onClick={() => setMobileMenuOpen(false)}
+                                          className="block hover:underline"
+                                        >
+                                          {link.name}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
+                    );
+                  })}
 
-                      {/* Categories Column */}
-                      <div className="border-t lg:border-t-0 lg:border-l border-stone-300/80 pt-8 lg:pt-0 lg:pl-8">
-                        <span className="block text-xs uppercase tracking-[0.2em] font-semibold text-[#8A7F73] mb-6">
-                          Matching Categories
-                        </span>
-                        {uniqueCategories.length > 0 ? (
-                          <ul className="flex flex-wrap gap-2.5 lg:flex-col lg:gap-3">
-                            {uniqueCategories.map((cat) => (
-                              <li key={cat.slug} className="w-auto lg:w-full">
-                                <Link
-                                  href={`/categories/${cat.slug}`}
-                                  className="text-xs lg:text-sm text-[#1c1714] bg-stone-200/50 hover:bg-[#9a4a2e] hover:text-white transition-all duration-300 block py-1.5 px-4 lg:px-3 lg:py-1 rounded-full lg:rounded-none lg:bg-transparent capitalize font-heading font-medium lg:font-normal"
-                                  onClick={() => setIsSearchOpen(false)}
-                                >
-                                  {cat.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <div className="text-sm text-[#8a7f73]">
-                            No categories match this search.
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </Container>
+                  <Link
+                    href="/projects"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block font-bold text-[#26221E] hover:underline border-b border-[#26221E]/15 pb-3"
+                  >
+                    Projects
+                  </Link>
+                  <Link
+                    href="/pages/about-us"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block font-bold text-[#26221E] hover:underline border-b border-[#26221E]/15 pb-3"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    href="/pages/contact"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block font-bold text-[#26221E] hover:underline border-b border-[#26221E]/15 pb-3"
+                  >
+                    Contact
+                  </Link>
+                </div>
+              </div>
+
+              <div className="border-t border-[#26221E]/20 pt-6 space-y-2">
+                <p className="text-[10.5px] text-[#26221E]/70 font-mono tracking-wider">
+                  © 2026 Anantay Exports Pvt. Ltd. — trading as Stoneza.
+                </p>
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </>
+        )}
+      </AnimatePresence>
 
-        {/* SEARCH BACKDROP BLUR */}
-        <AnimatePresence>
-          {isSearchOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setIsSearchOpen(false)}
-              className="fixed inset-0 top-[64px] bg-black/20 lg:top-[106px] z-[9998] pointer-events-auto"
-            />
-          )}
-        </AnimatePresence>
-      </header>
-    </>
+      {/* SEARCH OVERLAY & RESULTS COMPONENT */}
+      <HeaderSearchOverlay
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        categories={categoriesFromDb}
+      />
+    </header>
   );
 }

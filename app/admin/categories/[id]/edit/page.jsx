@@ -53,13 +53,15 @@ export default async function EditCategoryPage({ params }) {
       : null,
   }));
 
+  const plainCategory = JSON.parse(JSON.stringify(category));
+
   const safeCategory = {
-    ...category,
-
-    _id: category._id.toString(),
-
-    parentCategory: category.parentCategory
-      ? category.parentCategory.toString()
+    ...plainCategory,
+    _id: plainCategory._id,
+    parentCategory: plainCategory.parentCategory
+      ? typeof plainCategory.parentCategory === "object"
+        ? plainCategory.parentCategory._id
+        : plainCategory.parentCategory
       : "none",
   };
 

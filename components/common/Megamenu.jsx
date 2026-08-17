@@ -2,8 +2,11 @@ import ImageWithLoader from "./Loader";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-export default function MegaMenu({ item }) {
-  const sortedCategories = [...(item.categories || [])].sort((a, b) => {
+export default function MegaMenu({ item, categoryData }) {
+  const itemData = item || categoryData;
+  if (!itemData) return null;
+
+  const sortedCategories = [...(itemData.categories || [])].sort((a, b) => {
     const countA = a.links?.length || 0;
     const countB = b.links?.length || 0;
     return countA - countB;
@@ -11,7 +14,7 @@ export default function MegaMenu({ item }) {
 
   const categoriesCount = sortedCategories.length;
   const maxImages = categoriesCount >= 3 ? 1 : 2;
-  const visibleImages = item.images?.slice(0, maxImages) || [];
+  const visibleImages = itemData.images?.slice(0, maxImages) || [];
 
   let secondImageClass = "";
   if (categoriesCount === 3) {

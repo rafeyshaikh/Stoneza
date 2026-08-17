@@ -48,6 +48,7 @@ export async function POST(request) {
       parentCategory = null,
       sortOrder = 0,
       isActive = true,
+      megamenu = null,
       seo = {},
     } = body;
 
@@ -117,6 +118,8 @@ export async function POST(request) {
 
       isActive,
 
+      megamenu,
+
       seo,
     });
 
@@ -124,6 +127,7 @@ export async function POST(request) {
     revalidateTag("layout-categories");
     revalidateTag("public-categories");
     revalidatePath("/", "layout");
+    revalidatePath("/admin/categories");
 
     return response(true, 201, "Category created successfully", category);
   } catch (error) {
