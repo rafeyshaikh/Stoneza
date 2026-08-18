@@ -15,7 +15,7 @@ export default function HomeAboutSection({ storyData, imageleft = false }) {
   const imageUrl = storyData?.image?.url || "";
 
   return (
-    <section className="py-16 lg:py-24 bg-white">
+    <section className="py-16 lg:py-24 bg-[#F5F1EB]">
       <div className="max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-16">
         <div className="grid gap-18 lg:grid-cols-2 items-center">
           {/* LEFT TEXT COLUMN */}

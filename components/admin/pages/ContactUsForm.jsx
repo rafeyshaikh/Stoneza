@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import ImageUploader from "@/components/admin/products/ImageUploader";
 
 const DEFAULT_CONTACT_DATA = {
   hero: {
@@ -57,6 +58,26 @@ export default function ContactUsForm() {
   useEffect(() => {
     fetchContactData();
   }, []);
+
+  const uploadImage = async (file, folder = "pages/contact") => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", folder);
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!result.success) throw new Error(result.message || "Upload failed");
+      return result.data; // returns { url, publicId }
+    } catch (e) {
+      console.error(e);
+      toast.error(e.message || "Failed to upload image");
+      return null;
+    }
+  };
 
   const fetchContactData = async () => {
     try {
@@ -181,12 +202,24 @@ export default function ContactUsForm() {
   const handleSave = async () => {
     try {
       setSaving(true);
+      const payload = JSON.parse(JSON.stringify(data));
+
+      if (data.hero?.pendingFile) {
+        toast.loading("Uploading background image...", { id: "contact-save" });
+        const uploaded = await uploadImage(data.hero.pendingFile, "pages/contact");
+        if (uploaded?.url) {
+          payload.hero.bgImage = uploaded.url;
+        }
+      }
+      delete payload.hero?.pendingFile;
+
+      toast.loading("Saving contact page...", { id: "contact-save" });
       const res = await fetch("/api/admin/cms/pages/contactUs", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
@@ -194,10 +227,11 @@ export default function ContactUsForm() {
         throw new Error(result.message);
       }
 
-      toast.success("Contact page updated successfully");
+      setData(payload);
+      toast.success("Contact page updated successfully", { id: "contact-save" });
     } catch (error) {
       console.error(error);
-      toast.error(error.message || "Something went wrong");
+      toast.error(error.message || "Something went wrong", { id: "contact-save" });
     } finally {
       setSaving(false);
     }
@@ -214,20 +248,44 @@ export default function ContactUsForm() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full pb-12">
+      {/* STICKY SAVE BAR */}
+      <div className="sticky top-14 z-30 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
+        <div>
+          <h2 className="font-heading text-base font-bold text-stone-900 dark:text-stone-100">
+            Contact Us Page Controls
+          </h2>
+          <p className="text-xs text-stone-500 dark:text-stone-400">
+            Manage background hero image, cards, direct contacts, and map embed.
+          </p>
+        </div>
+        <Button onClick={handleSave} disabled={saving} size="sm" className="w-full sm:w-auto py-4 sm:py-0">
+          {saving ? "Saving..." : "Save Contact Page"}
+        </Button>
+      </div>
+
       {/* 1. HERO SECTION */}
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
         <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
           1. Hero Background Image
         </h3>
-        <div className="space-y-2">
-          <Label>Background Image URL</Label>
-          <Input
-            placeholder="https://res.cloudinary.com/..."
-            value={data.hero?.bgImage || ""}
-            onChange={(e) => handleHeroChange("bgImage", e.target.value)}
-          />
-        </div>
+        <ImageUploader
+          file={data.hero?.pendingFile}
+          existingImage={data.hero?.bgImage ? { url: data.hero.bgImage } : null}
+          onFileSelect={(file) =>
+            setData((prev) => ({
+              ...prev,
+              hero: { ...(prev.hero || {}), pendingFile: file },
+            }))
+          }
+          onRemove={() =>
+            setData((prev) => ({
+              ...prev,
+              hero: { ...(prev.hero || {}), bgImage: "", pendingFile: null },
+            }))
+          }
+          hint="Upload high-resolution header image for the Contact Us page (landscape ~1920x600)."
+        />
       </section>
 
       {/* 2. CONTACT CARDS GRID */}
@@ -235,7 +293,7 @@ export default function ContactUsForm() {
         <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
           2. Contact Information Cards
         </h3>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-2">
             <Label>WhatsApp Phone Display</Label>
             <Input
@@ -320,7 +378,7 @@ export default function ContactUsForm() {
                 </Button>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <div className="space-y-1">
                   <Label className="text-xs">Name</Label>
                   <Input
@@ -361,7 +419,7 @@ export default function ContactUsForm() {
                     }
                   />
                 </div>
-                <div className="space-y-1 md:col-span-2">
+                <div className="space-y-1 lg:col-span-2">
                   <Label className="text-xs">LinkedIn URL (Optional)</Label>
                   <Input
                     placeholder="https://www.linkedin.com/..."

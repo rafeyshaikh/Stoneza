@@ -9,22 +9,23 @@ export default function AdminLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#f5f5f4_0%,#e7e5e4_35%,#d6d3d1_100%)] dark:bg-[radial-gradient(circle_at_top,#1c1917_0%,#111827_40%,#0c0a09_100%)]">
-      <div className="flex min-h-screen">
-        <AdminSidebar />
+    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(circle_at_top,#f5f5f4_0%,#e7e5e4_35%,#d6d3d1_100%)] dark:bg-[radial-gradient(circle_at_top,#1c1917_0%,#111827_40%,#0c0a09_100%)]">
+      {/* Desktop Sticky Sidebar */}
+      <AdminSidebar className="hidden lg:flex shrink-0 h-screen sticky top-0" />
 
-        {isSidebarOpen && (
-          <div className="fixed inset-0 z-40 bg-black/45 lg:hidden" onClick={() => setIsSidebarOpen(false)}>
-            <div className="h-full w-72" onClick={(e) => e.stopPropagation()}>
-              <AdminSidebar />
-            </div>
+      {/* Mobile Drawer */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 lg:hidden" onClick={() => setIsSidebarOpen(false)}>
+          <div className="h-full w-72 max-w-[85vw]" onClick={(e) => e.stopPropagation()}>
+            <AdminSidebar className="flex w-full" onClose={() => setIsSidebarOpen(false)} />
           </div>
-        )}
-
-        <div className="flex min-h-screen flex-1 flex-col">
-          <AdminNavbar onMenuClick={() => setIsSidebarOpen((prev) => !prev)} />
-          <main className="flex-1 p-4 lg:p-6">{children}</main>
         </div>
+      )}
+
+      {/* Scrollable Content Pane */}
+      <div className="flex min-w-0 flex-1 flex-col h-screen overflow-y-auto overflow-x-hidden">
+        <AdminNavbar onMenuClick={() => setIsSidebarOpen((prev) => !prev)} />
+        <main className="flex-1 min-w-0 p-3 sm:p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );

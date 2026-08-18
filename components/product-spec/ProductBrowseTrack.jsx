@@ -44,22 +44,30 @@ export default function ProductBrowseTrack({
           className="flex gap-3.5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           ref={trackRef}
         >
-          {items.map((item, idx) => (
+          {items && items.map((item, idx) => (
             <a
               key={idx}
               className="flex-none w-[160px] sm:w-[180px] lg:w-[214px] snap-start text-inherit no-underline group"
               href={item.href || '#'}
             >
               <div
-                className={`aspect-square border border-[#CBC9C4] rounded-[2px] ${
+                className={`aspect-square border border-[#CBC9C4] rounded-[2px] overflow-hidden relative ${
                   item.isCurrent ? 'outline outline-2 outline-[#1C1714] -outline-offset-2' : ''
                 }`}
-                style={{ background: item.bg }}
-              ></div>
+                style={{ background: item.bg || '#FAF8F5' }}
+              >
+                {item.imageUrl ? (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : null}
+              </div>
               <h3 className="font-serif text-base font-normal text-[#1C1714] mt-2.5 mb-1 group-hover:underline underline-offset-4">
                 {item.title}
               </h3>
-              <span className="font-heading text-[9px] tracking-[0.12em] font-semibold text-[#78716C] uppercase block">
+              <span className="font-heading text-[9px] tracking-[0.12em] font-semibold text-[#78716C] uppercase block truncate">
                 {item.subtitle}
               </span>
             </a>

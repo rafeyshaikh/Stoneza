@@ -101,7 +101,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
             Manage main slider slides, banners, actions, and display ordering.
           </p>
         </div>
-        <Button onClick={addSlide} size="sm" type="button" className="cursor-pointer border border-black bg-white hover:bg-gray-100">
+        <Button onClick={addSlide} size="sm" type="button" className="cursor-pointer border border-black bg-white text-black hover:bg-gray-100">
           <Plus className="mr-2 size-4" /> Add Slide
         </Button>
       </div>
@@ -113,13 +113,13 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
         </div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
-          {/* SLIDES LIST SIDEBAR */}
-          <div className="space-y-2 rounded-xl border border-stone-300 bg-white/60 p-2 dark:border-stone-700 dark:bg-stone-900/60 max-h-[450px] overflow-y-auto">
+          {/* SLIDES LIST SELECTOR */}
+          <div className="flex flex-col gap-2 overflow-x-auto lg:overflow-y-auto rounded-xl border border-stone-300 bg-white/60 p-2 dark:border-stone-700 dark:bg-stone-900/60 lg:max-h-[500px] scrollbar-none">
             {slides.map((slide, idx) => (
               <div
                 key={idx}
                 onClick={() => setActiveSlideIndex(idx)}
-                className={`group flex items-center justify-between gap-2 rounded-lg p-2.5 text-sm cursor-pointer transition ${
+                className={`group flex shrink-0 items-center justify-between gap-2 rounded-lg p-2.5 text-sm cursor-pointer transition ${
                   activeSlideIndex === idx
                     ? "bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900"
                     : "hover:bg-stone-200/50 dark:hover:bg-stone-800/50 text-stone-700 dark:text-stone-300"
@@ -145,7 +145,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

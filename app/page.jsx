@@ -1,4 +1,6 @@
 import HeroSection from "@/components/home/HeroSection";
+import StatsBanner from "@/components/home/StatsBanner";
+import MainCategoriesGrid from "@/components/home/MainCategoriesGrid";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Product from "@/models/Product.model";
 import Blog from "@/models/Blog.model";
@@ -18,6 +20,9 @@ import RecentBlogs from "@/components/home/RecentBlogs";
 import MiddleBanner from "@/components/home/MiddleBanner";
 import HomeAboutSection from "@/components/home/HomeAboutSection";
 import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
+import { getMainCategoriesData } from "@/lib/getMainCategoriesData";
+import SignatureStones from "@/components/home/SignatureStones";
+import { getFeaturedProductsData } from "@/lib/getFeaturedProductsData";
 
 export async function generateMetadata() {
   try {
@@ -39,25 +44,21 @@ export async function generateMetadata() {
 
 export default async function Home() {
   let categories = [];
+  let mainCategoriesData = [];
   let safeHomepage = null;
   let safeAbout = null;
-  let safeFeatured = [];
   let safeNewArrivals = [];
   let safeLatestBlogs = [];
 
   try {
     await connectDB();
     categories = await getCategoriesForLayout();
+    mainCategoriesData = await getMainCategoriesData();
 
     const homepage = await Homepage.findOne().lean();
     safeHomepage = homepage ? JSON.parse(JSON.stringify(homepage)) : null;
 
     safeAbout = await getAboutData();
-
-    const featured = await Product.find({ isFeatured: true, status: "published" })
-      .select("name slug images hoverImage price")
-      .lean();
-    safeFeatured = featured ? JSON.parse(JSON.stringify(featured)) : [];
 
     const newArrivals = await Product.find({ isNewArrival: true, status: "published" })
       .select("name slug images hoverImage price")
@@ -84,16 +85,6 @@ export default async function Home() {
       }))
     : whatsNewData;
 
-  const mainCategoryData = categories.length > 0
-    ? categories.map((cat, idx) => ({
-        id: cat.slug || idx,
-        title: cat.title,
-        titleStyle: "font-body uppercase tracking-[2px]",
-        image: cat.squareImage || "",
-        href: `/categories/${cat.slug}`,
-      }))
-    : [];
-
   const subCategoryData = categories.reduce((acc, cat) => {
     if (Array.isArray(cat.categories)) {
       const mappedSubs = cat.categories.map((sub, idx) => ({
@@ -107,15 +98,17 @@ export default async function Home() {
     }
     return acc;
   }, []);
+    const [featuredStones] = await Promise.all([
+      getFeaturedProductsData(),
+    ]);
 
   return (
     <div>
       <HeroSection slides={safeHomepage?.heroSlides} />
+      <StatsBanner />
       
-      {mainCategoryData.length > 0 && (
-      <Carousel title="Main Categories" data={mainCategoryData} itemsPerView={mainCategoryData.length} />
-      )}
-      <FeaturedProducts products={safeFeatured} cmsData={safeHomepage?.featuredProducts} />
+      <MainCategoriesGrid categories={mainCategoriesData} />
+      <SignatureStones stones={featuredStones} />
       <HomeAboutSection storyData={safeAbout?.story} />
       <MiddleBanner
         src={safeHomepage?.middleBanner?.image?.url || "/assets/Banner/All_products_banner.png"}

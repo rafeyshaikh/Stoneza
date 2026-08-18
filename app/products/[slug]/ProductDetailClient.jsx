@@ -211,11 +211,11 @@ export default function ProductDetailClient({ productData }) {
         </div>
       </div>
 
-      {/* Browse Track 1 */}
-      {product.relatedProducts && (
+      {/* Browse Track 1: Products of the same category */}
+      {product.relatedProducts && product.relatedProducts.length > 0 && (
         <ProductBrowseTrack
-          title={`Browse more in ${product.categoryName || 'Wall Cladding'}`}
-          countLabel={`${product.relatedProducts.length} colours`}
+          title={`Browse more in ${product.categoryName || 'Category'}`}
+          countLabel={`${product.relatedProducts.length} items`}
           trackRef={track1Ref}
           prevDisabled={t1PrevDisabled}
           nextDisabled={t1NextDisabled}
@@ -224,10 +224,10 @@ export default function ProductDetailClient({ productData }) {
         />
       )}
 
-      {/* Browse Track 2 */}
-      {product.relatedCategories && (
+      {/* Browse Track 2: Related Categories */}
+      {product.relatedCategories && product.relatedCategories.length > 0 && (
         <ProductBrowseTrack
-          title={`More in ${product.parentCategoryName || 'Wall Cladding'}`}
+          title={product.parentCategoryName ? `More in ${product.parentCategoryName}` : 'Related Categories'}
           countLabel={`${product.relatedCategories.length} categories`}
           trackRef={track2Ref}
           prevDisabled={t2PrevDisabled}

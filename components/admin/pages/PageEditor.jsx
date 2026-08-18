@@ -18,7 +18,7 @@ export default function PageEditor({
 
   useEffect(() => {
     fetchPage();
-  }, []);
+  }, [pageKey]);
 
   const fetchPage = async () => {
     try {
@@ -72,7 +72,7 @@ export default function PageEditor({
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 w-full pb-8">
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
         <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">
           {title} Content

@@ -11,7 +11,7 @@ export default async function InstagramSection() {
   }
 
   return (
-    <section className="py-20 border-t border-gray-200 bg-[#EAE8E2]" aria-labelledby="instagram-section-heading">
+    <section className="py-20 border-t border-gray-200 bg-[#F5F1EB]" aria-labelledby="instagram-section-heading">
       <Container>
         {/* Heading Section */}
         <div className="mb-12 text-center max-w-2xl mx-auto px-4">

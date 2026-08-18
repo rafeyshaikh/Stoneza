@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useCategories } from "@/context/CategoriesContext";
 import { CiSearch } from "react-icons/ci";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
@@ -14,10 +15,29 @@ import { AnimatePresence, motion } from "framer-motion";
 import HeaderSearchOverlay from "./HeaderSearchOverlay";
 
 export default function Header() {
+  const pathname = usePathname();
+  const normalizedPath = (pathname || "").replace(/\/$/, "");
+  const isHomePage = normalizedPath === "";
+
   const [activeTab, setActiveTab] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Safely retrieve context categories & collections from DB
   let categoriesFromDb = [];
@@ -51,9 +71,20 @@ export default function Header() {
 
   const tabs = displayNavItems.map((item) => item.title);
 
+  const isSolidHeader =
+    !isHomePage || isScrolled || activeTab !== null || isSearchOpen || mobileMenuOpen;
+
+  const logoSrc = isSolidHeader
+    ? "/assets/logo/The-Stoneza-Logo.webp"
+    : "/assets/logo/The-Stoneza-Logo-light.png";
+
   return (
     <header
-      className="fixed w-full top-0 z-[900] bg-[#C9BDB2] border-b border-[#B5A899] font-sans text-[#26221E] antialiased"
+      className={`fixed w-full top-0 z-[900] font-sans antialiased transition-all duration-300 ${
+        isSolidHeader
+          ? "bg-[#C9BDB2] border-b border-[#B5A899] shadow-sm text-[#26221E]"
+          : "bg-black/15 border-b border-transparent shadow-none text-white"
+      }`}
       onMouseLeave={handleHeaderMouseLeave}
     >
       {/* Top Header Bar */}
@@ -62,7 +93,9 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(true)}
-          className="lg:hidden text-2xl text-[#26221E] p-1 cursor-pointer"
+          className={`lg:hidden text-2xl p-1 cursor-pointer transition-colors ${
+            isSolidHeader ? "text-[#26221E]" : "text-white"
+          }`}
           aria-label="Open mobile menu"
         >
           <HiOutlineMenuAlt3 />
@@ -72,13 +105,17 @@ export default function Header() {
         <div className="hidden lg:flex gap-5.5 items-center font-mono text-[10.5px] tracking-[0.17em] uppercase">
           <Link
             href="/projects"
-            className="text-[#26221E] no-underline opacity-80 hover:opacity-100 transition-opacity"
+            className={`no-underline opacity-85 hover:opacity-100 transition-all ${
+              isSolidHeader ? "text-[#26221E]" : "text-white"
+            }`}
           >
             Projects
           </Link>
           <Link
             href="/pages/about-us"
-            className="text-[#26221E] no-underline opacity-80 hover:opacity-100 transition-opacity"
+            className={`no-underline opacity-85 hover:opacity-100 transition-all ${
+              isSolidHeader ? "text-[#26221E]" : "text-white"
+            }`}
           >
             About
           </Link>
@@ -88,12 +125,12 @@ export default function Header() {
         <div className="flex justify-center items-center">
           <Link href="/" className="inline-block cursor-pointer">
             <Image
-              src="/assets/logo/The-Stoneza-Logo.webp"
+              src={logoSrc}
               alt="Stoneza - Timeless Surfaces"
               width={200}
               height={55}
               priority
-              className="h-auto w-[150px] sm:w-[170px] lg:w-[210px]"
+              className="h-auto w-[150px] sm:w-[170px] lg:w-[210px] transition-opacity duration-300"
             />
           </Link>
         </div>
@@ -102,14 +139,18 @@ export default function Header() {
         <div className="flex gap-5.5 items-center justify-end font-mono text-[10.5px] tracking-[0.17em] uppercase">
           <Link
             href="/pages/contact"
-            className="hidden lg:block text-[#26221E] no-underline opacity-80 hover:opacity-100 transition-opacity font-body"
+            className={`hidden lg:block no-underline opacity-85 hover:opacity-100 transition-all font-body ${
+              isSolidHeader ? "text-[#26221E]" : "text-white"
+            }`}
           >
             Contact
           </Link>
           <button
             type="button"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="text-2xl text-[#26221E] transition-colors cursor-pointer"
+            className={`text-2xl transition-colors cursor-pointer ${
+              isSolidHeader ? "text-[#26221E]" : "text-white"
+            }`}
             aria-label="Toggle search"
           >
             <CiSearch />
@@ -119,17 +160,27 @@ export default function Header() {
 
       {/* Nav Tabs Row (Desktop) */}
       {displayNavItems.length > 0 && (
-        <div className="hidden lg:block border-t border-[#26221E]/12">
+        <div
+          className={`hidden lg:block border-t transition-colors duration-300 ${
+            isSolidHeader ? "border-[#26221E]/12" : "border-transparent"
+          }`}
+        >
           <ul className="list-none m-0 p-0 flex justify-center gap-4 sm:gap-8 md:gap-14 flex-wrap">
             {displayNavItems.map((item, idx) => (
               <li key={idx} onMouseEnter={() => handleMouseEnterTab(idx)}>
                 <Link
                   href={item.href || `/categories/${item.slug}`}
                   onClick={() => toggleTab(idx)}
-                  className={`appearance-none bg-transparent border-0 cursor-pointer font-sans text-[15px] font-semibold tracking-[0.13em] uppercase text-[#26221E] py-3.5 px-1 border-b-[3px] transition-colors font-heading inline-block no-underline ${
+                  className={`appearance-none bg-transparent border-0 cursor-pointer font-sans text-[15px] font-semibold tracking-[0.13em] uppercase py-3.5 px-1 border-b-[3px] transition-colors font-heading inline-block no-underline ${
+                    isSolidHeader ? "text-[#26221E]" : "text-white"
+                  } ${
                     activeTab === idx
-                      ? "border-[#26221E]"
-                      : "border-transparent hover:border-[#26221E]/30"
+                      ? isSolidHeader
+                        ? "border-[#26221E]"
+                        : "border-white"
+                      : isSolidHeader
+                      ? "border-transparent hover:border-[#26221E]/30"
+                      : "border-transparent hover:border-white/40"
                   }`}
                 >
                   {item.title}

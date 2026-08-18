@@ -60,9 +60,92 @@ const policySchema = new mongoose.Schema(
   { _id: false },
 );
 
+const imageSchema = new mongoose.Schema(
+  {
+    url: String,
+    publicId: String,
+  },
+  { _id: false }
+);
+
+const megamenuLinkSchema = new mongoose.Schema(
+  {
+    name: { type: String, trim: true, default: "" },
+    href: { type: String, trim: true, default: "" },
+    slug: { type: String, trim: true, default: "" },
+    count: { type: String, trim: true, default: "" },
+    badge: { type: String, trim: true, default: "" },
+  },
+  { _id: false }
+);
+
+const megamenuActionLinkSchema = new mongoose.Schema(
+  {
+    label: { type: String, trim: true, default: "" },
+    href: { type: String, trim: true, default: "" },
+  },
+  { _id: false }
+);
+
+const megamenuColumnSchema = new mongoose.Schema(
+  {
+    title: { type: String, trim: true, default: "" },
+    subtitle: { type: String, trim: true, default: "" },
+    links: [megamenuLinkSchema],
+  },
+  { _id: false }
+);
+
+const megamenuFeaturedCardSchema = new mongoose.Schema(
+  {
+    eyebrow: { type: String, trim: true, default: "Featured Collection" },
+    title: { type: String, trim: true, default: "" },
+    description: { type: String, trim: true, default: "" },
+    image: imageSchema,
+    badge: { type: String, trim: true, default: "" },
+    href: { type: String, trim: true, default: "" },
+  },
+  { _id: false }
+);
+
+const megamenuSchema = new mongoose.Schema(
+  {
+    enabled: { type: Boolean, default: true },
+    columns: [megamenuColumnSchema],
+    actionLinks: {
+      type: [megamenuActionLinkSchema],
+      default: [],
+    },
+    featuredCard: megamenuFeaturedCardSchema,
+  },
+  { _id: false }
+);
+
+const collectionsOverviewSchema = new mongoose.Schema(
+  {
+    title: { type: String, default: "Collections" },
+    description: {
+      type: String,
+      default:
+        "Twelve named collections. Each one is a way of working with stone, not a group of colours.",
+    },
+    bannerImage: {
+      square: imageSchema,
+      wide: {
+        type: [imageSchema],
+        default: [],
+      },
+    },
+    megamenu: megamenuSchema,
+  },
+  { _id: false }
+);
+
 const pageSchema = new mongoose.Schema(
   {
     contactUs: contactUsSchema,
+
+    collectionsOverview: collectionsOverviewSchema,
 
     privacyPolicy: policySchema,
 

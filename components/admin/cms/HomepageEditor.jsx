@@ -188,7 +188,7 @@ export default function HomepageEditor() {
   return (
     <div className="space-y-6 pb-20 relative">
       {/* STICKY ACTION SAVE BAR */}
-      <div className="sticky top-16 z-30 flex items-center justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
+      <div className="sticky top-14 z-30 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
         <div>
           <h2 className="font-heading text-base font-bold text-stone-900 dark:text-stone-100">
             Customize Layout & Settings
@@ -197,7 +197,7 @@ export default function HomepageEditor() {
             Modify text banners, images, dynamic sliders, testimonials and footer metadata.
           </p>
         </div>
-        <Button onClick={handleSave} disabled={saving} className="shadow-sm cursor-pointer bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200">
+        <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto shadow-sm cursor-pointer bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200">
           {saving ? (
             <>
               <Loader2 className="mr-2 size-4 animate-spin" /> Saving...

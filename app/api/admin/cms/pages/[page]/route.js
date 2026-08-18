@@ -7,6 +7,7 @@ import Pages from "@/models/Pages.model";
 
 const ALLOWED_PAGES = [
   "contactUs",
+  "collectionsOverview",
   "privacyPolicy",
   "termsAndConditions",
   "disclaimer",

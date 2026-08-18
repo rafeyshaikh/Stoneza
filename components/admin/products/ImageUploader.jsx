@@ -44,7 +44,7 @@ export default function ImageUploader({
 
   return (
     <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50/70 p-5 dark:border-stone-700 dark:bg-stone-900/60">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h4 className="font-heading text-base font-semibold text-stone-900 dark:text-stone-100">
             Image
@@ -67,7 +67,7 @@ export default function ImageUploader({
           type="button"
           variant="outline"
           disabled={uploading}
-          className="cursor-pointer bg-white hover:bg-gray-100"
+          className="cursor-pointer bg-white hover:bg-gray-100 w-full sm:w-auto shrink-0"
           onClick={() => inputRef.current?.click()}
         >
           {uploading ? (

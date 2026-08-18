@@ -91,7 +91,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
     <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
       <div className="flex flex-col gap-5 lg:flex-row">
         {/* NAV TABS */}
-        <div className="flex shrink-0 gap-1.5 overflow-x-auto lg:flex-col lg:w-56 border-b lg:border-b-0 lg:border-r border-stone-300 pb-3 lg:pb-0 lg:pr-4 dark:border-stone-800">
+        <div className="flex shrink-0 gap-1.5 overflow-x-auto lg:flex-col lg:w-56 border-b lg:border-b-0 lg:border-r border-stone-300 pb-3 lg:pb-0 lg:pr-4 dark:border-stone-800 scrollbar-none">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -127,7 +127,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-4">
-                  <div className="grid gap-2 grid-cols-2">
+                  <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <Label htmlFor="mid-eyebrow">Banner Eyebrow</Label>
                       <Input
@@ -316,7 +316,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
                       />
                     </div>
 
-                    <div className="grid gap-2 grid-cols-2">
+                    <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
                       <div className="space-y-1.5">
                         <Label className="text-xs">Button Text</Label>
                         <Input

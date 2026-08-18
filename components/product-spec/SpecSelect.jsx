@@ -32,7 +32,7 @@ export default function SpecSelect({ label, value, options, onChange }) {
         >
           <span>{value}</span>
           <span
-            className={`w-[6px] h-[6px] border-r-[1.5px] border-b-[1.5px] border-[#9A4A2E] transition-transform duration-200 ml-2 shrink-0 opacity-70 ${
+            className={`w-[6px] select-none h-[6px] border-r-[1.5px] border-b-[1.5px] border-[#9A4A2E] transition-transform duration-200 ml-2 shrink-0 opacity-70 ${
               isOpen ? '-rotate-[135deg] opacity-100' : 'rotate-45'
             }`}
           ></span>

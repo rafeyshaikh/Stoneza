@@ -87,12 +87,12 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
       ) : (
         <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
           {/* LIST SIDEBAR */}
-          <div className="space-y-2 rounded-xl border border-stone-300 bg-white/60 p-2 dark:border-stone-700 dark:bg-stone-900/60 max-h-[400px] overflow-y-auto">
+          <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-y-auto rounded-xl border border-stone-300 bg-white/60 p-2 dark:border-stone-700 dark:bg-stone-900/60 lg:max-h-[400px] scrollbar-none">
             {testimonials.map((item, idx) => (
               <div
                 key={idx}
                 onClick={() => setActiveIdx(idx)}
-                className={`group flex items-center justify-between gap-2 rounded-lg p-2.5 text-sm cursor-pointer transition ${
+                className={`group flex shrink-0 items-center justify-between gap-2 rounded-lg p-2.5 text-sm cursor-pointer transition ${
                   activeIdx === idx
                     ? "bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900"
                     : "hover:bg-stone-200/50 dark:hover:bg-stone-800/50 text-stone-700 dark:text-stone-300"
@@ -111,7 +111,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

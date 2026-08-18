@@ -36,7 +36,7 @@ const navItems = [
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ className, onClose }) {
   const pathname = usePathname();
   const { userRole } = useAuth();
 
@@ -48,19 +48,24 @@ export default function AdminSidebar() {
   });
 
   return (
-    <aside className="hidden lg:flex lg:w-72 lg:flex-col border-r border-stone-300/60 bg-stone-100/70 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/70 lg:sticky lg:top-0 lg:h-screen">
-      <div className="flex h-16 items-center border-b border-stone-300/60 px-6 dark:border-stone-800">
+    <aside
+      className={cn(
+        "flex w-72 shrink-0 flex-col border-r border-stone-300/60 bg-stone-100/90 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/90 h-screen sticky top-0 z-40 select-none",
+        className
+      )}
+    >
+      <div className="flex h-14 shrink-0 items-center justify-between border-b border-stone-300/60 px-6 dark:border-stone-800">
         <div className="space-y-0.5">
-          <p className="font-heading text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-100">
+          <p className="font-heading text-base font-semibold tracking-tight text-stone-900 dark:text-stone-100">
             Stoneza
           </p>
-          <p className="text-xs uppercase tracking-[0.22em] text-stone-500 dark:text-stone-400">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-stone-500 dark:text-stone-400">
             Admin Console
           </p>
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1 p-3">
+      <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
         {displayedNavItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -72,6 +77,7 @@ export default function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={cn(
                 "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors",
                 isActive
