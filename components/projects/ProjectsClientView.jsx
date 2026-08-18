@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,6 +16,17 @@ import {
 export default function ProjectsClientView({ initialProjects = [] }) {
   const [activeSegment, setActiveSegment] = useState("all");
   const [selectedProject, setSelectedProject] = useState(null);
+
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedProject]);
 
   const SEGMENTS = [
     { label: "All", value: "all" },
@@ -508,11 +519,11 @@ export default function ProjectsClientView({ initialProjects = [] }) {
       {/* Modal / Drawer for Viewing Single Project Details */}
       {selectedProject && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6 backdrop-blur-xs animate-in fade-in duration-200"
+          className="fixed top-[62px] lg:top-[127px] bottom-0 left-0 right-0 z-[800] flex items-center justify-center bg-black/60 p-4 sm:p-6 backdrop-blur-xs animate-in fade-in duration-200"
           onClick={() => setSelectedProject(null)}
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto bg-white p-6 sm:p-10 shadow-2xl border border-[#E4DDD3] text-[#26221E]"
+            className="relative max-h-[calc(100vh-62px-2rem)] lg:max-h-[calc(100vh-127px-3rem)] w-full max-w-4xl overflow-y-auto bg-white p-6 sm:p-10 shadow-2xl border border-[#E4DDD3] text-[#26221E]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}

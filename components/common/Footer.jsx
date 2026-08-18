@@ -1,7 +1,7 @@
 import Container from "./Container";
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaWhatsapp, FaYoutube } from "react-icons/fa";
-import {redirectToWhatsApp} from "@/lib/whatsapp";
+import { redirectToWhatsApp } from "@/lib/whatsapp";
 import { useContact } from "@/context/ContactContext";
 
 export default function Footer() {
@@ -28,6 +28,15 @@ export default function Footer() {
             </h3>
 
             <ul className="space-y-3 text-[13px]">
+
+              <li>
+                <Link
+                  href="/projects"
+                  className="transition-colors cursor-pointer"
+                >
+                  Projects
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/pages/about-us"
@@ -185,7 +194,7 @@ export default function Footer() {
               )}
 
               {contactDetails?.youtube ? (
-                <a 
+                <a
                   href={contactDetails.youtube}
                   target="_blank"
                   rel="noreferrer"
@@ -194,7 +203,7 @@ export default function Footer() {
                   <FaYoutube size={18} />
                 </a>
               ) : (
-                <a 
+                <a
                   href="https://www.youtube.com/@thestoneza"
                   target="_blank"
                   rel="noreferrer"
