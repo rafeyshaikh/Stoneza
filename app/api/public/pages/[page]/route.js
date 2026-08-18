@@ -60,17 +60,7 @@ export async function GET(req, { params }) {
     const pages = await getOrCreatePagesDocument();
 
     if (page === "contactUs" && pages.contactUs) {
-      const contactData = pages.contactUs;
-      return response(true, 200, `${page} fetched successfully`, {
-        address: contactData.address || "",
-        phone: contactData.phone || "",
-        whatsapp: contactData.whatsapp || "",
-        youtube: contactData.youtube || "",
-        instagram: contactData.instagram || "",
-        facebook: contactData.facebook || "",
-        email: contactData.email || "",
-        mapEmbedCode: contactData.mapEmbedCode || "",
-      });
+      return response(true, 200, `${page} fetched successfully`, pages.contactUs);
     }
 
     const pageData = pages[page] || {

@@ -118,23 +118,22 @@ export default function Header() {
       </div>
 
       {/* Nav Tabs Row (Desktop) */}
-      {tabs.length > 0 && (
+      {displayNavItems.length > 0 && (
         <div className="hidden lg:block border-t border-[#26221E]/12">
           <ul className="list-none m-0 p-0 flex justify-center gap-4 sm:gap-8 md:gap-14 flex-wrap">
-            {tabs.map((tab, idx) => (
+            {displayNavItems.map((item, idx) => (
               <li key={idx} onMouseEnter={() => handleMouseEnterTab(idx)}>
-                <button
-                  type="button"
+                <Link
+                  href={item.href || `/categories/${item.slug}`}
                   onClick={() => toggleTab(idx)}
-                  aria-expanded={activeTab === idx}
-                  className={`appearance-none bg-transparent border-0 cursor-pointer font-sans text-[15px] font-semibold tracking-[0.13em] uppercase text-[#26221E] py-3.5 px-1 border-b-[3px] transition-colors font-heading ${
+                  className={`appearance-none bg-transparent border-0 cursor-pointer font-sans text-[15px] font-semibold tracking-[0.13em] uppercase text-[#26221E] py-3.5 px-1 border-b-[3px] transition-colors font-heading inline-block no-underline ${
                     activeTab === idx
                       ? "border-[#26221E]"
                       : "border-transparent hover:border-[#26221E]/30"
                   }`}
                 >
-                  {tab}
-                </button>
+                  {item.title}
+                </Link>
               </li>
             ))}
           </ul>
@@ -169,11 +168,10 @@ export default function Header() {
                           {link.name || link.title}
                           {link.badge && (
                             <em
-                              className={`font-mono text-[8.5px] not-italic tracking-[0.11em] px-1.5 py-0.75 relative -top-px ${
-                                link.badge === "NEW"
+                              className={`font-mono text-[8.5px] not-italic tracking-[0.11em] px-1.5 py-0.75 relative -top-px ${link.badge === "NEW"
                                   ? "text-white bg-[#8E4B2A]"
                                   : "text-[#26221E] opacity-45 border border-[#26221E]/30"
-                              }`}
+                                }`}
                             >
                               {link.badge}
                             </em>

@@ -10,7 +10,7 @@ export default function PageWrapper({ children }) {
   return (
     <main
       className={`flex-grow ${
-        !isHomePage ? "pt-[64px] lg:pt-[106px]" : ""
+        !isHomePage ? "pt-[62px] lg:pt-[127px]" : ""
       }`}
     >
       {children}
