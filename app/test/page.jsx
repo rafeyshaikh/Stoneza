@@ -2,23 +2,36 @@ import React from "react";
 import Link from "next/link";
 import MainCategoriesGrid from "@/components/home/MainCategoriesGrid";
 import SignatureStones from "@/components/home/SignatureStones";
+import OnSiteProjects from "@/components/home/OnSiteProjects";
+import JournalSection from "@/components/home/JournalSection";
 import { getMainCategoriesData } from "@/lib/getMainCategoriesData";
 import { getFeaturedProductsData } from "@/lib/getFeaturedProductsData";
+import { getOnSiteProjectsData } from "@/lib/getOnSiteProjectsData";
+import { getJournalArticlesData } from "@/lib/getJournalArticlesData";
 
 export const dynamic = "force-dynamic";
 
 export default async function TestPage() {
-  const [categoriesData, featuredStones] = await Promise.all([
-    getMainCategoriesData(),
-    getFeaturedProductsData(),
-  ]);
+  const [categoriesData, featuredStones, onSiteProjects, journalArticles] =
+    await Promise.all([
+      getMainCategoriesData(),
+      getFeaturedProductsData(),
+      getOnSiteProjectsData(),
+      getJournalArticlesData(),
+    ]);
 
   return (
     <div className="bg-white text-[#26221E] font-sans antialiased">
-      {/* 1. SIGNATURE STONES CAROUSEL ("What we are known for") WITH REAL FEATURED PRODUCTS */}
+      {/* 1. THE JOURNAL / KNOWING YOUR STONE SECTION */}
+      <JournalSection articles={journalArticles} />
+
+      {/* 2. ON SITE / SPECIFIED, SUPPLIED, STANDING SECTION */}
+      <OnSiteProjects projects={onSiteProjects} />
+
+      {/* 3. SIGNATURE STONES CAROUSEL ("What we are known for") */}
       <SignatureStones stones={featuredStones} />
 
-      {/* 2. MAIN CATEGORIES CAROUSEL SECTION WITH REAL DB DATA */}
+      {/* 4. MAIN CATEGORIES CAROUSEL SECTION */}
       <MainCategoriesGrid categories={categoriesData} />
 
       {/* BREADCRUMB BAR */}

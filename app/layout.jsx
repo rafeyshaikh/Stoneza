@@ -76,7 +76,7 @@ export default async function RootLayout({ children }) {
         ${libreBaskerville.variable}
         h-full antialiased
       `}>
-      <body className="min-h-full flex flex-col bg-[#EAE8E2]">
+      <body className="min-h-full flex flex-col bg-white">
         {gaId && (
           <>
             <Script

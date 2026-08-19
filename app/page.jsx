@@ -23,6 +23,10 @@ import { getCategoriesForLayout } from "@/lib/getCategoriesForLayout";
 import { getMainCategoriesData } from "@/lib/getMainCategoriesData";
 import SignatureStones from "@/components/home/SignatureStones";
 import { getFeaturedProductsData } from "@/lib/getFeaturedProductsData";
+import OnSiteProjects from "@/components/home/OnSiteProjects";
+import { getOnSiteProjectsData } from "@/lib/getOnSiteProjectsData";
+import JournalSection from "@/components/home/JournalSection";
+import { getJournalArticlesData } from "@/lib/getJournalArticlesData";
 
 export async function generateMetadata() {
   try {
@@ -91,15 +95,17 @@ export default async function Home() {
         id: sub.slug || `${cat.slug}-sub-${idx}`,
         title: sub.title,
         titleStyle: "font-body uppercase tracking-[2px]",
-        image: sub.squareImage || "",
+        image: sub.squareImage || sub.image || "",
         href: `/categories/${sub.slug}`,
       }));
       acc.push(...mappedSubs);
     }
     return acc;
   }, []);
-    const [featuredStones] = await Promise.all([
+    const [featuredStones, onSiteProjects, journalArticles] = await Promise.all([
       getFeaturedProductsData(),
+      getOnSiteProjectsData(),
+      getJournalArticlesData(),
     ]);
 
   return (
@@ -109,7 +115,7 @@ export default async function Home() {
       
       <MainCategoriesGrid categories={mainCategoriesData} />
       <SignatureStones stones={featuredStones} />
-      <HomeAboutSection storyData={safeAbout?.story} />
+      <HomeAboutSection storyData={safeAbout?.story} imageleft={true}/>
       <MiddleBanner
         src={safeHomepage?.middleBanner?.image?.url || "/assets/Banner/All_products_banner.png"}
         title={safeHomepage?.middleBanner?.title || "All Products"}
@@ -118,17 +124,17 @@ export default async function Home() {
         button={safeHomepage?.middleBanner?.buttonText || "View All"}
         link={safeHomepage?.middleBanner?.buttonLink || "/products"}
       />
+      <OnSiteProjects projects={onSiteProjects} />
       <Carousel title={safeHomepage?.newArrivalsTitle || "What's New"} data={newArrivalsData} button={true} />
-      <HomeAboutSection storyData={safeAbout?.story} imageleft={true} />
       <ThreeBanner banners={safeHomepage?.threeBanners} />
       {subCategoryData.length > 0 && (
         <Carousel title="Sub Categories" data={subCategoryData} />
       )}
       <EnquiryForm />
-      <BrandPromo promos={safeHomepage?.brandPromos} />
+      {/* <BrandPromo promos={safeHomepage?.brandPromos} /> */}
       <WhyChooseUs />
       <Review reviews={safeHomepage?.testimonials} />
-      <RecentBlogs blogs={safeLatestBlogs} />
+      <JournalSection articles={journalArticles} />
       <InstagramSection />
     </div>
   );
