@@ -14,6 +14,7 @@ import { PiCaretDown } from "react-icons/pi";
 import { BiSolidGrid, BiSolidGridAlt } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import SiblingCategoriesCarousel from "@/components/category/SiblingCategoriesCarousel";
 
 export default function CategoryPageClient({ initialData, slug }) {
   const router = useRouter();
@@ -40,6 +41,9 @@ export default function CategoryPageClient({ initialData, slug }) {
 
   const category = initialData.category;
   const categoryLevel = category?.categoryLevel || 1;
+  const parentCategory = initialData.parentCategory || category?.parentCategory;
+  const siblingCategories = initialData.siblingCategories || [];
+  const parentCategoryName = parentCategory?.name || "Category";
   const rawProducts = initialData.products || [];
 
   const mappedProducts = rawProducts.map((prod, idx) => ({
@@ -546,6 +550,13 @@ export default function CategoryPageClient({ initialData, slug }) {
             </div>
           )}
         </div>
+      )}
+
+      {categoryLevel === 3 && siblingCategories.length > 0 && (
+        <SiblingCategoriesCarousel
+          parentCategoryName={parentCategoryName}
+          siblingCategories={siblingCategories}
+        />
       )}
 
       <CategoryCTA
