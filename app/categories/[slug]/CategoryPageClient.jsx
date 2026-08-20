@@ -243,7 +243,7 @@ export default function CategoryPageClient({ initialData, slug }) {
             height={575}
           />
           <div className="absolute top-0 inset-0 z-10 flex items-center px-4 sm:px-8 md:px-12 lg:px-24">
-            <div className="bg-white/95 backdrop-blur-sm w-full sm:w-[85%] md:w-[70%] lg:w-[45%] max-w-[540px] p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-2 sm:gap-4 lg:gap-6 shadow-md">
+            <div className="bg-linear-to-br from-white/40 via-white/95 to-white/50 backdrop-blur-sm w-full sm:w-[85%] md:w-[70%] lg:w-[45%] max-w-[540px] p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-2 sm:gap-4 lg:gap-6 shadow-md">
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading capitalize font-semibold tracking-wide text-[#1A1613]">
                 {categoryName}
               </h1>
