@@ -3,8 +3,7 @@ import Link from "next/link";
 
 export default function BigBanner({src, alt = "Stoneza Banner", title, button, height = 500, link = "#"}) {
   return (
-    <div className="relative w-full overflow-hidden"
-    style={{ height: `${height}px` }}>
+    <div className="relative w-full aspect-[16/9] lg:aspect-[15/6] h-auto overflow-hidden">
       <ImageWithLoader
         src={src}
         alt={alt}

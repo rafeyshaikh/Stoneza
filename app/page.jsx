@@ -90,16 +90,20 @@ export default async function Home() {
     : whatsNewData;
 
   const subCategoryData = categories.reduce((acc, cat) => {
-    if (Array.isArray(cat.categories)) {
-      const mappedSubs = cat.categories.map((sub, idx) => ({
-        id: sub.slug || `${cat.slug}-sub-${idx}`,
-        title: sub.title,
-        titleStyle: "font-body uppercase tracking-[2px]",
-        image: sub.squareImage || sub.image || "",
-        href: `/categories/${sub.slug}`,
-      }));
-      acc.push(...mappedSubs);
-    }
+    const subs = Array.isArray(cat.subCategories)
+      ? cat.subCategories
+      : Array.isArray(cat.categories)
+      ? cat.categories.filter((sub) => sub.squareImage)
+      : [];
+
+    const mappedSubs = subs.map((sub, idx) => ({
+      id: sub.slug || `${cat.slug}-sub-${idx}`,
+      title: sub.title,
+      titleStyle: "font-body uppercase tracking-[2px]",
+      image: sub.squareImage || sub.image || "",
+      href: `/categories/${sub.slug}`,
+    }));
+    acc.push(...mappedSubs);
     return acc;
   }, []);
     const [featuredStones, onSiteProjects, journalArticles] = await Promise.all([
@@ -126,7 +130,7 @@ export default async function Home() {
       />
       <OnSiteProjects projects={onSiteProjects} />
       <Carousel title={safeHomepage?.newArrivalsTitle || "What's New"} data={newArrivalsData} button={true} />
-      <ThreeBanner banners={safeHomepage?.threeBanners} />
+      {/* <ThreeBanner banners={safeHomepage?.threeBanners} /> */}
       {subCategoryData.length > 0 && (
         <Carousel title="Sub Categories" data={subCategoryData} />
       )}

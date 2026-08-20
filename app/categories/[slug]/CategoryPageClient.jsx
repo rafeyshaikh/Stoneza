@@ -13,6 +13,7 @@ import { getPlaceholderImage } from "@/lib/placeholderImage";
 import { PiCaretDown } from "react-icons/pi";
 import { BiSolidGrid, BiSolidGridAlt } from "react-icons/bi";
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 
 export default function CategoryPageClient({ initialData, slug }) {
   const router = useRouter();
@@ -108,10 +109,10 @@ export default function CategoryPageClient({ initialData, slug }) {
   // Robust tag-matching helper checks product schema attributes, product tags, and names
   const productMatchesFilter = (product, filterKey, activeOptions) => {
     if (activeOptions.length === 0) return true;
-    
+
     return activeOptions.some((opt) => {
       const optionLower = opt.toLowerCase();
-      
+
       const name = (product.name || "").toLowerCase();
       const tags = (product.tags || []).map((t) => t.toLowerCase());
       const stoneType = (product.stoneDetails?.stoneType || "").toLowerCase();
@@ -183,7 +184,7 @@ export default function CategoryPageClient({ initialData, slug }) {
       const matchFeatured = activeFilters.badges.includes("Featured") && product.isFeatured;
       const matchBestSeller = activeFilters.badges.includes("Best Seller") && product.isBestSeller;
       const matchNewArrival = activeFilters.badges.includes("New Arrival") && product.isNewArrival;
-      
+
       if (!matchFeatured && !matchBestSeller && !matchNewArrival) {
         return false;
       }
@@ -211,26 +212,78 @@ export default function CategoryPageClient({ initialData, slug }) {
 
   return (
     <div className="w-full">
-      <BigBanner
-        src={topBannerUrl}
-        title={categoryName}
-        alt={categoryName}
-        button={null}
-        height={575}
-      />
+      {categoryLevel === 1 || categoryLevel === 2 ? (
+        <div className="relative">
+          <BigBanner
+            src={topBannerUrl}
+            alt={categoryName}
+            button={null}
+            height={575}
+          />
+          <div className="absolute top-0 w-full inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent z-10 h-full flex flex-col justify-center gap-2 sm:gap-4 md:gap-6 items-start px-5 sm:px-8 md:px-12 lg:px-16">
+            <p className="text-white font-heading uppercase text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.25em] sm:tracking-[0.35em] font-medium">
+              Category
+            </p>
+            <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light tracking-wide">
+              {categoryName}
+            </h1>
+            {category?.description && (
+              <p className="text-white/90 font-body w-full sm:w-[80%] md:w-[65%] lg:w-[45%] text-xs sm:text-sm md:text-base lg:text-lg line-clamp-3 sm:line-clamp-4 md:line-clamp-none">
+                {category.description}
+              </p>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="relative">
+          <BigBanner
+            src={topBannerUrl}
+            alt={categoryName}
+            button={null}
+            height={575}
+          />
+          <div className="absolute top-0 inset-0 z-10 flex items-center px-4 sm:px-8 md:px-12 lg:px-24">
+            <div className="bg-white/95 backdrop-blur-sm w-full sm:w-[85%] md:w-[70%] lg:w-[45%] max-w-[540px] p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-2 sm:gap-4 lg:gap-6 shadow-md">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading capitalize font-semibold tracking-wide text-[#1A1613]">
+                {categoryName}
+              </h1>
+              {category?.description && (
+                <p className="text-xs sm:text-sm lg:text-base text-[#4A453F] line-clamp-3 sm:line-clamp-4 md:line-clamp-6 lg:line-clamp-none">
+                  {category.description}
+                </p>
+              )}
+              <div className="flex items-center gap-2 sm:gap-3 pt-1">
+                <Link
+                  href="#products-grid"
+                  className="flex-1 h-9 sm:h-11 lg:h-12 bg-black text-white flex justify-center items-center cursor-pointer hover:bg-stone-800 transition-all text-[10px] sm:text-xs lg:text-sm font-medium tracking-wider uppercase text-center px-2"
+                >
+                  Browse All {initialData.products?.length || 0} Varieties
+                </Link>
+                <Link
+                  href="/pages/contact"
+                  className="flex-1 h-9 sm:h-11 lg:h-12 bg-white text-black border border-black flex justify-center items-center cursor-pointer hover:bg-black/5 transition-all text-[10px] sm:text-xs lg:text-sm font-medium tracking-wider uppercase text-center px-2"
+                >
+                  Talk to Expert
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Grid Settings & Filter Bar */}
-      <div className="sticky top-[63px] lg:top-[106px] h-14 w-full border border-[#cbc9c4] bg-[#eae8e2] z-40 flex justify-between relative">
-        
+      <div className="sticky top-[62px] lg:top-[127px] h-12 sm:h-14 w-full border-y border-[#cbc9c4] bg-[#eae8e2] z-30 flex justify-between relative">
         {/* Grid Sizer buttons */}
-        <div className="border-r h-full w-35 border-[#cbc9c4] flex items-center justify-center gap-2">
+        <div className="border-r h-full w-20 sm:w-28 md:w-36 border-[#cbc9c4] flex items-center justify-center gap-2">
           <BiSolidGridAlt
-            className={` ${gridSizeLarge ? "opacity-50 text-[25px]" : "opacity-100 text-[26px]"} cursor-pointer`}
+            className={`${gridSizeLarge ? "opacity-50 text-[20px] sm:text-[24px]" : "opacity-100 text-[22px] sm:text-[26px]"} cursor-pointer hover:opacity-100 transition-opacity`}
             onClick={() => setGridSizeLarge(false)}
+            aria-label="Two column grid"
           />
           <BiSolidGrid
-            className={` ${gridSizeLarge ? "opacity-100 text-[26px]" : "opacity-50 text-[25px]"} cursor-pointer`}
+            className={`${gridSizeLarge ? "opacity-100 text-[22px] sm:text-[26px]" : "opacity-50 text-[20px] sm:text-[24px]"} cursor-pointer hover:opacity-100 transition-opacity`}
             onClick={() => setGridSizeLarge(true)}
+            aria-label="Four column grid"
           />
         </div>
 
@@ -241,18 +294,18 @@ export default function CategoryPageClient({ initialData, slug }) {
               setIsSortOpen(!isSortOpen);
               setIsFilterOpen(false);
             }}
-            className="h-full relative w-40 border-l border-[#cbc9c4] uppercase font-heading tracking-[2px] text-[12px] font-medium flex items-center justify-center gap-2 cursor-pointer hover:bg-black/5"
+            className="h-full relative px-3 sm:px-5 md:px-7 border-l border-[#cbc9c4] uppercase font-heading tracking-[1px] sm:tracking-[2px] text-[10px] sm:text-[11px] md:text-[12px] font-medium flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer hover:bg-black/5 transition-colors"
           >
-            {currentSortLabel}
-            <PiCaretDown className={`text-sm transition-transform duration-300 ${isSortOpen ? "rotate-180" : ""}`} />
+            <span className="truncate max-w-[90px] sm:max-w-none">{currentSortLabel}</span>
+            <PiCaretDown className={`text-xs sm:text-sm shrink-0 transition-transform duration-300 ${isSortOpen ? "rotate-180" : ""}`} />
           </button>
-          
+
           <button
             onClick={() => {
               setIsFilterOpen(!isFilterOpen);
               setIsSortOpen(false);
             }}
-            className={`h-full relative w-35 border-l border-[#cbc9c4] uppercase font-heading tracking-[2px] text-[12px] font-medium cursor-pointer transition-colors ${
+            className={`h-full relative px-3 sm:px-5 md:px-7 border-l border-[#cbc9c4] uppercase font-heading tracking-[1px] sm:tracking-[2px] text-[10px] sm:text-[11px] md:text-[12px] font-medium cursor-pointer transition-colors ${
               isFilterOpen || hasActiveFilters
                 ? "bg-[#9a4a2e] text-white hover:bg-[#853e25]"
                 : "hover:bg-black/5 text-[#1A1613]"
@@ -269,7 +322,7 @@ export default function CategoryPageClient({ initialData, slug }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-36 top-[57px] w-52 bg-[#eae8e2] border border-[#cbc9c4] shadow-lg flex flex-col z-50 rounded-b-lg overflow-hidden"
+                className="absolute right-0 sm:right-28 md:right-36 top-[48px] sm:top-[56px] w-48 sm:w-52 bg-[#eae8e2] border border-[#cbc9c4] shadow-lg flex flex-col z-50 rounded-b-lg overflow-hidden"
               >
                 {sortOptions.map((opt) => (
                   <button
@@ -278,7 +331,7 @@ export default function CategoryPageClient({ initialData, slug }) {
                       setSortBy(opt.value);
                       setIsSortOpen(false);
                     }}
-                    className={`px-5 py-3.5 text-left text-[11px] uppercase tracking-[2px] font-heading font-medium border-b border-[#cbc9c4]/30 last:border-b-0 cursor-pointer transition-colors ${
+                    className={`px-4 sm:px-5 py-3 sm:py-3.5 text-left text-[10px] sm:text-[11px] uppercase tracking-[1px] sm:tracking-[2px] font-heading font-medium border-b border-[#cbc9c4]/30 last:border-b-0 cursor-pointer transition-colors ${
                       sortBy === opt.value
                         ? "bg-[#C5B9AB] text-[#1A1613] font-bold"
                         : "hover:bg-[#C5B9AB]/30 text-[#1a1613]"
@@ -303,19 +356,20 @@ export default function CategoryPageClient({ initialData, slug }) {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="w-full border-b border-[#cbc9c4] bg-[#eae8e2] overflow-hidden z-30"
           >
-            <div className="max-w-[1400px] mx-auto p-8 grid grid-cols-2 md:grid-cols-5 gap-8">
-              
+            <div className="max-w-[1400px] mx-auto p-4 sm:p-6 md:p-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
               {/* Colors Filter */}
               <div>
-                <h4 className="text-[11px] font-bold uppercase tracking-[2px] text-[#8A7F73] mb-4">Color</h4>
-                <div className="flex flex-wrap gap-2">
+                <h4 className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[1.5px] sm:tracking-[2px] text-[#8A7F73] mb-3 sm:mb-4">
+                  Color
+                </h4>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {genericColors.map((color) => {
                     const isActive = activeFilters.colors.includes(color);
                     return (
                       <button
                         key={color}
                         onClick={() => toggleFilter("colors", color)}
-                        className={`px-3 py-1.5 border border-[#cbc9c4] rounded-full text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
+                        className={`px-2.5 sm:px-3 py-1 sm:py-1.5 border border-[#cbc9c4] rounded-full text-[9px] sm:text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
                           isActive
                             ? "bg-[#9a4a2e] text-white border-[#9a4a2e]"
                             : "bg-white/50 text-[#1a1613] hover:border-black"
@@ -330,15 +384,17 @@ export default function CategoryPageClient({ initialData, slug }) {
 
               {/* Stone Types Filter */}
               <div>
-                <h4 className="text-[11px] font-bold uppercase tracking-[2px] text-[#8A7F73] mb-4">Stone Type</h4>
-                <div className="flex flex-wrap gap-2">
+                <h4 className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[1.5px] sm:tracking-[2px] text-[#8A7F73] mb-3 sm:mb-4">
+                  Stone Type
+                </h4>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {genericStoneTypes.map((type) => {
                     const isActive = activeFilters.stoneTypes.includes(type);
                     return (
                       <button
                         key={type}
                         onClick={() => toggleFilter("stoneTypes", type)}
-                        className={`px-3 py-1.5 border border-[#cbc9c4] rounded-full text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
+                        className={`px-2.5 sm:px-3 py-1 sm:py-1.5 border border-[#cbc9c4] rounded-full text-[9px] sm:text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
                           isActive
                             ? "bg-[#9a4a2e] text-white border-[#9a4a2e]"
                             : "bg-white/50 text-[#1a1613] hover:border-black"
@@ -353,15 +409,17 @@ export default function CategoryPageClient({ initialData, slug }) {
 
               {/* Finishes Filter */}
               <div>
-                <h4 className="text-[11px] font-bold uppercase tracking-[2px] text-[#8A7F73] mb-4">Finish / Texture</h4>
-                <div className="flex flex-wrap gap-2">
+                <h4 className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[1.5px] sm:tracking-[2px] text-[#8A7F73] mb-3 sm:mb-4">
+                  Finish / Texture
+                </h4>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {genericFinishes.map((finish) => {
                     const isActive = activeFilters.finishes.includes(finish);
                     return (
                       <button
                         key={finish}
                         onClick={() => toggleFilter("finishes", finish)}
-                        className={`px-3 py-1.5 border border-[#cbc9c4] rounded-full text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
+                        className={`px-2.5 sm:px-3 py-1 sm:py-1.5 border border-[#cbc9c4] rounded-full text-[9px] sm:text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
                           isActive
                             ? "bg-[#9a4a2e] text-white border-[#9a4a2e]"
                             : "bg-white/50 text-[#1a1613] hover:border-black"
@@ -376,15 +434,17 @@ export default function CategoryPageClient({ initialData, slug }) {
 
               {/* Applications Filter */}
               <div>
-                <h4 className="text-[11px] font-bold uppercase tracking-[2px] text-[#8A7F73] mb-4">Applications</h4>
-                <div className="flex flex-wrap gap-2">
+                <h4 className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[1.5px] sm:tracking-[2px] text-[#8A7F73] mb-3 sm:mb-4">
+                  Applications
+                </h4>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {genericApplications.map((app) => {
                     const isActive = activeFilters.applications.includes(app);
                     return (
                       <button
                         key={app}
                         onClick={() => toggleFilter("applications", app)}
-                        className={`px-3 py-1.5 border border-[#cbc9c4] rounded-full text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
+                        className={`px-2.5 sm:px-3 py-1 sm:py-1.5 border border-[#cbc9c4] rounded-full text-[9px] sm:text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
                           isActive
                             ? "bg-[#9a4a2e] text-white border-[#9a4a2e]"
                             : "bg-white/50 text-[#1a1613] hover:border-black"
@@ -398,16 +458,18 @@ export default function CategoryPageClient({ initialData, slug }) {
               </div>
 
               {/* Badges / Collections */}
-              <div>
-                <h4 className="text-[11px] font-bold uppercase tracking-[2px] text-[#8A7F73] mb-4">Categories</h4>
-                <div className="flex flex-wrap gap-2">
+              <div className="col-span-2 sm:col-span-1">
+                <h4 className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[1.5px] sm:tracking-[2px] text-[#8A7F73] mb-3 sm:mb-4">
+                  Categories
+                </h4>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {["Featured", "Best Seller", "New Arrival"].map((badge) => {
                     const isActive = activeFilters.badges.includes(badge);
                     return (
                       <button
                         key={badge}
                         onClick={() => toggleFilter("badges", badge)}
-                        className={`px-3 py-1.5 border border-[#cbc9c4] rounded-full text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
+                        className={`px-2.5 sm:px-3 py-1 sm:py-1.5 border border-[#cbc9c4] rounded-full text-[9px] sm:text-[10px] font-heading font-medium uppercase tracking-[1px] cursor-pointer transition-all ${
                           isActive
                             ? "bg-[#9a4a2e] text-white border-[#9a4a2e]"
                             : "bg-white/50 text-[#1a1613] hover:border-black"
@@ -419,15 +481,14 @@ export default function CategoryPageClient({ initialData, slug }) {
                   })}
                 </div>
               </div>
-
             </div>
 
             {/* Clear All Filters Button Bar */}
             {hasActiveFilters && (
-              <div className="border-t border-[#cbc9c4] py-4 px-8 max-w-[1400px] mx-auto flex justify-end">
+              <div className="border-t border-[#cbc9c4] py-3 sm:py-4 px-4 sm:px-8 max-w-[1400px] mx-auto flex justify-end">
                 <button
                   onClick={clearAllFilters}
-                  className="text-[11px] uppercase tracking-[2px] font-heading font-bold text-[#9a4a2e] hover:underline cursor-pointer"
+                  className="text-[10px] sm:text-[11px] uppercase tracking-[1.5px] sm:tracking-[2px] font-heading font-bold text-[#9a4a2e] hover:underline cursor-pointer"
                 >
                   Clear All Filters
                 </button>
@@ -439,14 +500,17 @@ export default function CategoryPageClient({ initialData, slug }) {
 
       {/* Grid rendering */}
       {sortedProducts.length === 0 ? (
-        <div className="max-w-[1400px] mx-auto p-10 justify-items-center">
-          <div className="text-center py-20 text-stone-500">
+        <div className="max-w-[1400px] mx-auto p-6 sm:p-10 justify-items-center">
+          <div className="text-center py-12 sm:py-20 text-stone-500 text-sm sm:text-base">
             No products match the selected filters or sorting options in this category.
           </div>
         </div>
       ) : (
         <div
-          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${gridSizeLarge ? "lg:grid-cols-4" : "lg:grid-cols-2"} gap-6 p-10 justify-items-center`}
+          id="products-grid"
+          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${
+            gridSizeLarge ? "lg:grid-cols-4" : "lg:grid-cols-2"
+          } gap-4 sm:gap-6 p-4 sm:p-6 md:p-8 lg:p-10 justify-items-center`}
         >
           {sortedProducts.slice(0, sliceLength).map((item) => (
             <ProductCard
@@ -459,41 +523,37 @@ export default function CategoryPageClient({ initialData, slug }) {
           ))}
         </div>
       )}
-      
-      {(!showAllProducts && (categoryLevel === 1 || categoryLevel === 2) && sortedProducts.length > sliceLength) && (
-        <div className="flex justify-center items-center">
-          <button 
-            className="mb-10 rounded-lg border border-[#cbc9c4] bg-[#eae8e2] px-6 py-3 uppercase font-heading tracking-[2px] text-[12px] font-medium cursor-pointer text-center flex justify-center items-center gap-2 hover:scale-[1.02] hover:border-black transition-all" 
-            onClick={() => setShowAllProducts(true)}
-          >
-            View All
-            <PiCaretDown className="text-2md" />
-          </button>
-        </div>
-      )}
 
-      {(!showAllProducts && (categoryLevel === 1 || categoryLevel === 2)) && (
+      {!showAllProducts &&
+        (categoryLevel === 1 || categoryLevel === 2) &&
+        sortedProducts.length > sliceLength && (
+          <div className="flex justify-center items-center py-6 sm:py-10">
+            <button
+              className="rounded-lg border border-[#cbc9c4] bg-[#eae8e2] px-6 py-3 uppercase font-heading tracking-[2px] text-[11px] sm:text-[12px] font-medium cursor-pointer text-center flex justify-center items-center gap-2 hover:scale-[1.02] hover:border-black transition-all"
+              onClick={() => setShowAllProducts(true)}
+            >
+              View All
+              <PiCaretDown className="text-base" />
+            </button>
+          </div>
+        )}
+
+      {!showAllProducts && (categoryLevel === 1 || categoryLevel === 2) && (
         <div>
           {carouselSubCategories.length > 0 && (
-            <div className="col-span-full">
+            <div className="col-span-full py-4 sm:py-6">
               <Carousel title="Sub Categories" data={carouselSubCategories} />
             </div>
           )}
-          <BigBanner
-            src={wideBannerUrl}
-            title={categoryName}
-            alt={categoryName}
-            button={null}
-            height={800}
-          />
-          <CategoryCTA
-            title="Ready to Elevate Your Living Space?"
-            description="Discover premium stone surfaces, handcrafted décor, and timeless designs curated to bring elegance into every home."
-            buttonText="EXPLORE CATEGORY"
-            buttonLink="/categories"
-          />
         </div>
       )}
+
+      <CategoryCTA
+        title="Ready to Elevate Your Living Space?"
+        description="Discover premium stone surfaces, handcrafted décor, and timeless designs curated to bring elegance into every home."
+        buttonText="EXPLORE CATEGORY"
+        buttonLink="/categories"
+      />
     </div>
   );
 }

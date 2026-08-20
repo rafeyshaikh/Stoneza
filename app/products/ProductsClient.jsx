@@ -183,7 +183,7 @@ export default function ProductsClient({ products }) {
   return (
     <div className="w-full min-h-screen bg-[#EAE8E2]">
       <BigBanner
-        src={'/assets/hero/collection-banner.webp'}
+        src={'/assets/Banner/All_products_banner.png'}
         title={currentTitle}
         alt={currentTitle}
         button={null}
