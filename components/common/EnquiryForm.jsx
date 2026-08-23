@@ -290,7 +290,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
   }
 
   return (
-    <section id="enquiry-form" className="mx-auto mt-15 lg:mt-2 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:items-stretch lg:gap-10 xl:gap-14 lg:px-12 lg:py-12 scroll-mt-20 lg:scroll-mt-32">
+    <section id="enquiry-form" className="mx-auto my-16 sm:my-20 lg:my-28 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:items-stretch lg:gap-10 xl:gap-14 lg:px-12 lg:py-12 scroll-mt-20 lg:scroll-mt-32">
       {/* Left Column: Detailed Value Propositions & Direct Contact */}
       <div className="lg:w-1/2 flex flex-col justify-between">
         <div>

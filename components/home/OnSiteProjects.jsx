@@ -51,7 +51,7 @@ export default function OnSiteProjects({
   const displayProjects = limit > 0 ? allProjects.slice(0, limit) : allProjects;
 
   return (
-    <section className={`w-full bg-white border-t border-[#26221E]/10 py-16 sm:py-20 md:py-24 ${className}`}>
+    <section className={`w-full bg-white border-t border-b-2 border-[#C9BDB2]/50 dark:border-stone-800 py-16 sm:py-20 md:py-24 ${className} `}>
       <div className="max-w-[1320px] mx-auto px-4.5 sm:px-8 lg:px-16">
         {/* Header section */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 sm:mb-12 md:mb-14 gap-4">
