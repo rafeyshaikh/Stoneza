@@ -25,6 +25,8 @@ export async function GET(req) {
 
     const query = searchParams.get("query")?.trim() || "";
 
+    const role = searchParams.get("role")?.trim() || "";
+
     const projectType = searchParams.get("projectType")?.trim() || "";
 
     const status = searchParams.get("status")?.trim() || "";
@@ -48,6 +50,12 @@ export async function GET(req) {
           },
         },
         {
+          email: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
           city: {
             $regex: query,
             $options: "i",
@@ -59,7 +67,23 @@ export async function GET(req) {
             $options: "i",
           },
         },
+        {
+          role: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
+          message: {
+            $regex: query,
+            $options: "i",
+          },
+        },
       ];
+    }
+
+    if (role) {
+      filter.role = role;
     }
 
     if (projectType) {
@@ -102,7 +126,7 @@ export async function GET(req) {
 
     const [items, total] = await Promise.all([
       Enquiry.find(filter)
-        .select("name phone city projectType stoneType area status createdAt")
+        .select("name phone email city projectType stoneType area role message status createdAt")
         .sort(sortOption)
         .skip((page - 1) * limit)
         .limit(limit)

@@ -93,7 +93,7 @@ export default function Footer() {
             <ul className="space-y-3 text-[13px]">
               <li>
                 <Link
-                  href="/products?stoneType=marble"
+                  href="/product?stoneType=marble"
                   className="transition-colors cursor-pointer"
                 >
                   Marble
@@ -101,7 +101,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/products?stoneType=granite"
+                  href="/product?stoneType=granite"
                   className="transition-colors cursor-pointer"
                 >
                   Granite
@@ -109,7 +109,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/products?stoneType=slate"
+                  href="/product?stoneType=slate"
                   className="transition-colors cursor-pointer"
                 >
                   Slate
@@ -117,7 +117,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/products?stoneType=limestone"
+                  href="/product?stoneType=limestone"
                   className="transition-colors cursor-pointer"
                 >
                   Limestone
@@ -125,7 +125,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/products?stoneType=cobbles"
+                  href="/product?stoneType=cobbles"
                   className="transition-colors cursor-pointer"
                 >
                   Cobbles

@@ -9,7 +9,7 @@ export default function MiddleBanner({
   caption = "Natural stone. Timeless character. Endless possibilities.",
   button = "View All Products",
   height = 600,
-  link = "/products",
+  link = "/product",
 }) {
   return (
     <section

@@ -128,7 +128,7 @@ export default function FeaturedProducts({ products = [], cmsData }) {
             {displayProducts.map((item, index) => (
               <Link
                 key={index}
-                href={item.slug ? `/products/${item.slug}` : "#"}
+                href={item.slug ? `/product/${item.slug}` : "#"}
                 className={`relative w-[160px] h-[160px] lg:w-[220px] lg:h-[220px] overflow-hidden group cursor-pointer
                 ${currentIndex === index ? "opacity-100" : "hidden pointer-events-none "}`}
               >
@@ -170,7 +170,7 @@ export default function FeaturedProducts({ products = [], cmsData }) {
               {cmsData?.caption || "Discover Our Handpicked Collection of Best-Selling Items. Perfect for Adding a Touch of Elegance to Your Home."}
             </p>
 
-            <Link href="/products">
+            <Link href="/product">
               <button className="border border-[#6B6765] px-8 py-3 text-sm tracking-[0.15em] uppercase text-[#6B6765] transition-all duration-300 hover:bg-[#6B6765] hover:text-white cursor-pointer">
                 {cmsData?.buttonText || "Explore"}
               </button>

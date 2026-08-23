@@ -110,17 +110,6 @@ export async function PATCH(request, { params }) {
       return response(false, 400, "At least one image is required");
     }
 
-    const slug = generateSlug(name);
-
-    const duplicate = await Product.findOne({
-      _id: { $ne: id },
-      slug,
-    });
-
-    if (duplicate) {
-      return response(false, 409, "Product already exists");
-    }
-
     const categoryExists = await Category.findOne({
       _id: category,
     });
@@ -147,6 +136,40 @@ export async function PATCH(request, { params }) {
       }
     }
 
+    // Determine slug: keep existing slug if name has not changed
+    let slug = product.slug;
+    if (body.slug && body.slug.trim()) {
+      slug = generateSlug(body.slug.trim());
+    } else if (!slug || product.name !== name.trim()) {
+      let baseSlug = generateSlug(name);
+      let duplicate = await Product.findOne({
+        _id: { $ne: id },
+        slug: baseSlug,
+      });
+
+      if (duplicate) {
+        if (categoryExists?.slug) {
+          baseSlug = `${baseSlug}-${categoryExists.slug}`;
+        }
+        duplicate = await Product.findOne({
+          _id: { $ne: id },
+          slug: baseSlug,
+        });
+        if (duplicate) {
+          baseSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
+        }
+      }
+      slug = baseSlug;
+    }
+
+    const duplicate = await Product.findOne({
+      _id: { $ne: id },
+      slug,
+    });
+
+    if (duplicate) {
+      slug = `${slug}-${Date.now().toString().slice(-4)}`;
+    }
 
     product.name = name.trim();
     product.slug = slug;

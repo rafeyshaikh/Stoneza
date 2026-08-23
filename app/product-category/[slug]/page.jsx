@@ -30,7 +30,7 @@ export async function generateMetadata({ params }) {
 
   const canonicalUrl =
     category.seo?.canonicalUrl?.trim() ||
-    `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/categories/${slug}`;
+    `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/product-category/${slug}`;
 
   const keywords = category.seo?.keywords || [];
 

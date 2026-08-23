@@ -105,7 +105,7 @@ export default function Header() {
         <div className="hidden lg:flex gap-5.5 items-center font-mono text-[10.5px] tracking-[0.17em] uppercase">
           <Link
             href="/projects"
-            className={`no-underline opacity-85 hover:opacity-100 transition-all ${
+            className={`no-underline opacity-85 font-body hover:opacity-100 transition-all ${
               isSolidHeader ? "text-[#26221E]" : "text-white"
             }`}
           >
@@ -113,7 +113,7 @@ export default function Header() {
           </Link>
           <Link
             href="/pages/about-us"
-            className={`no-underline opacity-85 hover:opacity-100 transition-all ${
+            className={`no-underline font-body opacity-85 hover:opacity-100 transition-all ${
               isSolidHeader ? "text-[#26221E]" : "text-white"
             }`}
           >
@@ -169,7 +169,7 @@ export default function Header() {
             {displayNavItems.map((item, idx) => (
               <li key={idx} onMouseEnter={() => handleMouseEnterTab(idx)}>
                 <Link
-                  href={item.href || `/categories/${item.slug}`}
+                  href={item.href || `/product-category/${item.slug}`}
                   onClick={() => toggleTab(idx)}
                   className={`appearance-none bg-transparent border-0 cursor-pointer font-sans text-[15px] font-semibold tracking-[0.13em] uppercase py-3.5 px-1 border-b-[3px] transition-colors font-heading inline-block no-underline ${
                     isSolidHeader ? "text-[#26221E]" : "text-white"
@@ -196,13 +196,21 @@ export default function Header() {
         <div className="hidden lg:block absolute top-full left-0 right-0 w-full bg-[#C9BDB2] border-t border-[#26221E]/16 px-4 md:px-8 shadow-[0_22px_40px_-26px_rgba(38,34,30,0.5)] z-[999] pointer-events-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(148px,1fr))_minmax(240px,336px)] gap-6 lg:gap-10 py-8.5 pb-11.5 max-w-[1620px] mx-auto items-start">
             {/* Dynamic Columns */}
-            {displayNavItems[activeTab].categories?.map((col, cIdx) => (
-              <div key={cIdx} className="flex flex-col">
-                <Link href={col.href || `/categories/${col.slug}`}>
-                  <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.75 border-b border-[#26221E]/30 hover:underline underline-offset-4">
-                    {col.title}
-                  </h4>
-                </Link>
+            {displayNavItems[activeTab].categories?.map((col, cIdx) => {
+              const isClickable = !col.isCmsColumn && (col.isDbCategory || col.isCollection || Boolean(col.href));
+              return (
+                <div key={cIdx} className="flex flex-col">
+                  {isClickable ? (
+                    <Link href={col.href || `/product-category/${col.slug}`}>
+                      <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.75 border-b border-[#26221E]/30 hover:underline underline-offset-4 cursor-pointer">
+                        {col.title}
+                      </h4>
+                    </Link>
+                  ) : (
+                    <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.75 border-b border-[#26221E]/30 cursor-default select-none">
+                      {col.title}
+                    </h4>
+                  )}
                 {col.subtitle && (
                   <p className="font-mono text-[10.5px] tracking-[0.03em] text-[#26221E] opacity-50 mb-4 leading-normal">
                     {col.subtitle}
@@ -212,7 +220,7 @@ export default function Header() {
                   {col.links?.map((link, lIdx) => (
                     <li key={lIdx}>
                       <Link
-                        href={link.href || `/categories/${link.slug}`}
+                        href={link.href || `/product-category/${link.slug}`}
                         className="flex justify-between items-baseline gap-2.5 text-[#26221E] no-underline py-2 group"
                       >
                         <b className="font-sans text-[16px] font-normal flex items-center gap-2.25 group-hover:underline underline-offset-4">
@@ -255,7 +263,8 @@ export default function Header() {
                     </div>
                   )}
               </div>
-            ))}
+              );
+            })}
 
             {/* Standalone Quick Action Links if no category columns exist */}
             {(!displayNavItems[activeTab].categories ||
@@ -371,7 +380,7 @@ export default function Header() {
                       >
                         <div className="flex items-center justify-between">
                           <Link
-                            href={`/categories/${item.slug}`}
+                            href={`/product-category/${item.slug}`}
                             onClick={() => setMobileMenuOpen(false)}
                             className="font-bold text-[#26221E] hover:underline"
                           >
@@ -399,21 +408,29 @@ export default function Header() {
                               exit={{ height: 0, opacity: 0 }}
                               className="overflow-hidden pl-4 pt-3 space-y-3 normal-case tracking-normal font-sans text-xs"
                             >
-                              {item.categories.map((sub) => (
-                                <div key={sub.title} className="space-y-1">
-                                  <Link
-                                    href={sub.href || `/categories/${sub.slug}`}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="font-semibold text-[#26221E] block hover:underline"
-                                  >
-                                    {sub.title}
-                                  </Link>
+                              {item.categories.map((sub) => {
+                                const isClickable = !sub.isCmsColumn && (sub.isDbCategory || sub.isCollection || Boolean(sub.href));
+                                return (
+                                  <div key={sub.title} className="space-y-1">
+                                    {isClickable ? (
+                                      <Link
+                                        href={sub.href || `/product-category/${sub.slug}`}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="font-semibold text-[#26221E] block hover:underline"
+                                      >
+                                        {sub.title}
+                                      </Link>
+                                    ) : (
+                                      <span className="font-semibold text-[#26221E] block select-none cursor-default">
+                                        {sub.title}
+                                      </span>
+                                    )}
                                   {sub.links && (
                                     <div className="pl-3 space-y-1 border-l border-[#26221E]/20">
                                       {sub.links.map((link) => (
                                         <Link
                                           key={link.name}
-                                          href={link.href || `/categories/${link.slug}`}
+                                          href={link.href || `/product-category/${link.slug}`}
                                           onClick={() => setMobileMenuOpen(false)}
                                           className="block hover:underline"
                                         >
@@ -423,7 +440,8 @@ export default function Header() {
                                     </div>
                                   )}
                                 </div>
-                              ))}
+                                );
+                              })}
                             </motion.div>
                           )}
                         </AnimatePresence>

@@ -14,7 +14,7 @@ export default function MainCategoriesGrid({ categories }) {
       image: "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png",
       description: "Cobblestone, crazy paving, patio packs, Kota and Kadappa flooring, pool tiles and copings, steps.",
       countLabel: "13 CATEGORIES",
-      href: "/categories/paving-flooring",
+      href: "/product-category/paving-flooring",
     },
     {
       id: "wall-cladding",
@@ -22,7 +22,7 @@ export default function MainCategoriesGrid({ categories }) {
       image: "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png",
       description: "Facade slabs in 21 stones, EarthSkin panels, rockface, fieldstone, ledge stone and carved work.",
       countLabel: "12 CATEGORIES",
-      href: "/categories/wall-cladding",
+      href: "/product-category/wall-cladding",
     },
     {
       id: "landscape-garden",
@@ -30,7 +30,7 @@ export default function MainCategoriesGrid({ categories }) {
       image: "https://res.cloudinary.com/chlmognp/image/upload/v1785340268/stoneza/homepage/hero/newslide3-kw98hw7m.png",
       description: "Sculptural boulders, pebbles, gravels, stone furniture and the Stone Glow lighting collection.",
       countLabel: "5 CATEGORIES",
-      href: "/categories/landscape-garden",
+      href: "/product-category/landscape-garden",
     },
     {
       id: "collections",
@@ -49,7 +49,7 @@ export default function MainCategoriesGrid({ categories }) {
         image: cat.image || cat.squareImage || defaultItems[idx % 4].image,
         description: cat.description || defaultItems[idx % 4].description,
         countLabel: cat.countLabel || defaultItems[idx % 4].countLabel,
-        href: cat.href || `/categories/${cat.slug}`,
+        href: cat.href || `/product-category/${cat.slug}`,
       }))
     : defaultItems;
 

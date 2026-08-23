@@ -199,7 +199,7 @@ export default function CategoryForm({
           {
             title: "New Column",
             subtitle: "",
-            links: [{ name: "Sample Link", href: "/categories/sample", count: "", badge: "" }],
+            links: [{ name: "Sample Link", href: "/product-category/sample", count: "", badge: "" }],
           },
         ],
       },
@@ -664,7 +664,7 @@ export default function CategoryForm({
                                     className="h-8 text-xs"
                                   />
                                   <Input
-                                    placeholder="URL/Slug (e.g. /categories/cobblestone)"
+                                    placeholder="URL/Slug (e.g. /product-category/cobblestone)"
                                     value={link.href || link.slug || ""}
                                     onChange={(e) =>
                                       handleLinkChange(colIdx, linkIdx, "href", e.target.value)
@@ -796,9 +796,9 @@ export default function CategoryForm({
                     />
                   </Field>
 
-                  <Field label="Target Link URL (e.g. /categories/crazy-paving)">
+                  <Field label="Target Link URL (e.g. /product-category/crazy-paving)">
                     <Input
-                      placeholder="/categories/crazy-paving"
+                      placeholder="/product-category/crazy-paving"
                       value={formData.megamenu?.featuredCard?.href || ""}
                       onChange={(e) =>
                         handleFeaturedCardChange("href", e.target.value)
@@ -936,7 +936,7 @@ export default function CategoryForm({
 
           <Field label="Canonical URL">
             <Input
-              placeholder="https://stoneza.in/categories/..."
+              placeholder="https://stoneza.in/product-category/..."
               value={formData.seo.canonicalUrl}
               onChange={(e) => handleSeoChange("canonicalUrl", e.target.value)}
             />

@@ -14,11 +14,15 @@ export default function StatsBanner() {
   return (
     <section className="bg-[#1C1714] text-[#EAE8E2]">
       <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="flex flex-wrap justify-center items-center">
           {stats.map((stat, idx) => (
             <div
               key={idx}
-              className="flex flex-col items-center justify-center py-7 px-4 text-center"
+              className={`flex flex-col items-center justify-center py-7 px-4 text-center ${
+                idx === stats.length - 1
+                  ? "w-full sm:w-1/3 lg:w-1/5"
+                  : "w-1/2 sm:w-1/3 lg:w-1/5"
+              }`}
             >
               <span className="font-serif text-xl sm:text-2xl md:text-2xl lg:text-[28px] font-light leading-none text-[#C9BDB2] tracking-tight">
                 {stat.value}

@@ -82,10 +82,11 @@ export default async function Home() {
     ? safeNewArrivals.map((prod) => ({
         id: prod._id,
         title: prod.name,
+        categoryMeta: prod.category?.name || prod.stoneType || "NATURAL STONE",
         price: prod.price,
         image: prod.images?.[0]?.url || "",
         hoverImage: prod.hoverImage?.url || prod.images?.[0]?.url || "",
-        href: `/products/${prod.slug}`,
+        href: `/product/${prod.slug}`,
       }))
     : whatsNewData;
 
@@ -99,9 +100,9 @@ export default async function Home() {
     const mappedSubs = subs.map((sub, idx) => ({
       id: sub.slug || `${cat.slug}-sub-${idx}`,
       title: sub.title,
-      titleStyle: "font-body uppercase tracking-[2px]",
+      categoryMeta: cat.name || cat.title || "CATEGORY",
       image: sub.squareImage || sub.image || "",
-      href: `/categories/${sub.slug}`,
+      href: `/product-category/${sub.slug}`,
     }));
     acc.push(...mappedSubs);
     return acc;
@@ -126,16 +127,25 @@ export default async function Home() {
         eyebrow={safeHomepage?.middleBanner?.eyebrow || "The Stoneza Collection"}
         caption={safeHomepage?.middleBanner?.caption || "Natural stone. Timeless character. Endless possibilities."}
         button={safeHomepage?.middleBanner?.buttonText || "View All"}
-        link={safeHomepage?.middleBanner?.buttonLink || "/products"}
+        link={safeHomepage?.middleBanner?.buttonLink || "/product"}
       />
       <OnSiteProjects projects={onSiteProjects} />
-      <Carousel title={safeHomepage?.newArrivalsTitle || "What's New"} data={newArrivalsData} button={true} />
-      {/* <ThreeBanner banners={safeHomepage?.threeBanners} /> */}
+      <Carousel
+        eyebrow="NEW ARRIVALS"
+        title={safeHomepage?.newArrivalsTitle || "What's New"}
+        subtitle="Recent additions to our quarries and surface catalog."
+        data={newArrivalsData}
+        button={true}
+      />
       {subCategoryData.length > 0 && (
-        <Carousel title="Sub Categories" data={subCategoryData} />
+        <Carousel
+          eyebrow="BROWSE FORMATS"
+          title="Sub Categories"
+          subtitle="Explore specific profiles, finishes, and sizes across our stone range."
+          data={subCategoryData}
+        />
       )}
       <EnquiryForm />
-      {/* <BrandPromo promos={safeHomepage?.brandPromos} /> */}
       <WhyChooseUs />
       <Review reviews={safeHomepage?.testimonials} />
       <JournalSection articles={journalArticles} />

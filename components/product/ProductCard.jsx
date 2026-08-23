@@ -16,9 +16,7 @@ export default function ProductCard({ item, setHoveredId, hoveredId, slug, butto
   const rawHover = item?.imageHover || item?.hoverImage?.url || "";
   const imageHover = isValidImageUrl(rawHover) ? rawHover : image;
 
-  const targetUrl = slug
-    ? `/categories/${slug}/products/${productSlug}`
-    : `/products/${productSlug}`;
+  const targetUrl = `/product/${productSlug}`;
 
   const currentSrc = setHoveredId && hoveredId === productId ? imageHover : image;
 

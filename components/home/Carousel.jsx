@@ -1,175 +1,178 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import Image from "next/image";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
-import { PiCaretLeftThin, PiCaretRightThin } from "react-icons/pi";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageWithLoader from "../common/Loader";
-
-import Container from "@/components/common/Container";
 import { isValidImageUrl } from "@/lib/utils";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
 
-export default function Carousel({ title, data, itemsPerView = 3, button = false }) {
+export default function Carousel({
+  eyebrow = "",
+  title = "Explore",
+  subtitle = "",
+  data = [],
+  button = false,
+}) {
+  const carouselRef = useRef(null);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(true);
+
   if (!data || data.length === 0) return null;
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "center",
-    duration: 25,
-  });
+  const defaultEyebrow =
+    eyebrow ||
+    (title.toLowerCase().includes("sub")
+      ? "EXPLORE FORMATS"
+      : title.toLowerCase().includes("new")
+      ? "NEW ARRIVALS"
+      : "COLLECTION");
 
-  const scrollNext = useCallback(() => {
-    if (!emblaApi) return;
+  const defaultSubtitle =
+    subtitle ||
+    (title.toLowerCase().includes("sub")
+      ? "Explore specific cuts, profiles, and surface finishes across our catalog."
+      : "Fresh additions from our Rajasthan quarries and fabrication facilities.");
 
-    const width = window.innerWidth;
+  const checkScrollability = () => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanScrollPrev(scrollLeft > 5);
+    setCanScrollNext(scrollLeft < scrollWidth - clientWidth - 5);
+  };
 
-    if (width >= 1024) {
-      emblaApi.scrollTo(emblaApi.selectedScrollSnap() + itemsPerView);
-    } else if (width >= 768) {
-      emblaApi.scrollTo(emblaApi.selectedScrollSnap() + 2);
-    } else {
-      emblaApi.scrollTo(emblaApi.selectedScrollSnap() + 1);
-    }
-  }, [emblaApi, itemsPerView]);
+  useEffect(() => {
+    checkScrollability();
+    const el = carouselRef.current;
+    if (!el) return;
 
-  const arrowVisible = data.length > itemsPerView;
+    el.addEventListener("scroll", checkScrollability, { passive: true });
+    window.addEventListener("resize", checkScrollability);
 
-  const scrollPrev = useCallback(() => {
-    if (!emblaApi) return;
+    return () => {
+      el.removeEventListener("scroll", checkScrollability);
+      window.removeEventListener("resize", checkScrollability);
+    };
+  }, [data]);
 
-    const width = window.innerWidth;
+  const scrollPrev = () => {
+    if (!carouselRef.current) return;
+    const card = carouselRef.current.querySelector(".carousel-card");
+    const cardWidth = card ? card.offsetWidth : 280;
+    carouselRef.current.scrollBy({ left: -(cardWidth + 20), behavior: "smooth" });
+  };
 
-    if (width >= 1024) {
-      emblaApi.scrollTo(emblaApi.selectedScrollSnap() - itemsPerView);
-    } else if (width >= 768) {
-      emblaApi.scrollTo(emblaApi.selectedScrollSnap() - 2);
-    } else {
-      emblaApi.scrollTo(emblaApi.selectedScrollSnap() - 1);
-    }
-  }, [emblaApi, itemsPerView]);
+  const scrollNext = () => {
+    if (!carouselRef.current) return;
+    const card = carouselRef.current.querySelector(".carousel-card");
+    const cardWidth = card ? card.offsetWidth : 280;
+    carouselRef.current.scrollBy({ left: cardWidth + 20, behavior: "smooth" });
+  };
 
   return (
-    <section className="pt-12 lg:pb-20 sm:pb-4">
-      <Container>
-        <div className="relative">
-          {/* Heading */}
+    <section className="w-full bg-white dark:bg-[#12100E] text-[#26221E] dark:text-stone-100 py-16 sm:py-20 lg:py-24 border-b-2 border-[#C9BDB2]/50 dark:border-stone-800">
+      <div className="max-w-[1320px] mx-auto px-4.5 sm:px-8 lg:px-16">
+        {/* HEADER SECTION */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8 sm:mb-12">
+          <div>
+            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-[#8A8078] dark:text-stone-400 mb-2.5 font-semibold">
+              {defaultEyebrow}
+            </p>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-[42px] font-normal tracking-tight text-[#26221E] dark:text-stone-100 leading-[1.12] mb-2">
+              {title}
+            </h2>
+            {defaultSubtitle && (
+              <p className="text-sm sm:text-base text-[#6E645A] dark:text-stone-400 max-w-[60ch]">
+                {defaultSubtitle}
+              </p>
+            )}
+          </div>
 
-          <h2 className="mb-12 text-center lg:text-[32px] sm:text-[22px] uppercase tracking-[8px] font-display text-[#393938]">
-            {title}
-          </h2>
-
-          {/* Left Arrow */}
-          {arrowVisible && (
-            <>
-
-              <button
-                onClick={scrollPrev}
-                className="absolute left-[-50px] top-1/2 z-20 hidden -translate-y-1/2 text-5xl text-[#393938] transition hover:opacity-60 lg:block"
-              >
-                <PiCaretLeftThin />
-              </button>
-
-              <button
-                onClick={scrollNext}
-                className="absolute right-[-50px] top-1/2 z-20 hidden -translate-y-1/2 text-5xl text-[#393938] transition hover:opacity-60 lg:block"
-              >
-                <PiCaretRightThin />
-              </button>
-            </>
-          )}
-
-          {/* Embla */}
-
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex">
-              {data.map((item, idx) => (
-                <div
-                  key={item.id || idx}
-                  className="px-3 flex-[0_0_70%] md:flex-[0_0_50%] lg:flex-[0_0_var(--slide-width)]"
-                  style={{
-                    "--slide-width": `${100 / itemsPerView}%`
-                  }}
-                >
-                  <ProductCard item={item} button={button} index={idx} />
-                </div>
-              ))}
-            </div>
+          {/* SLIDER CONTROLS */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={scrollPrev}
+              disabled={!canScrollPrev}
+              aria-label="Previous"
+              className="size-10 border border-[#26221E]/20 dark:border-stone-700 bg-white dark:bg-stone-900 flex items-center justify-center transition-all hover:border-[#26221E] dark:hover:border-stone-400 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+            >
+              <ChevronLeft className="size-4 text-[#26221E] dark:text-stone-200" />
+            </button>
+            <button
+              type="button"
+              onClick={scrollNext}
+              disabled={!canScrollNext}
+              aria-label="Next"
+              className="size-10 border border-[#26221E]/20 dark:border-stone-700 bg-white dark:bg-stone-900 flex items-center justify-center transition-all hover:border-[#26221E] dark:hover:border-stone-400 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+            >
+              <ChevronRight className="size-4 text-[#26221E] dark:text-stone-200" />
+            </button>
           </div>
         </div>
-      </Container>
+
+        {/* CAROUSEL CARDS ROW */}
+        <div
+          ref={carouselRef}
+          className="flex gap-4 sm:gap-5 lg:gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory scroll-smooth pb-4 pt-1"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {data.map((item, idx) => {
+            const titleText = item.title || item.name || "Stoneza";
+            const validImg = isValidImageUrl(item.image)
+              ? item.image
+              : getPlaceholderImage(titleText, idx);
+            const targetHref = item.href || (item.slug ? `/product/${item.slug}` : "#");
+
+            return (
+              <Link
+                key={item.id || item.slug || idx}
+                href={targetHref}
+                className="carousel-card group shrink-0 w-[240px] sm:w-[260px] md:w-[280px] lg:w-[calc((100%-72px)/4)] xl:w-[calc((100%-96px)/5)] snap-start text-inherit no-underline flex flex-col"
+              >
+                {/* IMAGE CONTAINER */}
+                <div className="aspect-square relative overflow-hidden bg-[#F5F1EB] dark:bg-stone-900 border border-[#E4DDD3] dark:border-stone-800">
+                  <ImageWithLoader
+                    src={validImg}
+                    alt={titleText}
+                    fill
+                    sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 20vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    placeholderTitle={titleText}
+                  />
+                </div>
+
+                {/* DETAILS */}
+                <div className="pt-3.5 flex flex-col flex-1">
+                  <h3 className="font-serif text-lg sm:text-xl font-normal text-[#26221E] dark:text-stone-100 group-hover:underline group-hover:underline-offset-4 transition-all">
+                    {titleText}
+                  </h3>
+
+                  {item.categoryMeta && (
+                    <p className="font-mono text-[9px] tracking-[0.14em] uppercase text-[#8A8078] dark:text-stone-400 mt-1">
+                      {item.categoryMeta}
+                    </p>
+                  )}
+
+                  {item.price && (
+                    <p className="font-sans text-[13px] text-[#8A8078] dark:text-stone-400 mt-0.5">
+                      ₹{Number(item.price).toLocaleString("en-IN")}
+                    </p>
+                  )}
+
+                  <div className="mt-auto pt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-[#8A8078] group-hover:text-[#26221E] dark:group-hover:text-white transition-colors inline-flex items-center gap-1.5 font-medium">
+                    <span>EXPLORE</span>
+                    <span className="text-[12px] transition-transform duration-300 group-hover:translate-x-1">
+                      &rarr;
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
     </section>
-  );
-}
-
-function ProductCard({ item, button, index = 0 }) {
-  const [hovered, setHovered] = useState(false);
-
-  const titleText = item.title || item.name || "Stoneza";
-  const rawImg = item.image;
-  const rawHoverImg = item.hoverImage;
-
-  const validImg = isValidImageUrl(rawImg) ? rawImg : getPlaceholderImage(titleText, index);
-  const validHoverImg = isValidImageUrl(rawHoverImg) ? rawHoverImg : validImg;
-  const currentImg = hovered ? validHoverImg : validImg;
-
-  return (
-    <div
-      className="group"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <Link href={item.href || "#"}>
-        <div className="relative aspect-square overflow-hidden bg-[#f5f2ec]">
-
-          {/* Images */}
-
-          <AnimatePresence initial={false}>
-            <motion.div
-              key={currentImg}
-              initial={{ opacity: 1 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0"
-            >
-              <ImageWithLoader
-                src={currentImg}
-                alt={titleText}
-                fill
-                className="object-cover transition-transform duration-700"
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Buttons */}
-
-          {button && (
-            <div
-              className="absolute bottom-0 left-0 right-0 z-20 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 flex items-center bg-white">
-              <button
-                onClick={() => window.location.href = `/products/${item.slug}`}
-                className="w-full py-5 text-[12px] uppercase tracking-[3px] font-heading cursor-pointer text-center hover:bg-black/5 transition-colors text-stone-900">
-                View Details
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-
-        <div className="pt-5 text-center">
-          <h3 className={` ${item.titleStyle ? item.titleStyle : 'font-body'} "text-[15px]  text-[#393938]`}>
-            {item.title || item.name}{item.titleStyle ? " >" : ''}
-          </h3>
-
-          <p className="mt-1 text-[14px] font-body text-[#6a6a6a]">
-            {item.price && `₹${item.price}`}
-          </p>
-        </div>
-      </Link>
-    </div>
   );
 }

@@ -37,22 +37,20 @@ export default function MegaMenu({ item, categoryData }) {
             {/* Categories Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-7 xl:gap-10 flex-1 items-start">
               {sortedCategories.map((section) => {
-                const sectionHref = section.href || `/categories/${section.slug}`;
                 return (
                   <div key={section.title} className="w-full min-w-0">
-                    <Link
-                      className="text-[13px] uppercase tracking-[0.22em] text-[#393938] font-heading font-semibold hover:text-[#1c1b1b] transition-colors block truncate"
-                      href={sectionHref}
+                    <span
+                      className="text-[13px] uppercase tracking-[0.22em] text-[#393938] font-heading font-semibold block truncate select-none cursor-default"
                       title={section.title}
                     >
                       {section.title}
-                    </Link>
+                    </span>
 
                     <ul className="space-y-2 mt-3">
                       {section.links?.map((link) => {
                         const linkName =
                           typeof link === "string" ? link : link.name || link.title;
-                        const linkHref = typeof link === "object" && link.href ? link.href : `/categories/${link.slug}`;
+                        const linkHref = typeof link === "object" && link.href ? link.href : `/product-category/${link.slug}`;
                         return (
                           <li key={link.slug || linkName}>
                             <Link

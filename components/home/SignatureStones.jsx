@@ -10,7 +10,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     id: "imperial-blue",
     name: "Imperial Blue",
     categoryMeta: "KOTA BLUE · 12 FINISHES",
-    href: "/products/imperial-blue",
+    href: "/product/imperial-blue",
     image:
       "https://res.cloudinary.com/chlmognp/image/upload/v1785326096/stoneza/homepage/hero/newslide1-ms6128lq.png",
   },
@@ -18,7 +18,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     id: "castle-grey",
     name: "Castle Grey",
     categoryMeta: "KANDLA GREY · PAVING & CLADDING",
-    href: "/products/castle-grey",
+    href: "/product/castle-grey",
     image:
       "https://stoneza.in/wp-content/uploads/2026/02/Flooring-Paving-Natural-Stone.webp",
   },
@@ -26,7 +26,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     id: "burgundy-bliss",
     name: "Burgundy Bliss",
     categoryMeta: "MANDANA RED · 7 FINISHES",
-    href: "/products/burgundy-bliss",
+    href: "/product/burgundy-bliss",
     image:
       "https://stoneza.in/wp-content/uploads/2025/01/Untitled-design-2-1-2.jpg",
   },
@@ -34,7 +34,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     id: "cosmic-black",
     name: "Cosmic Black",
     categoryMeta: "MONSOON BLACK · 6 FINISHES",
-    href: "/products/cosmic-black",
+    href: "/product/cosmic-black",
     image:
       "https://stoneza.in/wp-content/uploads/2026/02/Wall-Facade-Cladding-Natural-Stone.webp",
   },
@@ -42,7 +42,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     id: "mint-frost",
     name: "Mint Frost",
     categoryMeta: "GWALIOR MINT · SLAB & TILES",
-    href: "/products/mint-frost",
+    href: "/product/mint-frost",
     image:
       "https://res.cloudinary.com/chlmognp/image/upload/v1785326287/stoneza/homepage/hero/newslide2-ms616c0w.png",
   },
@@ -50,7 +50,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     id: "asian-gold",
     name: "Asian Gold",
     categoryMeta: "JAISALMER · 5 FINISHES",
-    href: "/products/asian-gold",
+    href: "/product/asian-gold",
     image:
       "https://stoneza.in/wp-content/uploads/2026/02/Landscaping-Outdoor-Living-Natural-Stone.webp",
   },

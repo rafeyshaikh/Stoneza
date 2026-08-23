@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { ENQUIRER_ROLES, PROJECT_TYPES } from "@/lib/validations/enquiry";
 
 const DEFAULT_CMS_DATA = {
   hero: {
@@ -46,11 +47,11 @@ export default function ContactUsPage() {
     name: "",
     phone: "",
     email: "",
-    userType: "Architect / Designer",
+    role: "Architect / Designer",
     projectType: "Resort / Hotel",
     area: "",
     city: "",
-    stoneOfInterest: "",
+    stoneType: "",
     message: "",
   });
 
@@ -118,11 +119,46 @@ export default function ContactUsPage() {
     setErrorMsg("");
 
     try {
-      // API submission simulation
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const cleanPhone = formData.phone.replace(/\D/g, "").slice(-10);
+      if (!cleanPhone || cleanPhone.length < 10) {
+        throw new Error("Please enter a valid 10-digit phone number");
+      }
+
+      const numArea = Number(formData.area.toString().replace(/[^\d.]/g, ""));
+      if (!numArea || numArea <= 0 || isNaN(numArea)) {
+        throw new Error("Please enter a valid approximate area (in sq m)");
+      }
+
+      const payload = {
+        name: formData.name.trim(),
+        phone: cleanPhone,
+        email: formData.email.trim(),
+        role: formData.role,
+        projectType: formData.projectType,
+        area: numArea,
+        city: formData.city.trim() || "General",
+        stoneType: formData.stoneType.trim() || "Natural Stone",
+        message: formData.message.trim(),
+      };
+
+      const res = await fetch("/api/public/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        if (json.errors) {
+          const firstErr = Object.values(json.errors).flat()[0];
+          throw new Error(firstErr || json.message || "Validation failed");
+        }
+        throw new Error(json.message || "Failed to submit enquiry");
+      }
+
       setSubmitted(true);
     } catch (err) {
-      setErrorMsg("Failed to submit enquiry. Please try again or WhatsApp us directly.");
+      setErrorMsg(err.message || "Failed to submit enquiry. Please try again or WhatsApp us directly.");
     } finally {
       setLoading(false);
     }
@@ -432,11 +468,11 @@ export default function ContactUsPage() {
                         name: "",
                         phone: "",
                         email: "",
-                        userType: "Architect / Designer",
+                        role: "Architect / Designer",
                         projectType: "Resort / Hotel",
                         area: "",
                         city: "",
-                        stoneOfInterest: "",
+                        stoneType: "",
                         message: "",
                       });
                     }}
@@ -465,6 +501,7 @@ export default function ContactUsPage() {
                         id="name"
                         type="text"
                         required
+                        placeholder="Your name"
                         value={formData.name}
                         onChange={handleChange}
                         className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
@@ -481,6 +518,7 @@ export default function ContactUsPage() {
                         id="phone"
                         type="tel"
                         required
+                        placeholder="+91"
                         value={formData.phone}
                         onChange={handleChange}
                         className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
@@ -494,12 +532,12 @@ export default function ContactUsPage() {
                         htmlFor="email"
                         className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
                       >
-                        Email
+                        Email (Optional)
                       </label>
                       <input
                         id="email"
                         type="email"
-                        required
+                        placeholder="you@example.com"
                         value={formData.email}
                         onChange={handleChange}
                         className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
@@ -507,14 +545,14 @@ export default function ContactUsPage() {
                     </div>
                     <div className="space-y-1.5">
                       <label
-                        htmlFor="userType"
+                        htmlFor="role"
                         className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
                       >
                         You are
                       </label>
                       <select
-                        id="userType"
-                        value={formData.userType}
+                        id="role"
+                        value={formData.role}
                         onChange={handleChange}
                         className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none appearance-none cursor-pointer pr-7 focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
                         style={{
@@ -523,14 +561,11 @@ export default function ContactUsPage() {
                           backgroundPosition: "right 11px center",
                         }}
                       >
-                        <option>Architect / Designer</option>
-                        <option>PMC / Project manager</option>
-                        <option>Developer / Hotel group</option>
-                        <option>Contractor</option>
-                        <option>Homeowner</option>
-                        <option>Dealer / Distributor</option>
-                        <option>Export buyer</option>
-                        <option>Other</option>
+                        {ENQUIRER_ROLES.map((role) => (
+                          <option key={role} value={role}>
+                            {role}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -554,12 +589,11 @@ export default function ContactUsPage() {
                           backgroundPosition: "right 11px center",
                         }}
                       >
-                        <option>Resort / Hotel</option>
-                        <option>Villa / Bungalow</option>
-                        <option>Apartment / Township</option>
-                        <option>Commercial</option>
-                        <option>Landscape</option>
-                        <option>Other</option>
+                        {PROJECT_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="space-y-1.5">
@@ -567,11 +601,13 @@ export default function ContactUsPage() {
                         htmlFor="area"
                         className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
                       >
-                        Approx. area (sq ft)
+                        Approx. area (sq m)
                       </label>
                       <input
                         id="area"
-                        type="text"
+                        type="number"
+                        placeholder="e.g. 500"
+                        required
                         value={formData.area}
                         onChange={handleChange}
                         className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
@@ -590,6 +626,8 @@ export default function ContactUsPage() {
                       <input
                         id="city"
                         type="text"
+                        placeholder="e.g. Alibaug"
+                        required
                         value={formData.city}
                         onChange={handleChange}
                         className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
@@ -597,16 +635,16 @@ export default function ContactUsPage() {
                     </div>
                     <div className="space-y-1.5">
                       <label
-                        htmlFor="stoneOfInterest"
+                        htmlFor="stoneType"
                         className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
                       >
                         Stone of interest
                       </label>
                       <input
-                        id="stoneOfInterest"
+                        id="stoneType"
                         type="text"
                         placeholder="e.g. Kota Blue, or unsure"
-                        value={formData.stoneOfInterest}
+                        value={formData.stoneType}
                         onChange={handleChange}
                         className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
                       />
@@ -618,7 +656,7 @@ export default function ContactUsPage() {
                       htmlFor="message"
                       className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
                     >
-                      Anything else
+                      Anything else (Optional)
                     </label>
                     <textarea
                       id="message"

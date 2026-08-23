@@ -15,7 +15,7 @@ export async function generateMetadata() {
       title: `All Products | ${seo?.metaTitle || "Stoneza"}`,
       description: seo?.metaDescription || "Explore our premium collection of natural stones, cladding, tiles, and outdoor features.",
       alternates: {
-        canonical: `${baseDomain}/products`,
+        canonical: `${baseDomain}/product`,
       },
       openGraph: {
         title: `All Products | ${seo?.metaTitle || "Stoneza"}`,

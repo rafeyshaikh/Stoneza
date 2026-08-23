@@ -18,7 +18,7 @@ export async function GET() {
 
     const urls = [
       { loc: `${domain}/`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/products`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/product`, lastmod: new Date().toISOString() },
       { loc: `${domain}/pages/about-us`, lastmod: new Date().toISOString() },
       { loc: `${domain}/pages/contact`, lastmod: new Date().toISOString() },
       { loc: `${domain}/pages/disclaimer`, lastmod: new Date().toISOString() },
@@ -31,7 +31,7 @@ export async function GET() {
     const products = await Product.find({ status: "published" }).select("slug updatedAt").lean();
     products.forEach((p) => {
       urls.push({
-        loc: `${domain}/products/${p.slug}`,
+        loc: `${domain}/product/${p.slug}`,
         lastmod: p.updatedAt ? new Date(p.updatedAt).toISOString() : new Date().toISOString(),
       });
     });
@@ -40,7 +40,7 @@ export async function GET() {
     const categories = await Category.find().select("slug updatedAt").lean();
     categories.forEach((c) => {
       urls.push({
-        loc: `${domain}/categories/${c.slug}`,
+        loc: `${domain}/product-category/${c.slug}`,
         lastmod: c.updatedAt ? new Date(c.updatedAt).toISOString() : new Date().toISOString(),
       });
     });

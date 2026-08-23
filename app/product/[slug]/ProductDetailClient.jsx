@@ -167,7 +167,7 @@ export default function ProductDetailClient({ productData }) {
             Home
           </a>{' '}
           /{' '}
-          <a href="/products" className="text-[#78716C] no-underline transition-colors hover:text-[#1C1714]">
+          <a href="/product" className="text-[#78716C] no-underline transition-colors hover:text-[#1C1714]">
             Products
           </a>{' '}
           /{' '}

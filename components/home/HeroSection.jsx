@@ -12,7 +12,7 @@ const heroItems = [
     paragraph:
       "Transform open spaces with natural stone crafted for lasting beauty, enduring performance, and effortless outdoor living.",
     primaryButtonText: "EXPLORE THE CATEGORY",
-    primaryButtonLink: "/categories/landscape-and-outdoor-living",
+    primaryButtonLink: "/product-category/landscape-and-outdoor-living",
     image: "/assets/hero/NewSlide1.png",
   },
   {
@@ -21,7 +21,7 @@ const heroItems = [
     paragraph:
       "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
     primaryButtonText: "EXPLORE THE CATEGORY",
-    primaryButtonLink: "/categories/flooring-paving-surfaces",
+    primaryButtonLink: "/product-category/flooring-paving-surfaces",
     image: "/assets/hero/NewSlide2.png",
   },
   {
@@ -30,7 +30,7 @@ const heroItems = [
     paragraph:
       "Transform walls into lasting architectural statements with natural stone crafted for depth, distinction, and timeless exterior beauty.",
     primaryButtonText: "EXPLORE THE CATEGORY",
-    primaryButtonLink: "/categories/wall-cladding-facade-stones",
+    primaryButtonLink: "/product-category/wall-cladding-facade-stones",
     image: "/assets/hero/NewSlide3.png",
   },
   {
@@ -39,7 +39,7 @@ const heroItems = [
     paragraph:
       "Discover distinctive patterns and refined finishes designed to add depth, texture, and timeless character to every surface.",
     primaryButtonText: "EXPLORE THE CATEGORY",
-    primaryButtonLink: "/categories/patterns-finishes",
+    primaryButtonLink: "/product-category/patterns-finishes",
     image: "/assets/hero/NewSlide4.png",
   }
 ];

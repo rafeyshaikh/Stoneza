@@ -159,7 +159,7 @@ export default function HeaderSearchOverlay({
                         </span>
                         {searchResults.length > 0 && (
                           <Link
-                            href={`/products?search=${encodeURIComponent(searchQuery)}`}
+                            href={`/product?search=${encodeURIComponent(searchQuery)}`}
                             className="text-xs uppercase tracking-[0.2em] font-bold text-[#9a4a2e] hover:underline"
                             onClick={handleClose}
                           >
@@ -173,7 +173,7 @@ export default function HeaderSearchOverlay({
                           {searchResults.map((product) => (
                             <Link
                               key={product._id}
-                              href={`/products/${product.slug}`}
+                              href={`/product/${product.slug}`}
                               className="group flex flex-col items-center text-center p-4"
                               onClick={handleClose}
                             >
@@ -205,7 +205,7 @@ export default function HeaderSearchOverlay({
                           {uniqueCategories.map((cat) => (
                             <li key={cat.slug} className="w-auto lg:w-full">
                               <Link
-                                href={`/categories/${cat.slug}`}
+                                href={`/product-category/${cat.slug}`}
                                 className="text-xs lg:text-sm text-[#1c1714] bg-stone-200/50 hover:bg-[#9a4a2e] hover:text-white transition-all duration-300 block py-1.5 px-4 lg:px-3 lg:py-1 rounded-full lg:rounded-none lg:bg-transparent capitalize font-heading font-medium lg:font-normal"
                                 onClick={handleClose}
                               >

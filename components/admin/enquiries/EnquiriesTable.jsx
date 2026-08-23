@@ -186,6 +186,7 @@ export default function EnquiriesTable({ enquiries = [] }) {
             <tr className="border-b border-stone-300/70 text-stone-500 dark:border-stone-800 dark:text-stone-400">
               <th className="pb-3 pr-3 font-medium">Name</th>
               <th className="pb-3 pr-3 font-medium">Number</th>
+              <th className="pb-3 pr-3 font-medium">Role</th>
               <th className="pb-3 pr-3 font-medium">Total Area</th>
               <th className="pb-3 pr-3 font-medium">Project Type</th>
               <th className="pb-3 pr-3 font-medium">City/Site</th>
@@ -198,7 +199,7 @@ export default function EnquiriesTable({ enquiries = [] }) {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan="9">
+                <td colSpan="10">
                   <p className="py-10 text-center text-sm text-stone-500 dark:text-stone-400">
                     Loading enquiries...
                   </p>
@@ -211,6 +212,7 @@ export default function EnquiriesTable({ enquiries = [] }) {
                 <tr key={enquiry._id} className="border-b border-stone-200/70 dark:border-stone-900 hover:bg-stone-100/50 dark:hover:bg-stone-900/40">
                   <td className="py-3 pr-3 text-stone-900 dark:text-stone-100 font-medium">{enquiry.name}</td>
                   <td className="py-3 pr-3">{enquiry.phone}</td>
+                  <td className="py-3 pr-3 text-stone-600 dark:text-stone-300 font-medium">{enquiry.role || "–"}</td>
                   <td className="py-3 pr-3">{enquiry.area ? Number(enquiry.area).toLocaleString("en-IN") + " sq m" : "N/A"}</td>
                   <td className="py-3 pr-3">{enquiry.projectType}</td>
                   <td className="py-3 pr-3">{enquiry.city}</td>

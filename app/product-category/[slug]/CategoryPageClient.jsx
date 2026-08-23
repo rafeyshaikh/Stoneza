@@ -64,7 +64,7 @@ export default function CategoryPageClient({ initialData, slug }) {
     id: sub.slug,
     title: sub.name,
     image: sub.squareBanner?.url || getPlaceholderImage(sub.name, idx + 200),
-    href: `/categories/${sub.slug}`,
+    href: `/product-category/${sub.slug}`,
   }));
 
   // Generic lists of options
@@ -563,7 +563,7 @@ export default function CategoryPageClient({ initialData, slug }) {
         title="Ready to Elevate Your Living Space?"
         description="Discover premium stone surfaces, handcrafted décor, and timeless designs curated to bring elegance into every home."
         buttonText="EXPLORE CATEGORY"
-        buttonLink="/categories"
+        buttonLink="/product"
       />
     </div>
   );

@@ -9,17 +9,17 @@ const staticBanners = [
   {
     image: "/assets/others/Below_Banner_1.jpg",
     title: "Photo Frames",
-    link: "/products",
+    link: "/product",
   },
   {
     image: "/assets/others/Below_Banner_2.jpg",
     title: "Decor Object",
-    link: "/products",
+    link: "/product",
   },
   {
     image: "/assets/others/Below_Banner_3.jpg",
     title: "Book Boxes",
-    link: "/products",
+    link: "/product",
   },
 ];
 
@@ -49,7 +49,7 @@ export default function ThreeBanner({ banners }) {
     ? banners.map((b) => ({
         image: b.image?.url || "",
         title: b.title || "",
-        link: b.buttonLink || "/products",
+        link: b.buttonLink || "/product",
       }))
     : staticBanners;
 

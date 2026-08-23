@@ -7,7 +7,7 @@ export default function CategoryCTA({
   title = "Ready to Transform Your Space?",
   description = "Discover premium natural stones sourced from around the globe, each chosen for its unique beauty, durability, and ability to elevate any architectural design.",
   buttonText = "Explore Products",
-  buttonLink = "/products",
+  buttonLink = "/product",
 }) {
   return (
     <section className="py-16 px-10">

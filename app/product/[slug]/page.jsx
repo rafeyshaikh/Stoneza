@@ -1,16 +1,16 @@
 import { notFound } from "next/navigation";
 import { connectDB } from "@/lib/databaseConnection";
 import Product from "@/models/Product.model";
-import Category from "@/models/Category.model"; // Ensure Category model is loaded for populate
-import CategoryProductDetailClient from "./CategoryProductDetailClient";
+import Category from "@/models/Category.model";
+import ProductDetailClient from "./ProductDetailClient";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   try {
-    const { slug, productSlug } = await params;
+    const { slug } = await params;
     await connectDB();
-    const product = await Product.findOne({ slug: productSlug }).lean();
+    const product = await Product.findOne({ slug }).lean();
 
     if (!product) {
       return {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }) {
 
     const canonicalUrl =
       product.seo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/categories/${slug}/products/${productSlug}`;
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/product/${slug}`;
 
     const keywords =
       product.seo?.keywords?.length
@@ -68,15 +68,13 @@ export async function generateMetadata({ params }) {
   }
 }
 
-export default async function ProductPage({ params }) {
-  const { productSlug } = await params;
+export default async function ProductDetailPage({ params }) {
+  const { slug } = await params;
   let safeProduct = null;
 
   try {
     await connectDB();
-    const product = await Product.findOne({
-      slug: productSlug,
-    })
+    const product = await Product.findOne({ slug })
       .populate({
         path: "category",
         populate: { path: "parentCategory" },
@@ -136,7 +134,7 @@ export default async function ProductPage({ params }) {
       const relatedProducts = relatedProductsRaw.map((p) => ({
         title: p.name,
         subtitle: p.stoneDetails?.stoneType || p.stoneDetails?.faceTexture || "Natural Stone",
-        href: `/products/${p.slug}`,
+        href: `/product/${p.slug}`,
         imageUrl: p.images?.[0]?.url || "",
         bg: "#FAF8F5",
         isCurrent: p.slug === product.slug,
@@ -146,7 +144,7 @@ export default async function ProductPage({ params }) {
       const relatedCategories = relatedCategoriesRaw.map((c) => ({
         title: c.name,
         subtitle: c.description || "Category",
-        href: `/categories/${c.slug}`,
+        href: `/product-category/${c.slug}`,
         imageUrl:
           c.bannerImage?.square?.url ||
           (Array.isArray(c.bannerImage?.wide) && c.bannerImage.wide[0]?.url) ||
@@ -166,12 +164,12 @@ export default async function ProductPage({ params }) {
       );
     }
   } catch (error) {
-    console.error("ProductPage error:", error.message);
+    console.error("ProductDetailPage error:", error.message);
   }
 
   if (!safeProduct) {
     notFound();
   }
 
-  return <CategoryProductDetailClient productData={safeProduct} />;
+  return <ProductDetailClient productData={safeProduct} />;
 }

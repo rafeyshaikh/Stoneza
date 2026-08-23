@@ -68,16 +68,6 @@ export async function POST(req) {
       return response(false, 400, "At least one image is required");
     }
 
-    const slug = generateSlug(name);
-
-    const existingProduct = await Product.findOne({
-      slug,
-    });
-
-    if (existingProduct) {
-      return response(false, 409, "Product already exists");
-    }
-
     const categoryExists = await Category.findOne({
       _id: category,
     });
@@ -102,6 +92,20 @@ export async function POST(req) {
       }
       if (collectionExists.collectionLevel !== 2) {
         return response(false, 400, "Product must belong to a level 2 collection");
+      }
+    }
+
+    let slug = body.slug ? generateSlug(body.slug) : generateSlug(name);
+
+    let existingProduct = await Product.findOne({ slug });
+
+    if (existingProduct) {
+      if (categoryExists?.slug) {
+        slug = `${slug}-${categoryExists.slug}`;
+      }
+      existingProduct = await Product.findOne({ slug });
+      if (existingProduct) {
+        slug = `${slug}-${Date.now().toString().slice(-4)}`;
       }
     }
 

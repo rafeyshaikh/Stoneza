@@ -1,13 +1,37 @@
 "use client";
 import { useState } from "react";
-import { enquirySchema, PROJECT_TYPES } from "@/lib/validations/enquiry";
+import { enquirySchema, PROJECT_TYPES, ENQUIRER_ROLES } from "@/lib/validations/enquiry";
 import { useContact } from "@/context/ContactContext";
 
-const BULLETS = [
-  "Factory-direct bulk pricing",
-  "Free material samples to your site or studio",
-  "Custom sizes, thickness & finishes",
-  "Dedicated consultant for the whole project",
+import { Package, Ruler, ShieldCheck, UserCheck, Phone, Mail, MessageSquare, Clock } from "lucide-react";
+
+const VALUE_PILLARS = [
+  {
+    icon: Package,
+    title: "Free Sample Box",
+    desc: "Physical cut stone swatches dispatched to your studio or site in 48 hours.",
+  },
+  {
+    icon: Ruler,
+    title: "Custom Cut & Sizes",
+    desc: "Calibrated thickness, bespoke project schedules, and architectural edges.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Quarry-Direct Supply",
+    desc: "Zero middle layers. Batch inspection & dry-lay crate photos before dispatch.",
+  },
+  {
+    icon: UserCheck,
+    title: "Dedicated Specialist",
+    desc: "Single point of contact from drawing review to doorstep site delivery.",
+  },
+];
+
+const STATS = [
+  { value: "48h", label: "Sample Dispatch" },
+  { value: "150+", label: "Quarried Formats" },
+  { value: "100%", label: "Calibrated & Checked" },
 ];
 
 function Field({ label, children, error }) {
@@ -29,13 +53,20 @@ const fieldBase =
 
 export default function EnquiryForm({ initialStoneType = "", compact = false }) {
   const { contactDetails } = useContact();
+  const phone = contactDetails?.phone || "";
+  const whatsapp = contactDetails?.whatsapp || contactDetails?.phone || "";
+  const email = contactDetails?.email || "";
+
   const getInitialState = () => ({
     name: "",
     phone: "",
+    email: "",
+    role: "",
     projectType: "",
     area: "",
     city: "",
     stoneType: initialStoneType || "",
+    message: "",
     website: "", // honeypot, must stay empty
   });
 
@@ -132,6 +163,33 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           />
         </Field>
 
+        <Field label="Email Address (Optional)" error={errors.email?.[0]}>
+          <input
+            type="email"
+            className={fieldBase}
+            placeholder="you@example.com"
+            value={formData.email}
+            onChange={update("email")}
+          />
+        </Field>
+
+        <Field label="Your Role" error={errors.role?.[0]}>
+          <select
+            className={fieldBase}
+            value={formData.role}
+            onChange={update("role")}
+          >
+            <option value="" disabled>
+              Select your role
+            </option>
+            {ENQUIRER_ROLES.map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        </Field>
+
         <Field label="Project Type" error={errors.projectType?.[0]}>
           <select
             className={fieldBase}
@@ -178,6 +236,18 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
         </Field>
 
         <div className="md:col-span-2">
+          <Field label="Message / Project Details (Optional)" error={errors.message?.[0]}>
+            <textarea
+              rows={3}
+              className={`${fieldBase} resize-y min-h-[72px] leading-relaxed`}
+              placeholder="Tell us about specific sizes, textures, quantities, or timelines..."
+              value={formData.message}
+              onChange={update("message")}
+            />
+          </Field>
+        </div>
+
+        <div className="md:col-span-2">
           <button
             type="submit"
             disabled={status === "submitting"}
@@ -192,9 +262,17 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
             </p>
           )}
 
-          <p className="mt-3 text-center font-sans text-[12px] text-[#8F8477]">
-            Or call / WhatsApp directly: +91 99500 36866
-          </p>
+          {(phone || whatsapp) && (
+            <p className="mt-3 text-center font-sans text-[12px] text-[#8F8477]">
+              Or call / WhatsApp directly:{" "}
+              <a
+                href={`tel:${(phone || whatsapp).replace(/\s+/g, "")}`}
+                className="hover:underline text-[#D7CFC4]"
+              >
+                {phone || whatsapp}
+              </a>
+            </p>
+          )}
         </div>
       </form>
     );
@@ -212,36 +290,114 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
   }
 
   return (
-    <section id="enquiry-form" className="mx-auto mt-15 lg:mt-2 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:justify-between lg:px-12 lg:py-12 scroll-mt-20 lg:scroll-mt-32">
-      <div className="basis-5/11">
-        <p className="font-sans text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9C8D79]">
-          Start Your Project
-        </p>
+    <section id="enquiry-form" className="mx-auto mt-15 lg:mt-2 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:items-stretch lg:gap-10 xl:gap-14 lg:px-12 lg:py-12 scroll-mt-20 lg:scroll-mt-32">
+      {/* Left Column: Detailed Value Propositions & Direct Contact */}
+      <div className="lg:w-1/2 flex flex-col justify-between">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[3px] bg-[#3B3530] border border-[#54493F] text-[#C9A980] text-[10px] font-sans font-semibold uppercase tracking-[0.18em] mb-3">
+            <Clock className="size-3 text-[#C9A980]" />
+            <span>Procurement & Project Consultation</span>
+          </div>
 
-        <h1 className="mt-4 font-serif text-[26px] leading-[1.25] tracking-tight text-[#F5F1EA] md:text-[32px]">
-          Tell us the project. Get a{" "}
-          <span className="italic font-serif text-[#9C8D79]">real</span> quote.
-        </h1>
+          <h1 className="font-serif text-[26px] md:text-[30px] xl:text-[34px] leading-[1.2] tracking-tight text-[#F5F1EA]">
+            Tell us the project. Get a{" "}
+            <span className="italic font-serif text-[#C9A980]">real</span> quote.
+          </h1>
 
-        <p className="mt-4 max-w-[42ch] font-sans text-[14px] leading-[1.6] text-[#B7AC9E]">
-          Share a few details and a Stoneza consultant responds with
-          quarry-direct pricing, lead times and samples — usually same day.
-        </p>
+          <p className="mt-2.5 font-sans text-[13.5px] leading-[1.6] text-[#B7AC9E]">
+            Direct quarry extraction, calibrated processing, and architectural consultation. 
+            Share your project parameters to receive factory-direct estimates and physical sample boxes.
+          </p>
 
-        <ul className="mt-6 space-y-3.5">
-          {BULLETS.map((item) => (
-            <li
-              key={item}
-              className="flex items-start gap-2.5 font-sans text-[14px] leading-[1.4] text-[#D7CFC4]"
-            >
-              <span className="mt-[-1px] text-[#B49A75]">↳</span>
-              {item}
-            </li>
-          ))}
-        </ul>
+          {/* Value Pillars 2x2 Grid */}
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {VALUE_PILLARS.map((pillar, idx) => {
+              const Icon = pillar.icon;
+              return (
+                <div
+                  key={idx}
+                  className="p-3 rounded-[4px] bg-[#2E2823]/80 border border-[#4A413A]/60 flex flex-col justify-between"
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Icon className="size-3.5 text-[#C9A980] shrink-0" />
+                    <h3 className="font-sans text-[12.5px] font-semibold text-[#EDE8E1] leading-tight">
+                      {pillar.title}
+                    </h3>
+                  </div>
+                  <p className="font-sans text-[11.5px] leading-[1.45] text-[#A69B8D]">
+                    {pillar.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Key Metric Highlights */}
+          <div className="mt-4 grid grid-cols-3 gap-2.5 py-3 border-y border-[#4A413A]/60">
+            {STATS.map((stat, idx) => (
+              <div key={idx} className="text-center">
+                <span className="block font-serif text-[17px] md:text-[19px] font-semibold text-[#C9A980] leading-tight">
+                  {stat.value}
+                </span>
+                <span className="block font-sans text-[10px] text-[#A69B8D] uppercase tracking-[0.06em] mt-0.5">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Direct Contact Banner */}
+        {(phone || whatsapp || email) && (
+          <div className="mt-5 pt-4 border-t border-[#4A413A]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9C8D79]">
+                Prefer Direct Discussion?
+              </p>
+              <p className="font-sans text-[12px] text-[#D7CFC4] mt-0.5">
+                Speak directly with our stone specialist
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {phone && (
+                <a
+                  href={`tel:${phone.replace(/\s+/g, "")}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#3B3530] hover:bg-[#4A413A] text-[#EDE8E1] text-[11.5px] font-medium transition-colors border border-[#54493F]"
+                  title="Call directly"
+                >
+                  <Phone className="size-3 text-[#C9A980]" />
+                  <span>Call</span>
+                </a>
+              )}
+              {(whatsapp || phone) && (
+                <a
+                  href={`https://wa.me/91${(whatsapp || phone).replace(/\D/g, "").replace(/^91/, "")}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#1E3A2F] hover:bg-[#254A3B] text-[#D1FAE5] text-[11.5px] font-medium transition-colors border border-[#059669]/40"
+                  title="Chat on WhatsApp"
+                >
+                  <MessageSquare className="size-3 text-[#34D399]" />
+                  <span>WhatsApp</span>
+                </a>
+              )}
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#3B3530] hover:bg-[#4A413A] text-[#EDE8E1] text-[11.5px] font-medium transition-colors border border-[#54493F]"
+                  title="Send email"
+                >
+                  <Mail className="size-3 text-[#C9A980]" />
+                  <span>Email</span>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="mt-8 lg:mt-0 lg:max-w-[600px] basis-6/11">
+      {/* Right Column: Form */}
+      <div className="mt-8 lg:mt-0 lg:w-1/2 flex flex-col">
         <form
           className="mt-7 lg:mt-0 grid gap-x-5 gap-y-5 rounded-[6px] border border-[#4A413A] bg-[#28221D] p-5 md:grid-cols-2 md:p-6"
           onSubmit={onSubmit}
@@ -275,6 +431,33 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
               value={formData.phone}
               onChange={update("phone")}
             />
+          </Field>
+
+          <Field label="Email Address (Optional)" error={errors.email?.[0]}>
+            <input
+              type="email"
+              className={fieldBase}
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={update("email")}
+            />
+          </Field>
+
+          <Field label="Your Role" error={errors.role?.[0]}>
+            <select
+              className={fieldBase}
+              value={formData.role}
+              onChange={update("role")}
+            >
+              <option value="" disabled>
+                Select your role
+              </option>
+              {ENQUIRER_ROLES.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
           </Field>
 
           <Field label="Project Type" error={errors.projectType?.[0]}>
@@ -323,10 +506,22 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           </Field>
 
           <div className="md:col-span-2">
+            <Field label="Message / Project Details (Optional)" error={errors.message?.[0]}>
+              <textarea
+                rows={3}
+                className={`${fieldBase} resize-y min-h-[72px] leading-relaxed`}
+                placeholder="Tell us about specific sizes, textures, quantities, or timelines..."
+                value={formData.message}
+                onChange={update("message")}
+              />
+            </Field>
+          </div>
+
+          <div className="md:col-span-2">
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="mt-1 w-full rounded-[4px] bg-[#C9A980] py-3 font-sans text-[14px] font-semibold text-[#2A2118] transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="mt-1 w-full rounded-[4px] bg-[#C9A980] py-3 font-sans text-[14px] font-semibold text-[#2A2118] transition-opacity hover:opacity-90 disabled:opacity-60 cursor-pointer"
             >
               {status === "submitting" ? "Submitting..." : "Get My Quote"}
             </button>
@@ -337,9 +532,17 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
               </p>
             )}
 
-            <p className="mt-3 text-center font-sans text-[12px] text-[#8F8477]">
-              Or call / WhatsApp directly: {contactDetails.phone}
-            </p>
+            {(phone || whatsapp) && (
+              <p className="mt-3 text-center font-sans text-[12px] text-[#8F8477]">
+                Or call / WhatsApp directly:{" "}
+                <a
+                  href={`tel:${(phone || whatsapp).replace(/\s+/g, "")}`}
+                  className="hover:underline text-[#D7CFC4]"
+                >
+                  {phone || whatsapp}
+                </a>
+              </p>
+            )}
           </div>
         </form>
       </div>

@@ -406,7 +406,7 @@ export default function CollectionPageClient({ initialData, slug }) {
             title="Ready to Elevate Your Living Space?"
             description="Discover premium stone surfaces, handcrafted décor, and timeless designs curated to bring elegance into every home."
             buttonText="EXPLORE CATEGORY"
-            buttonLink="/categories"
+            buttonLink="/product"
           />
         </div>
       )}
