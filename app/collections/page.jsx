@@ -91,15 +91,5 @@ export default async function CollectionsPage() {
 
   const safeData = data ? JSON.parse(JSON.stringify(data)) : null;
 
-  return (
-    <Suspense
-      fallback={
-        <div className="w-full min-h-screen bg-[#EAE8E2] flex items-center justify-center font-heading text-[#78716C] uppercase tracking-[3px] text-[12px]">
-          Loading Stoneza Collections...
-        </div>
-      }
-    >
-      <CollectionsOverviewClient data={safeData} />
-    </Suspense>
-  );
+  return <CollectionsOverviewClient data={safeData} />;
 }

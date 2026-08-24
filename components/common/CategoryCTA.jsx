@@ -4,10 +4,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export default function CategoryCTA({
-  title = "Ready to Transform Your Space?",
-  description = "Discover premium natural stones sourced from around the globe, each chosen for its unique beauty, durability, and ability to elevate any architectural design.",
-  buttonText = "Explore Products",
-  buttonLink = "/product",
+  title = "Architectural Specification & Quarry Samples",
+  description = "Partner directly with Stoneza for custom calibration, edge profiling, and quarry-direct procurement. Request technical data sheets, physical sample boxes, or bespoke drawing take-offs.",
+  buttonText = "REQUEST SAMPLES & SPECIFICATION",
+  buttonLink = "/#enquire",
 }) {
   return (
     <section className="py-16 px-10">
@@ -25,7 +25,7 @@ export default function CategoryCTA({
           {/* Left */}
           <div className="max-w-2xl">
             <span className="inline-flex items-center rounded-full bg-white/20 px-4 py-2 text-xs uppercase tracking-[2px] text-white backdrop-blur-sm">
-              ✦ Stoneza Luxury Category
+              ✦ Stoneza Architectural Supply
             </span>
 
             <h2 className="mt-6 font-display text-4xl leading-tight text-white md:text-5xl">

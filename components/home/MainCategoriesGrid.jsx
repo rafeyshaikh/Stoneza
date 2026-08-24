@@ -13,7 +13,7 @@ export default function MainCategoriesGrid({ categories }) {
       title: "Paving & Flooring",
       image: "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png",
       description: "Cobblestone, crazy paving, patio packs, Kota and Kadappa flooring, pool tiles and copings, steps.",
-      countLabel: "13 CATEGORIES",
+      countLabel: "4 SUB-CATEGORIES · 12 SERIES",
       href: "/product-category/paving-flooring",
     },
     {
@@ -21,7 +21,7 @@ export default function MainCategoriesGrid({ categories }) {
       title: "Wall Cladding",
       image: "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png",
       description: "Facade slabs in 21 stones, EarthSkin panels, rockface, fieldstone, ledge stone and carved work.",
-      countLabel: "12 CATEGORIES",
+      countLabel: "3 SUB-CATEGORIES · 12 SERIES",
       href: "/product-category/wall-cladding",
     },
     {
@@ -29,15 +29,15 @@ export default function MainCategoriesGrid({ categories }) {
       title: "Landscape & Garden",
       image: "https://res.cloudinary.com/chlmognp/image/upload/v1785340268/stoneza/homepage/hero/newslide3-kw98hw7m.png",
       description: "Sculptural boulders, pebbles, gravels, stone furniture and the Stone Glow lighting collection.",
-      countLabel: "5 CATEGORIES",
+      countLabel: "3 SUB-CATEGORIES · 5 SERIES",
       href: "/product-category/landscape-garden",
     },
     {
       id: "collections",
       title: "Collections",
       image: "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png",
-      description: "Twelve named collections. Each one is a way of working with stone, not a group of colours.",
-      countLabel: "12 COLLECTIONS",
+      description: "Eighteen named stone series across four master families. Each one is a way of working with stone, not a group of colours.",
+      countLabel: "4 FAMILIES · 18 SERIES",
       href: "/collections",
     },
   ];

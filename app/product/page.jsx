@@ -41,9 +41,5 @@ export default async function ProductsPage() {
     console.error("ProductsPage error:", error.message);
   }
 
-  return (
-    <Suspense fallback={<div className="w-full min-h-screen bg-[#EAE8E2] flex items-center justify-center font-heading text-[#6a6a6a] uppercase tracking-[3px] text-[12px]">Loading Products...</div>}>
-      <ProductsClient products={safeProducts} />
-    </Suspense>
-  );
+  return <ProductsClient products={safeProducts} />;
 }

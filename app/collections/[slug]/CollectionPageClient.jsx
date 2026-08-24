@@ -403,10 +403,10 @@ export default function CollectionPageClient({ initialData, slug }) {
             </div>
           )}
           <CategoryCTA
-            title="Ready to Elevate Your Living Space?"
-            description="Discover premium stone surfaces, handcrafted décor, and timeless designs curated to bring elegance into every home."
-            buttonText="EXPLORE CATEGORY"
-            buttonLink="/product"
+            title={`Specifying the ${collection?.name || "Stoneza"} Series for Your Project?`}
+            description="Consult with our stone specialists for custom piece sizing, calibrated thickness runs, and physical sample boxes delivered directly to your design studio."
+            buttonText="REQUEST SPECIFICATION & QUOTE"
+            buttonLink="/#enquire"
           />
         </div>
       )}

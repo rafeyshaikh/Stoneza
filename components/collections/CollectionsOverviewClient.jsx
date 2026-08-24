@@ -21,12 +21,15 @@ export default function CollectionsOverviewClient({ data }) {
   const headerTitle = cmsOverview?.title || "Collections";
   const headerDesc =
     cmsOverview?.description ||
-    "Twelve named collections. Each one is a way of working with stone, not a group of colours.";
+    "Eighteen named stone series across four master families. Each one is a way of working with stone, not a group of colours.";
   const wideBanner =
     cmsOverview?.bannerImage?.wide?.[0]?.url ||
-    "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
+    cmsOverview?.bannerImage?.square?.url ||
+    getPlaceholderImage("Stoneza Collections", 0);
 
   const featuredCard = cmsOverview?.megamenu?.featuredCard;
+
+  const totalNamedSeries = masterFamilies.reduce((acc, f) => acc + (f.children?.length || 0), 0) || stats.totalCollections || 18;
 
   return (
     <div className="w-full min-h-screen bg-[#EAE8E2] text-[#1C1714] selection:bg-[#9A4A2E] selection:text-white pb-16">
@@ -76,7 +79,7 @@ export default function CollectionsOverviewClient({ data }) {
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/15 pt-8">
             <div className="flex flex-col">
               <span className="font-display text-2xl sm:text-3xl text-[#C8A980] font-normal">
-                {stats.totalFamilies || 4}
+                {masterFamilies.length || stats.totalFamilies || 4}
               </span>
               <span className="font-mono text-[10.5px] uppercase tracking-[2px] text-white/70 mt-1">
                 Master Families
@@ -84,7 +87,7 @@ export default function CollectionsOverviewClient({ data }) {
             </div>
             <div className="flex flex-col">
               <span className="font-display text-2xl sm:text-3xl text-[#C8A980] font-normal">
-                {stats.totalCollections || 22}
+                {totalNamedSeries}
               </span>
               <span className="font-mono text-[10.5px] uppercase tracking-[2px] text-white/70 mt-1">
                 Named Series
@@ -160,7 +163,7 @@ export default function CollectionsOverviewClient({ data }) {
             const familyWideBanner =
               family.bannerImage?.wide?.[0]?.url ||
               family.bannerImage?.square?.url ||
-              wideBanner;
+              getPlaceholderImage(family.name, idx);
 
             return (
               <section
@@ -174,10 +177,10 @@ export default function CollectionsOverviewClient({ data }) {
                     <div className="lg:col-span-8 space-y-3">
                       <div className="flex items-center gap-3">
                         <span className="font-mono text-[11px] font-bold uppercase tracking-[2.5px] text-[#9A4A2E] bg-[#9A4A2E]/10 px-2.5 py-1 rounded-md">
-                          Series {romanIndex}
+                          Family {romanIndex}
                         </span>
                         <span className="text-[11px] font-mono uppercase tracking-[2px] text-[#78716C]">
-                          {family.children?.length || 0} Sub-Collections
+                          {family.children?.length || 0} Named Series
                         </span>
                       </div>
 
@@ -220,7 +223,7 @@ export default function CollectionsOverviewClient({ data }) {
                   <div>
                     <div className="flex items-center justify-between mb-4 px-1">
                       <h3 className="font-heading text-[12px] uppercase tracking-[2.5px] text-[#78716C] font-semibold">
-                        {family.name} Sub-Collections
+                        {family.name} Series
                       </h3>
                     </div>
 
@@ -250,7 +253,7 @@ export default function CollectionsOverviewClient({ data }) {
                               {/* Badge count overlay */}
                               <div className="absolute top-3 right-3 z-20">
                                 <span className="rounded-full bg-[#1C1714]/80 backdrop-blur-md px-2.5 py-1 text-[9.5px] font-mono font-medium uppercase tracking-[1px] text-white shadow-xs">
-                                  {sub.productCount || 0} Products
+                                  {sub.productCount || 0} {sub.productCount === 1 ? "Product" : "Products"}
                                 </span>
                               </div>
                             </div>

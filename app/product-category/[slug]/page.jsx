@@ -16,37 +16,47 @@ export async function generateMetadata({ params }) {
   const category = data.category;
 
   // Load SEO from category schema or fallback to details
-  const title = category.seo?.metaTitle?.trim() || `${category.name} Category | Stoneza`;
+  const title =
+    category.seo?.metaTitle?.trim() ||
+    `${category.name} — Natural Stone`;
+
   const description =
     category.seo?.metaDescription?.trim() ||
-    (category.description?.replace(/<[^>]*>/g, "")?.slice(0, 160)?.trim() ||
-      `Explore our premium ${category.name} category of natural stones at Stoneza.`);
+    category.description?.replace(/<[^>]*>/g, "")?.trim() ||
+    `Explore quarry-direct ${category.name} natural stone surfaces by Stoneza. Premium calibrated cladding, paving, and architectural slabs.`;
 
   const ogImage =
     category.seo?.ogImage?.trim() ||
-    (category.bannerImage?.square?.url ||
-      category.bannerImage?.wide?.url ||
-      (Array.isArray(category.bannerImage?.wide) ? category.bannerImage.wide[0]?.url : "") ||
-      "");
+    category.bannerImage?.square?.url ||
+    category.bannerImage?.wide?.url ||
+    (Array.isArray(category.bannerImage?.wide) ? category.bannerImage.wide[0]?.url : "") ||
+    "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
 
   const canonicalUrl =
     category.seo?.canonicalUrl?.trim() ||
     `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/product-category/${slug}`;
 
-  const keywords = category.seo?.keywords || [];
+  const keywords = category.seo?.keywords || [
+    category.name,
+    "natural stone",
+    "stone manufacturer",
+    "architectural stone",
+    "Stoneza",
+  ];
 
   return {
     title,
     description,
-    keywords: keywords.join(", "),
+    keywords: Array.isArray(keywords) ? keywords.join(", ") : keywords,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
       title,
       description,
-      images: ogImage ? [{ url: ogImage }] : [],
+      images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: title }] : [],
       url: canonicalUrl,
+      siteName: "Stoneza",
       type: "website",
     },
     twitter: {

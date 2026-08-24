@@ -79,8 +79,8 @@ const categorySchema = new mongoose.Schema(
     },
 
     bannerImage: {
-      square: imageSchema,
-      wide: imageSchema,
+      square: mongoose.Schema.Types.Mixed,
+      wide: mongoose.Schema.Types.Mixed,
     },
 
     categoryLevel: {

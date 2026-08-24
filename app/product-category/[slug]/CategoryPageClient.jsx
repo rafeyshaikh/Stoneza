@@ -560,10 +560,10 @@ export default function CategoryPageClient({ initialData, slug }) {
       )}
 
       <CategoryCTA
-        title="Ready to Elevate Your Living Space?"
-        description="Discover premium stone surfaces, handcrafted décor, and timeless designs curated to bring elegance into every home."
-        buttonText="EXPLORE CATEGORY"
-        buttonLink="/product"
+        title={`Specifying ${category?.name || "Natural Stone"} for Your Project?`}
+        description="Share your elevation drawings, BOQ, or paving schedules. Our stone specification team calculates quarry-direct pricing, custom edge profiles, and sample delivery."
+        buttonText="REQUEST SPECIFICATION & QUOTE"
+        buttonLink="/#enquire"
       />
     </div>
   );
