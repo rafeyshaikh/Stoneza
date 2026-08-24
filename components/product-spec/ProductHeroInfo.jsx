@@ -7,19 +7,60 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
   if (!product) return null;
 
   const {
-    name = 'Cosmic Black',
-    sku = 'STZ-SF-COBL',
-    shortDescription = 'The shade for an elevation that should command.',
-    collectionName = 'Stonefield Collection',
-    categoryName = 'Fieldstone Cladding',
+    name = '',
+    sku = '',
+    shortDescription = '',
+    collectionName = '',
+    categoryName = '',
+    collectionSlug = '',
+    categorySlug = '',
     stoneDetails = {},
   } = product;
 
+  const eyebrowElements = [];
+  if (collectionName) {
+    eyebrowElements.push(
+      collectionSlug ? (
+        <a
+          key="col"
+          href={`/collections/${collectionSlug}`}
+          className="text-[#9A4A2E] hover:underline transition-colors no-underline"
+        >
+          {collectionName}
+        </a>
+      ) : (
+        <span key="col">{collectionName}</span>
+      )
+    );
+  }
+  if (categoryName) {
+    eyebrowElements.push(
+      categorySlug ? (
+        <a
+          key="cat"
+          href={`/product-category/${categorySlug}`}
+          className="text-[#9A4A2E] hover:underline transition-colors no-underline"
+        >
+          {categoryName}
+        </a>
+      ) : (
+        <span key="cat">{categoryName}</span>
+      )
+    );
+  }
+
   return (
     <div>
-      <p className="font-heading text-[11px] font-bold tracking-[0.18em] uppercase text-[#9A4A2E] mb-3">
-        {collectionName} • {categoryName}
-      </p>
+      {eyebrowElements.length > 0 && (
+        <p className="font-heading text-[11px] font-bold tracking-[0.18em] uppercase text-[#9A4A2E] mb-3 flex flex-wrap items-center gap-1.5">
+          {eyebrowElements.map((el, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <span className="text-[#9A4A2E]/60">•</span>}
+              {el}
+            </React.Fragment>
+          ))}
+        </p>
+      )}
       <h1 className="font-serif font-normal text-3xl sm:text-4xl md:text-5xl leading-none mb-2.5 tracking-[-0.015em] text-[#1C1714]">
         {name}
       </h1>

@@ -16,7 +16,7 @@ export default function AdminNavbar({ onMenuClick }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 shrink-0 w-full items-center justify-between border-b border-stone-300/60 bg-stone-50/90 px-3 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/90 sm:px-6">
+    <header className="flex h-14 shrink-0 w-full items-center justify-between border-b border-stone-300/60 bg-stone-50/90 px-3 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/90 sm:px-6 z-30">
       <div className="flex items-center gap-2.5 min-w-0">
         <Button variant="ghost" size="icon" className="size-8 lg:hidden shrink-0" onClick={onMenuClick}>
           <Menu className="size-4" />

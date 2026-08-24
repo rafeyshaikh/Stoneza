@@ -5,10 +5,16 @@ import { createContext, useContext, useState } from "react";
 const ContactContext = createContext();
 
 export function ContactProvider({ children, initialContactDetails = {} }) {
-  const [contactDetails, setContactDetails] = useState(initialContactDetails);
+  const [customContactDetails, setCustomContactDetails] = useState(null);
+  const contactDetails = customContactDetails ?? initialContactDetails;
 
   return (
-    <ContactContext.Provider value={{ contactDetails, setContactDetails }}>
+    <ContactContext.Provider
+      value={{
+        contactDetails,
+        setContactDetails: setCustomContactDetails,
+      }}
+    >
       {children}
     </ContactContext.Provider>
   );

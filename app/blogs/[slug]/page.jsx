@@ -26,19 +26,34 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const title = blog.seo?.metaTitle || `${blog.title} | Stoneza`;
+  const description = blog.seo?.metaDescription || blog.excerpt || "Read the latest stone insights and guides from Stoneza.";
+  const canonicalUrl = blog.seo?.canonicalUrl || `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/blogs/${slug}`;
+  const ogImage = blog.seo?.ogImage || blog.bannerImage?.url || "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
+
   return {
-    title: blog.seo?.metaTitle || blog.title,
-    description: blog.seo?.metaDescription || blog.excerpt,
+    title,
+    description,
     keywords: blog.seo?.keywords || [],
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: blog.seo?.metaTitle || blog.title,
-      description: blog.seo?.metaDescription || blog.excerpt,
-      images: blog.bannerImage?.url ? [blog.bannerImage.url] : [],
+      title,
+      description,
+      url: canonicalUrl,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      type: "article",
+      publishedTime: blog.publishedAt,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
     },
   };
 }
-
-const BANNER_HEIGHT = 650; // px — keep in sync with the banner <section> height below
 
 export default async function BlogDetailsPage({ params }) {
   const { slug } = await params;
@@ -76,14 +91,15 @@ export default async function BlogDetailsPage({ params }) {
     <main className="bg-[#f8f6f2]">
       {/* Banner */}
       <section
-        className="relative w-full"
-        style={{ height: BANNER_HEIGHT }}
+        id="blog-banner"
+        className="relative w-full h-[320px] sm:h-[420px] md:h-[520px] lg:h-[620px] xl:h-[680px]"
       >
         <Image
           src={safeBlog.bannerImage.url}
           alt={safeBlog.title}
           fill
           priority
+          sizes="100vw"
           className="object-cover"
         />
       </section>
@@ -92,10 +108,9 @@ export default async function BlogDetailsPage({ params }) {
       <BlogReadingBar
         title={safeBlog.title}
         shareUrl={shareUrl}
-        shareImage={safeBlog.bannerImage.url}
+        shareImage={safeBlog.bannerImage?.url}
         prevBlog={safePrevious}
         nextBlog={safeNext}
-        bannerHeight={BANNER_HEIGHT}
       />
 
       {/* Content */}

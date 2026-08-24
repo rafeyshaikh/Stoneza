@@ -13,9 +13,91 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-export default function ProjectsClientView({ initialProjects = [] }) {
+export default function ProjectsClientView({
+  initialProjects = [],
+  initialSelectedSlug = null,
+}) {
   const [activeSegment, setActiveSegment] = useState("all");
-  const [selectedProject, setSelectedProject] = useState(null);
+
+  const findProject = (identifier) => {
+    if (!identifier) return null;
+    const clean = String(identifier).toLowerCase().trim();
+    return (
+      initialProjects.find((p) => {
+        const pSlug = (p.slug || "").toLowerCase().trim();
+        const pId = (p._id || p.id || "").toString().toLowerCase().trim();
+        const pTitleKebab = (p.title || "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+
+        return (
+          pSlug === clean ||
+          pId === clean ||
+          pTitleKebab === clean ||
+          clean.includes(pSlug) ||
+          (pSlug && clean.includes(pSlug))
+        );
+      }) || null
+    );
+  };
+
+  const [selectedProject, setSelectedProject] = useState(() =>
+    findProject(initialSelectedSlug)
+  );
+
+  const openModal = (proj) => {
+    if (!proj) return;
+    setSelectedProject(proj);
+    if (typeof window !== "undefined") {
+      const slug = proj.slug || proj._id || proj.id;
+      window.history.pushState(
+        null,
+        "",
+        `/projects?project=${encodeURIComponent(slug)}`
+      );
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedProject(null);
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", "/projects");
+    }
+  };
+
+  // Sync with browser URL / Back-Forward button / popstate / client transition
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const projectParam =
+        params.get("project") || params.get("slug") || params.get("id");
+      if (projectParam) {
+        const matched = findProject(projectParam);
+        if (matched) setSelectedProject(matched);
+      } else {
+        setSelectedProject(null);
+      }
+    };
+
+    handleUrlChange();
+
+    window.addEventListener("popstate", handleUrlChange);
+    return () => window.removeEventListener("popstate", handleUrlChange);
+  }, [initialProjects]);
+
+  // Handle escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    };
+    if (selectedProject) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedProject]);
 
   useEffect(() => {
     if (selectedProject) {
@@ -101,7 +183,7 @@ export default function ProjectsClientView({ initialProjects = [] }) {
             <div className="border-t border-[#26221E] pt-8 md:pt-11 mb-16 md:mb-20">
               <div
                 className="group relative aspect-[16/9] w-full overflow-hidden border border-[#E4DDD3] bg-[#F5F1EB] mb-8 rounded-xs cursor-pointer"
-                onClick={() => setSelectedProject(featuredProject)}
+                onClick={() => openModal(featuredProject)}
               >
                 {featuredProject.bannerImage?.url ||
                 featuredProject.images?.[0]?.url ? (
@@ -140,7 +222,7 @@ export default function ProjectsClientView({ initialProjects = [] }) {
                   </p>
                   <h2
                     className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal leading-[1.08] tracking-[-0.02em] text-[#26221E] mb-4 hover:underline cursor-pointer decoration-1 underline-offset-4"
-                    onClick={() => setSelectedProject(featuredProject)}
+                    onClick={() => openModal(featuredProject)}
                   >
                     {featuredProject.title}
                   </h2>
@@ -274,7 +356,7 @@ export default function ProjectsClientView({ initialProjects = [] }) {
                   return (
                     <div
                       key={project._id}
-                      onClick={() => setSelectedProject(project)}
+                      onClick={() => openModal(project)}
                       className="group block cursor-pointer text-left transition-all"
                     >
                       {/* Image Thumbnail */}
@@ -520,7 +602,7 @@ export default function ProjectsClientView({ initialProjects = [] }) {
       {selectedProject && (
         <div
           className="fixed top-[62px] lg:top-[127px] bottom-0 left-0 right-0 z-[800] flex items-center justify-center bg-black/60 p-4 sm:p-6 backdrop-blur-xs animate-in fade-in duration-200"
-          onClick={() => setSelectedProject(null)}
+          onClick={closeModal}
         >
           <div
             className="relative max-h-[calc(100vh-62px-2rem)] lg:max-h-[calc(100vh-127px-3rem)] w-full max-w-4xl overflow-y-auto bg-white p-6 sm:p-10 shadow-2xl border border-[#E4DDD3] text-[#26221E]"
@@ -529,7 +611,7 @@ export default function ProjectsClientView({ initialProjects = [] }) {
             {/* Close Button */}
             <button
               type="button"
-              onClick={() => setSelectedProject(null)}
+              onClick={closeModal}
               className="absolute right-4 top-4 p-2 text-[#8A8078] hover:text-[#26221E] cursor-pointer"
             >
               <X className="size-6" />

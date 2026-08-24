@@ -11,7 +11,7 @@ export const DEFAULT_ON_SITE_PROJECTS = [
     tag: "HOSPITALITY",
     image:
       "https://stoneza.in/wp-content/uploads/2025/01/WhatsApp-Image-2025-01-20-at-3.41.21-PM-1-1.png",
-    href: "/projects/jw-marriott-ranthambore",
+    href: "/projects?project=jw-marriott-ranthambore",
     slug: "jw-marriott-ranthambore",
   },
   {
@@ -22,7 +22,7 @@ export const DEFAULT_ON_SITE_PROJECTS = [
     tag: "RESORT",
     image:
       "https://stoneza.in/wp-content/uploads/2025/01/Untitled-design-2-1-2.jpg",
-    href: "/projects/ananta-spa-resort",
+    href: "/projects?project=ananta-spa-resort",
     slug: "ananta-spa-resort",
   },
   {
@@ -33,8 +33,8 @@ export const DEFAULT_ON_SITE_PROJECTS = [
     tag: "RESIDENTIAL",
     image:
       "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png",
-    href: "/projects",
-    slug: "township-phased-delivery",
+    href: "/projects?project=private-villa-elevation-boundary",
+    slug: "private-villa-elevation-boundary",
   },
 ];
 
@@ -86,42 +86,50 @@ export default function OnSiteProjects({
 
         {/* 3-Column Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-12">
-          {displayProjects.map((project, idx) => (
-            <Link
-              key={project.id || project._id || idx}
-              href={project.href || (project.slug ? `/projects/${project.slug}` : "/projects")}
-              className="group block"
-            >
-              {/* Image Container */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#EAE8E2] mb-4 sm:mb-5">
-                <ImageWithLoader
-                  src={project.image || project.bannerImage?.url}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  seedIndex={idx}
-                />
-              </div>
+          {displayProjects.map((project, idx) => {
+            const projectSlug = project.slug || project.id || project._id;
+            const projectHref =
+              project.href && project.href.includes("?project=")
+                ? project.href
+                : `/projects?project=${encodeURIComponent(projectSlug || "")}`;
 
-              {/* Title */}
-              <h3 className="font-display text-[18px] sm:text-[20px] text-[#1C1714] font-normal leading-snug mb-2 group-hover:text-[#9A4A2E] transition-colors">
-                {project.title}
-              </h3>
+            return (
+              <Link
+                key={project.id || project._id || idx}
+                href={projectHref}
+                className="group block"
+              >
+                {/* Image Container */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#EAE8E2] mb-4 sm:mb-5">
+                  <ImageWithLoader
+                    src={project.image || project.bannerImage?.url}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    seedIndex={idx}
+                  />
+                </div>
 
-              {/* Description */}
-              <p className="font-body text-[13px] sm:text-[14px] text-[#635B54] leading-[1.6] mb-3 sm:mb-4 line-clamp-3">
-                {project.description}
-              </p>
+                {/* Title */}
+                <h3 className="font-display text-[18px] sm:text-[20px] text-[#1C1714] font-normal leading-snug mb-2 group-hover:text-[#9A4A2E] transition-colors">
+                  {project.title}
+                </h3>
 
-              {/* Category / Tag with Arrow */}
-              <div className="inline-flex items-center gap-1.5 font-heading font-semibold text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#8A7F73] group-hover:text-[#1C1714] transition-colors">
-                <span>{project.tag || project.segment || "PROJECT"}</span>
-                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1 text-sm font-normal">
-                  &rarr;
-                </span>
-              </div>
-            </Link>
-          ))}
+                {/* Description */}
+                <p className="font-body text-[13px] sm:text-[14px] text-[#635B54] leading-[1.6] mb-3 sm:mb-4 line-clamp-3">
+                  {project.description}
+                </p>
+
+                {/* Category / Tag with Arrow */}
+                <div className="inline-flex items-center gap-1.5 font-heading font-semibold text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-[#8A7F73] group-hover:text-[#1C1714] transition-colors">
+                  <span>{project.tag || project.segment || "PROJECT"}</span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1 text-sm font-normal">
+                    &rarr;
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

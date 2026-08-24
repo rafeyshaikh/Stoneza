@@ -59,7 +59,7 @@ export default function ImageUploader({
           ref={inputRef}
           type="file"
           accept="image/*"
-          hidden
+          className="hidden"
           onChange={handlePick}
         />
 

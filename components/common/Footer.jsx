@@ -142,13 +142,23 @@ export default function Footer() {
 
             <div className="space-y-3 text-[13px]">
               <p className="font-medium">
-                <a href={`tel:${contactDetails?.phone}`}>{contactDetails?.phone}</a>
+                <a
+                  href={`tel:${(contactDetails?.phone || "+91 78771 08154").replace(/\s+/g, "")}`}
+                  className="hover:underline transition-colors"
+                >
+                  {contactDetails?.phone || "+91 78771 08154"}
+                </a>
               </p>
 
               <p>
-                (Mon-Sat 10am-7pm)
+                ({contactDetails?.workingHours || "Mon-Sat 10am-7pm"})
                 <br />
-                {contactDetails?.email}
+                <a
+                  href={`mailto:${contactDetails?.email || "sales@stoneza.in"}`}
+                  className="hover:underline transition-colors"
+                >
+                  {contactDetails?.email || "sales@stoneza.in"}
+                </a>
               </p>
             </div>
 

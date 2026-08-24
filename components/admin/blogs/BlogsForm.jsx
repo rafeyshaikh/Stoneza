@@ -12,42 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import BlogsEditor from "@/components/admin/blogs/BlogsEditor";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
-    reader.onloadend = () => resolve(reader.result);
-
-    reader.onerror = () => reject(new Error("Could not read file"));
-
-    reader.readAsDataURL(file);
-  });
-}
-
-async function uploadImage(file, folder = "blogs/banner") {
-  const base64 = await fileToBase64(file);
-
-  const response = await fetch("/api/admin/upload", {
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      image: base64,
-      folder,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!data.success) {
-    throw new Error(data.message);
-  }
-
-  return data.data;
-}
+const uploadImage = (file, folder = "blogs/banner") => uploadAdminImage(file, folder);
 
 const EMPTY_FORM = {
   title: "",
@@ -166,10 +133,18 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
         },
       );
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (err) {
+        if (response.status === 413) {
+          throw new Error("Blog data or banner is too large for the server.");
+        }
+        throw new Error(`Server error (${response.status}: ${response.statusText || "Invalid response"})`);
+      }
 
-      if (!data.success) {
-        throw new Error(data.message);
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || "Failed to save blog");
       }
 
       toast.success(

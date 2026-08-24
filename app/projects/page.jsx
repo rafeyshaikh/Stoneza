@@ -2,20 +2,50 @@ import ProjectsClientView from "@/components/projects/ProjectsClientView";
 import Project from "@/models/Project.model";
 import { connectDB } from "@/lib/databaseConnection";
 
+import Seo from "@/models/Seo.model";
+
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
-  return {
-    title: "Projects — Natural Stone Supplied by Stoneza | JW Marriott Ranthambore & more",
-    description:
-      "Natural stone supplied by Stoneza to resorts, villas, townships and commercial projects across India and exported to four continents. Quarry-direct, batch-matched across construction phases.",
-    openGraph: {
-      title: "Projects — Natural Stone Supplied by Stoneza",
+  try {
+    await connectDB();
+    const seo = await Seo.findOne().lean();
+
+    const title = "Projects — Natural Stone Supplied by Stoneza | JW Marriott Ranthambore & more";
+    const description =
+      "Natural stone supplied by Stoneza to resorts, villas, townships and commercial projects across India and exported to four continents. Quarry-direct, batch-matched across construction phases.";
+    const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/projects`;
+    const ogImage =
+      seo?.ogImage || "https://stoneza.in/assets/hero/fieldstone-cladding-facade-banner.webp";
+
+    return {
+      title,
+      description,
+      keywords: seo?.keywords || "natural stone projects, luxury stone resort, stoneza projects, sandstone paving supply",
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [ogImage],
+      },
+    };
+  } catch (err) {
+    return {
+      title: "Projects — Natural Stone Supplied by Stoneza | JW Marriott Ranthambore & more",
       description:
         "Natural stone supplied by Stoneza to resorts, villas, townships and commercial projects across India and exported to four continents.",
-      images: ["https://stoneza.in/assets/hero/fieldstone-cladding-facade-banner.webp"],
-    },
-  };
+    };
+  }
 }
 
 const fallbackProjects = [
@@ -217,7 +247,11 @@ const fallbackProjects = [
   },
 ];
 
-export default async function PublicProjectsPage() {
+export default async function PublicProjectsPage({ searchParams }) {
+  const resolvedParams = searchParams ? await searchParams : {};
+  const initialSelectedSlug =
+    resolvedParams?.project || resolvedParams?.slug || resolvedParams?.id || null;
+
   let projects = [];
 
   try {
@@ -240,6 +274,9 @@ export default async function PublicProjectsPage() {
   }
 
   return (
-    <ProjectsClientView initialProjects={JSON.parse(JSON.stringify(projects))} />
+    <ProjectsClientView
+      initialProjects={JSON.parse(JSON.stringify(projects))}
+      initialSelectedSlug={initialSelectedSlug}
+    />
   );
 }

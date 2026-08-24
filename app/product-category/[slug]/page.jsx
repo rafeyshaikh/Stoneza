@@ -25,7 +25,8 @@ export async function generateMetadata({ params }) {
   const ogImage =
     category.seo?.ogImage?.trim() ||
     (category.bannerImage?.square?.url ||
-      category.bannerImage?.wide?.[0]?.url ||
+      category.bannerImage?.wide?.url ||
+      (Array.isArray(category.bannerImage?.wide) ? category.bannerImage.wide[0]?.url : "") ||
       "");
 
   const canonicalUrl =

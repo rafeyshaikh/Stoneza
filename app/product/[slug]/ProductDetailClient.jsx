@@ -162,23 +162,37 @@ export default function ProductDetailClient({ productData }) {
 
       {/* Breadcrumb Navigation */}
       <nav className="border-b border-[#CBC9C4] bg-[#EAE8E2]">
-        <div className="max-w-[1320px] mx-auto px-4 sm:px-8 lg:px-16 py-4 font-heading text-[11px] tracking-[0.12em] uppercase text-[#78716C] font-medium">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-8 lg:px-16 py-4 font-heading text-[11px] tracking-[0.12em] uppercase text-[#78716C] font-medium flex flex-wrap items-center gap-1.5">
           <a href="/" className="text-[#78716C] no-underline transition-colors hover:text-[#1C1714]">
             Home
-          </a>{' '}
-          /{' '}
+          </a>
+          <span>/</span>
           <a href="/product" className="text-[#78716C] no-underline transition-colors hover:text-[#1C1714]">
             Products
-          </a>{' '}
-          /{' '}
+          </a>
           {product.categoryName && (
             <>
-              <a href="#" className="text-[#78716C] no-underline transition-colors hover:text-[#1C1714]">
+              <span>/</span>
+              <a
+                href={product.categorySlug ? `/product-category/${product.categorySlug}` : "/product"}
+                className="text-[#78716C] no-underline transition-colors hover:text-[#1C1714]"
+              >
                 {product.categoryName}
-              </a>{' '}
-              /{' '}
+              </a>
             </>
           )}
+          {product.collectionName && (
+            <>
+              <span>/</span>
+              <a
+                href={product.collectionSlug ? `/collections/${product.collectionSlug}` : "/collections"}
+                className="text-[#78716C] no-underline transition-colors hover:text-[#1C1714]"
+              >
+                {product.collectionName}
+              </a>
+            </>
+          )}
+          <span>/</span>
           <span className="text-[#1C1714] font-semibold">{product.name}</span>
         </div>
       </nav>
@@ -211,10 +225,10 @@ export default function ProductDetailClient({ productData }) {
         </div>
       </div>
 
-      {/* Browse Track 1: Products of the same category */}
+      {/* Browse Track 1: Products of the same collection / category */}
       {product.relatedProducts && product.relatedProducts.length > 0 && (
         <ProductBrowseTrack
-          title={`Browse more in ${product.categoryName || 'Category'}`}
+          title={`Browse more in ${product.collectionName || product.categoryName || 'Collection'}`}
           countLabel={`${product.relatedProducts.length} items`}
           trackRef={track1Ref}
           prevDisabled={t1PrevDisabled}

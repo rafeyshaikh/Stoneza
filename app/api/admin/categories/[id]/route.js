@@ -144,12 +144,21 @@ export async function PATCH(request, { params }) {
       }
     }
 
-    const oldWideIds = (category.bannerImage?.wide || [])
-      .map(img => img?.publicId)
+    const oldWideIds = (
+      Array.isArray(category.bannerImage?.wide)
+        ? category.bannerImage.wide
+        : [category.bannerImage?.wide]
+    )
+      .map((img) => img?.publicId)
       .filter(Boolean);
+
     const newWideIds = new Set(
-      (bannerImage?.wide || [])
-        .map(img => img?.publicId)
+      (
+        Array.isArray(bannerImage?.wide)
+          ? bannerImage.wide
+          : [bannerImage?.wide]
+      )
+        .map((img) => img?.publicId)
         .filter(Boolean)
     );
 
@@ -236,14 +245,16 @@ export async function DELETE(request, { params }) {
       }
     }
 
-    if (Array.isArray(category.bannerImage?.wide)) {
-      for (const image of category.bannerImage.wide) {
-        if (image?.publicId) {
-          try {
-            await cloudinary.uploader.destroy(image.publicId);
-          } catch (err) {
-            console.error(`Failed to delete wide image ${image.publicId} on delete:`, err);
-          }
+    const wideImages = Array.isArray(category.bannerImage?.wide)
+      ? category.bannerImage.wide
+      : [category.bannerImage?.wide];
+
+    for (const image of wideImages) {
+      if (image?.publicId) {
+        try {
+          await cloudinary.uploader.destroy(image.publicId);
+        } catch (err) {
+          console.error(`Failed to delete wide image ${image.publicId} on delete:`, err);
         }
       }
     }

@@ -263,7 +263,12 @@ export default function CategoryTable({ categories = [] }) {
                 <td className="py-4 pr-3">
                   <div className="relative h-16 w-16 overflow-hidden rounded-lg border dark:border-stone-800">
                     <ImageWithLoader
-                      src={category.bannerImage?.square?.url || category.bannerImage?.landscape?.url}
+                      src={
+                        category.bannerImage?.square?.url ||
+                        category.bannerImage?.wide?.url ||
+                        (Array.isArray(category.bannerImage?.wide) ? category.bannerImage.wide[0]?.url : "") ||
+                        category.bannerImage?.landscape?.url
+                      }
                       alt={category.name}
                       fill
                       className="object-cover"

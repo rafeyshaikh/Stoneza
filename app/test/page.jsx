@@ -11,6 +11,14 @@ import { getJournalArticlesData } from "@/lib/getJournalArticlesData";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Component Test Showcase | Stoneza",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default async function TestPage() {
   const [categoriesData, featuredStones, onSiteProjects, journalArticles] =
     await Promise.all([

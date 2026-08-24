@@ -37,42 +37,11 @@ function ToolbarButton({ active, onClick, children }) {
   );
 }
 
-async function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => resolve(reader.result);
-
-    reader.onerror = () => reject(new Error("Could not read image"));
-
-    reader.readAsDataURL(file);
-  });
-}
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 async function uploadEditorImage(file) {
-  const base64 = await fileToBase64(file);
-
-  const response = await fetch("/api/admin/upload", {
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      image: base64,
-
-      folder: "blogs/content",
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!data.success) {
-    throw new Error(data.message);
-  }
-
-  return data.data.url;
+  const data = await uploadAdminImage(file, "blogs/content");
+  return data?.url || "";
 }
 
 export default function EditorToolbar({ editor }) {

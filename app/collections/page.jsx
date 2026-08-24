@@ -21,27 +21,39 @@ export async function generateMetadata() {
       process.env.NEXT_PUBLIC_SITE_URL ||
       "https://stoneza.in";
 
+    const collectionsSeo = cmsOverview?.seo;
+
     const title =
-      cmsOverview?.title
+      collectionsSeo?.metaTitle?.trim() ||
+      (cmsOverview?.title
         ? `${cmsOverview.title} | ${seoDoc?.metaTitle || "Stoneza"}`
-        : `Natural Stone Collections | ${seoDoc?.metaTitle || "Stoneza"}`;
+        : `Natural Stone Collections | ${seoDoc?.metaTitle || "Stoneza"}`);
 
     const description =
+      collectionsSeo?.metaDescription?.trim() ||
       cmsOverview?.description ||
       seoDoc?.metaDescription ||
       "Explore Stoneza's named collections of natural stone, paving, facade cladding, and landscape surfaces.";
 
     const ogImage =
+      collectionsSeo?.ogImage?.trim() ||
       cmsOverview?.bannerImage?.square?.url ||
       cmsOverview?.bannerImage?.wide?.[0]?.url ||
       seoDoc?.ogImage ||
       "";
 
-    const canonicalUrl = `${baseDomain}/collections`;
+    const canonicalUrl =
+      collectionsSeo?.canonicalUrl?.trim() ||
+      `${baseDomain}/collections`;
+
+    const keywords =
+      collectionsSeo?.keywords?.trim() ||
+      "natural stone collections, stone paving, wall cladding, landscape stone";
 
     return {
       title,
       description,
+      keywords,
       alternates: {
         canonical: canonicalUrl,
       },

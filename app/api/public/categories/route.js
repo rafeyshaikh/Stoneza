@@ -47,7 +47,11 @@ const getCachedPublicCategories = unstable_cache(
           url: "",
           publicId: "",
         },
-        wideBanners: category.bannerImage?.wide || [],
+        wideBanner: category.bannerImage?.wide?.url
+          ? category.bannerImage.wide
+          : Array.isArray(category.bannerImage?.wide) && category.bannerImage.wide[0]
+          ? category.bannerImage.wide[0]
+          : { url: "", publicId: "" },
         parentCategory: category.parentCategory?.toString() || null,
         children: [],
       };

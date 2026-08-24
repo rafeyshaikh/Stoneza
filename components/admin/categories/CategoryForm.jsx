@@ -21,40 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = () =>
-      reject(new Error("Could not read the selected file"));
-    reader.readAsDataURL(file);
-  });
-}
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
-async function uploadImage(file, folder = "categories") {
-  const base64 = await fileToBase64(file);
-
-  const response = await fetch("/api/admin/upload", {
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      image: base64,
-      folder,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!data.success) {
-    throw new Error(data.message || "Image upload failed");
-  }
-
-  return data.data;
-}
+const uploadImage = (file, folder = "categories") => uploadAdminImage(file, folder);
 
 const EMPTY_MEGAMENU = {
   enabled: true,
@@ -82,7 +51,10 @@ const EMPTY_FORM = {
       url: "",
       publicId: "",
     },
-    wide: [],
+    wide: {
+      url: "",
+      publicId: "",
+    },
   },
 
   megamenu: EMPTY_MEGAMENU,
@@ -126,7 +98,14 @@ export default function CategoryForm({
           url: "",
           publicId: "",
         },
-        wide: initialData.bannerImage?.wide || [],
+        wide: initialData.bannerImage?.wide?.url
+          ? initialData.bannerImage.wide
+          : Array.isArray(initialData.bannerImage?.wide) && initialData.bannerImage.wide[0]
+          ? initialData.bannerImage.wide[0]
+          : {
+              url: "",
+              publicId: "",
+            },
       },
 
       megamenu: {
@@ -158,8 +137,7 @@ export default function CategoryForm({
   });
 
   const [squareBannerFile, setSquareBannerFile] = useState(null);
-  const [wideBanner1File, setWideBanner1File] = useState(null);
-  const [wideBanner2File, setWideBanner2File] = useState(null);
+  const [wideBannerFile, setWideBannerFile] = useState(null);
   const [featuredCardImageFile, setFeaturedCardImageFile] = useState(null);
 
   const [uploadingImages, setUploadingImages] = useState(false);
@@ -357,19 +335,9 @@ export default function CategoryForm({
         squareBanner = await uploadImage(squareBannerFile, "categories/square");
       }
 
-      const wideBanners = [];
-      if (wideBanner1File) {
-        const uploaded = await uploadImage(wideBanner1File, "categories/wide");
-        wideBanners.push(uploaded);
-      } else if (formData.bannerImage.wide?.[0]) {
-        wideBanners.push(formData.bannerImage.wide[0]);
-      }
-
-      if (wideBanner2File) {
-        const uploaded = await uploadImage(wideBanner2File, "categories/wide");
-        wideBanners.push(uploaded);
-      } else if (formData.bannerImage.wide?.[1]) {
-        wideBanners.push(formData.bannerImage.wide[1]);
+      let wideBanner = formData.bannerImage.wide;
+      if (wideBannerFile) {
+        wideBanner = await uploadImage(wideBannerFile, "categories/wide");
       }
 
       let featuredCardImage = formData.megamenu?.featuredCard?.image || { url: "", publicId: "" };
@@ -384,7 +352,7 @@ export default function CategoryForm({
 
         bannerImage: {
           square: squareBanner,
-          wide: wideBanners,
+          wide: wideBanner,
         },
 
         megamenu: {
@@ -425,10 +393,18 @@ export default function CategoryForm({
         }
       );
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (err) {
+        if (response.status === 413) {
+          throw new Error("Category data or images are too large for the server.");
+        }
+        throw new Error(`Server error (${response.status}: ${response.statusText || "Invalid response"})`);
+      }
 
-      if (!data.success) {
-        throw new Error(data.message || "Failed to save category");
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || "Failed to save category");
       }
 
       toast.success(
@@ -443,8 +419,7 @@ export default function CategoryForm({
       if (!isEdit) {
         setFormData(EMPTY_FORM);
         setSquareBannerFile(null);
-        setWideBanner1File(null);
-        setWideBanner2File(null);
+        setWideBannerFile(null);
         setFeaturedCardImageFile(null);
       }
     } catch (error) {
@@ -877,43 +852,26 @@ export default function CategoryForm({
             />
           </Field>
 
-          <Field label="Wide Banner 1 (2200 × 640)">
+          <Field label="Wide Banner (2200 × 640)">
             <ImageUploader
-              file={wideBanner1File}
-              existingImage={formData.bannerImage.wide?.[0]}
-              onFileSelect={setWideBanner1File}
+              file={wideBannerFile}
+              existingImage={formData.bannerImage.wide}
+              onFileSelect={setWideBannerFile}
               onRemove={() => {
-                setWideBanner1File(null);
+                setWideBannerFile(null);
                 setFormData((prev) => ({
                   ...prev,
                   bannerImage: {
                     ...prev.bannerImage,
-                    wide: [prev.bannerImage.wide?.[1] || null].filter(Boolean),
+                    wide: {
+                      url: "",
+                      publicId: "",
+                    },
                   },
                 }));
               }}
               uploading={uploadingImages}
-              hint="Desktop hero banner."
-            />
-          </Field>
-
-          <Field label="Wide Banner 2 (2200 × 640)">
-            <ImageUploader
-              file={wideBanner2File}
-              existingImage={formData.bannerImage.wide?.[1]}
-              onFileSelect={setWideBanner2File}
-              onRemove={() => {
-                setWideBanner2File(null);
-                setFormData((prev) => ({
-                  ...prev,
-                  bannerImage: {
-                    ...prev.bannerImage,
-                    wide: [prev.bannerImage.wide?.[0] || null].filter(Boolean),
-                  },
-                }));
-              }}
-              uploading={uploadingImages}
-              hint="Secondary desktop banner."
+              hint="Desktop category hero banner."
             />
           </Field>
         </div>

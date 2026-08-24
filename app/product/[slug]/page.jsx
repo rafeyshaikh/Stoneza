@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { connectDB } from "@/lib/databaseConnection";
 import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
+import Collection from "@/models/Collection.model";
 import ProductDetailClient from "./ProductDetailClient";
 
 export const dynamic = "force-dynamic";
@@ -49,9 +50,9 @@ export async function generateMetadata({ params }) {
       openGraph: {
         title,
         description,
-        images: ogImage ? [{ url: ogImage }] : [],
         url: canonicalUrl,
-        type: "article",
+        images: ogImage ? [{ url: ogImage }] : [],
+        type: "website",
       },
       twitter: {
         card: "summary_large_image",
@@ -79,22 +80,41 @@ export default async function ProductDetailPage({ params }) {
         path: "category",
         populate: { path: "parentCategory" },
       })
+      .populate({
+        path: "collection",
+        populate: { path: "parentCollection" },
+      })
       .lean();
 
     if (product) {
       const categoryObj = product.category;
-      let categoryName = "Category";
+      let categoryName = "";
       let parentCategoryName = "";
+      let categorySlug = "";
+
+      const collectionObj = product.collection;
+      let collectionName = "";
+      let parentCollectionName = "";
+      let collectionSlug = "";
+
+      if (collectionObj) {
+        collectionName = collectionObj.name || "";
+        collectionSlug = collectionObj.slug || "";
+        if (collectionObj.parentCollection) {
+          parentCollectionName = collectionObj.parentCollection.name || "";
+        }
+      }
 
       let relatedProductsRaw = [];
       let relatedCategoriesRaw = [];
 
       if (categoryObj) {
-        categoryName = categoryObj.name || "Category";
+        categoryName = categoryObj.name || "";
+        categorySlug = categoryObj.slug || "";
 
-        // 1. Fetch products of the SAME category
+        // 1. Fetch products of the SAME category or collection
         relatedProductsRaw = await Product.find({
-          category: categoryObj._id,
+          ...(collectionObj ? { collection: collectionObj._id } : { category: categoryObj._id }),
           status: "published",
         })
           .select("name slug images stoneDetails price")
@@ -120,6 +140,14 @@ export default async function ProductDetailPage({ params }) {
             .limit(12)
             .lean();
         }
+      } else if (collectionObj) {
+        relatedProductsRaw = await Product.find({
+          collection: collectionObj._id,
+          status: "published",
+        })
+          .select("name slug images stoneDetails price")
+          .limit(16)
+          .lean();
       }
 
       // Fallback if no same category products found
@@ -130,7 +158,7 @@ export default async function ProductDetailPage({ params }) {
           .lean();
       }
 
-      // Format Track 1 items: Products of the same category
+      // Format Track 1 items: Products of the same category / collection
       const relatedProducts = relatedProductsRaw.map((p) => ({
         title: p.name,
         subtitle: p.stoneDetails?.stoneType || p.stoneDetails?.faceTexture || "Natural Stone",
@@ -158,6 +186,10 @@ export default async function ProductDetailPage({ params }) {
           ...product,
           categoryName,
           parentCategoryName,
+          categorySlug,
+          collectionName,
+          parentCollectionName,
+          collectionSlug,
           relatedProducts,
           relatedCategories,
         })

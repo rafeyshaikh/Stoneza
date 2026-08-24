@@ -7,6 +7,7 @@ import MultipleImageUploader from "@/components/admin/products/MultipleImageUplo
 import ProductSeoForm from "@/components/admin/products/ProductSeoForm";
 import TipTapEditor from "@/components/admin/editor/TipTapEditor";
 import VariantManager from "@/components/admin/products/VariantManager";
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -349,42 +350,7 @@ export default function ProductForm({
     }));
   };
 
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onloadend = () => resolve(reader.result);
-
-      reader.onerror = () => reject(new Error("Could not read selected file"));
-
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function uploadImage(file, folder = "products") {
-    const base64 = await fileToBase64(file);
-
-    const response = await fetch("/api/admin/upload", {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        image: base64,
-        folder,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Image upload failed");
-    }
-
-    return data.data;
-  }
+  const uploadImage = (file, folder = "products") => uploadAdminImage(file, folder);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -489,10 +455,18 @@ export default function ProductForm({
         },
       );
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (err) {
+        if (response.status === 413) {
+          throw new Error("Product data or images are too large for the server.");
+        }
+        throw new Error(`Server error (${response.status}: ${response.statusText || "Invalid response"})`);
+      }
 
-      if (!data.success) {
-        throw new Error(data.message);
+      if (!response.ok || !data.success) {
+        throw new Error(data?.message || "Failed to save product");
       }
 
       console.log("Product saved:", data);
@@ -977,11 +951,19 @@ export default function ProductForm({
         </div>
       </section>
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-3 pt-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push("/admin/products")}
+          className="cursor-pointer"
+        >
+          Cancel
+        </Button>
         <Button
           type="submit"
           disabled={submitting}
-          className="rounded-lg border border-stone-900 bg-stone-900 px-5 py-2 text-white transition-colors hover:bg-stone-800 disabled:opacity-60 dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+          className="rounded-lg border border-stone-900 bg-stone-900 px-6 py-2 text-white transition-colors hover:bg-stone-800 disabled:opacity-60 dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 cursor-pointer"
         >
           {submitting
             ? isEdit
@@ -1025,18 +1007,11 @@ function SwitchField({ label, checked, onChange }) {
 function CategorySelect({ categories, value, onChange, disabled = false, placeholder = "Select Category" }) {
   return (
     <Select value={value} onValueChange={onChange} disabled={disabled}>
-      <SelectTrigger className="min-w-[220px] w-full">
+      <SelectTrigger className="w-full">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
-      <SelectContent
-        className="z-50 border border-stone-200 bg-white shadow-lg dark:border-stone-800 dark:bg-stone-900"
-        position="popper"
-        side="bottom"
-        align="start"
-        avoidCollisions={false}
-        sideOffset={4}
-      >
+      <SelectContent>
         {categories.map((category) => (
           <SelectItem key={category._id} value={category._id}>
             {category.name}

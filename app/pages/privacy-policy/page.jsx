@@ -1,17 +1,51 @@
 import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
+import Seo from "@/models/Seo.model";
 
 export async function generateMetadata() {
   try {
     await connectDB();
-    const pages = await Pages.findOne().lean();
+    const [pages, seo] = await Promise.all([
+      Pages.findOne().lean(),
+      Seo.findOne().lean(),
+    ]);
+
+    const policySeo = pages?.privacyPolicy?.seo;
+    const title =
+      policySeo?.metaTitle?.trim() ||
+      (pages?.privacyPolicy?.title
+        ? `${pages.privacyPolicy.title} | Stoneza`
+        : "Privacy Policy | Stoneza");
+    const description =
+      policySeo?.metaDescription?.trim() ||
+      "Read the Privacy Policy of Stoneza Natural Stones regarding personal data handling and user privacy.";
+    const canonicalUrl =
+      policySeo?.canonicalUrl?.trim() ||
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/privacy-policy`;
+    const ogImage =
+      policySeo?.ogImage?.trim() ||
+      seo?.ogImage ||
+      "";
+    const keywords = policySeo?.keywords?.trim() || "privacy policy, stoneza data policy, user terms";
+
     return {
-      title: pages?.privacyPolicy?.title || "Privacy Policy - Stoneza",
-      description: "Read the Privacy Policy of Stoneza.",
+      title,
+      description,
+      keywords,
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        images: ogImage ? [{ url: ogImage }] : [],
+        type: "website",
+      },
     };
   } catch {
     return {
-      title: "Privacy Policy - Stoneza",
+      title: "Privacy Policy | Stoneza",
       description: "Read the Privacy Policy of Stoneza.",
     };
   }

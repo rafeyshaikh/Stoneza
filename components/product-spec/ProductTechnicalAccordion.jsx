@@ -24,7 +24,7 @@ export default function ProductTechnicalAccordion({ product }) {
             <tbody>
               <tr className="border-t border-[#1C1714]">
                 <td className="font-heading text-[10px] font-semibold tracking-[0.12em] uppercase text-[#78716C] w-[46%] pr-3 py-2.5 border-b border-[#CBC9C4] align-top">Product</td>
-                <td className="font-sans text-sm text-[#1C1714] text-right py-2.5 border-b border-[#CBC9C4] align-top">{name} — {collectionName || 'Stonefield'}</td>
+                <td className="font-sans text-sm text-[#1C1714] text-right py-2.5 border-b border-[#CBC9C4] align-top">{name}{collectionName ? ` — ${collectionName}` : ''}</td>
               </tr>
               <tr>
                 <td className="font-heading text-[10px] font-semibold tracking-[0.12em] uppercase text-[#78716C] w-[46%] pr-3 py-2.5 border-b border-[#CBC9C4] align-top">Spec code</td>

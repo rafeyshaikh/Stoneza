@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Save } from "lucide-react";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import { toast } from "sonner";
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 export default function GlobalSeoForm({ data, onSave }) {
   const [formData, setFormData] = useState({
@@ -38,29 +39,16 @@ export default function GlobalSeoForm({ data, onSave }) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const fileToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("Could not read file"));
-      reader.readAsDataURL(file);
-    });
-
   const handleOgImageUpload = async (file) => {
     try {
-      const base64 = await fileToBase64(file);
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: base64, folder: "seo" }),
-      });
-      const result = await res.json();
-      if (!result.success) throw new Error(result.message || "Upload failed");
-      handleChange("ogImage", result.data.url);
-      toast.success("OG Image uploaded successfully");
+      const result = await uploadAdminImage(file, "seo");
+      if (result?.url) {
+        handleChange("ogImage", result.url);
+        toast.success("OG Image uploaded successfully");
+      }
     } catch (e) {
       console.error(e);
-      toast.error("Failed to upload OG image");
+      toast.error(e.message || "Failed to upload OG image");
     }
   };
 

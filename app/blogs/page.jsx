@@ -2,15 +2,52 @@ import BlogCard from "@/components/blogs/BlogCard";
 import BlogsPagination from "@/components/blogs/BlogsPagination";
 
 import { connectDB } from "@/lib/databaseConnection";
-import Blog from "@/models/Blog.model";
+import Seo from "@/models/Seo.model";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Stories | Stoneza",
-  description:
-    "Explore design inspiration, natural stone guides, poolside ideas, sculptures, fountains, and more.",
-};
+export async function generateMetadata() {
+  try {
+    await connectDB();
+    const seo = await Seo.findOne().lean();
+
+    const title = "The Journal & Stories | Stoneza Natural Stones";
+    const description =
+      "Explore natural stone guides, architectural design inspiration, poolside landscaping ideas, quarry insights, and stone craft stories from Stoneza.";
+    const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/blogs`;
+    const ogImage =
+      seo?.ogImage ||
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
+
+    return {
+      title,
+      description,
+      keywords: seo?.keywords || "stone journal, natural stone guide, marble flooring guide, sandstone cladding, landscape ideas, stoneza stories",
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [ogImage],
+      },
+    };
+  } catch (err) {
+    return {
+      title: "The Journal & Stories | Stoneza Natural Stones",
+      description:
+        "Explore natural stone guides, architectural design inspiration, poolside landscaping ideas, quarry insights, and stone craft stories from Stoneza.",
+    };
+  }
+}
 
 export default async function BlogsPage(props) {
   const searchParams = await props.searchParams;

@@ -5,20 +5,30 @@ import { getAboutData } from "@/lib/getAboutData";
 
 export async function generateMetadata() {
   const data = await getAboutData();
-  const title = data?.hero?.title
-    ? `${data.hero.title} | Stoneza Natural Stone`
-    : "About Stoneza | 34+ Years of Natural Stone Quarries & Processing in Rajasthan";
+  const title =
+    data?.seo?.metaTitle?.trim() ||
+    (data?.hero?.title
+      ? `${data.hero.title} | Stoneza Natural Stone`
+      : "About Stoneza | 34+ Years of Natural Stone Quarries & Processing in Rajasthan");
 
-  const description = data?.story?.lead
-    ? data.story.lead
-    : "Discover Stoneza's legacy since 1992. Three generations of quarrying Bijolia sandstone, Kota stone & Asind granite with in-house processing factories in Bhilwara, Rajasthan.";
+  const description =
+    data?.seo?.metaDescription?.trim() ||
+    (data?.story?.lead
+      ? data.story.lead
+      : "Discover Stoneza's legacy since 1992. Three generations of quarrying Bijolia sandstone, Kota stone & Asind granite with in-house processing factories in Bhilwara, Rajasthan.");
 
-  const heroImageUrl = data?.hero?.image?.url || "https://stoneza.in/wp-content/uploads/2026/04/Home-Page.webp";
+  const heroImageUrl =
+    data?.seo?.ogImage?.trim() ||
+    data?.hero?.image?.url ||
+    "https://stoneza.in/wp-content/uploads/2026/04/Home-Page.webp";
 
-  return {
-    title,
-    description,
-    keywords: [
+  const canonicalUrl =
+    data?.seo?.canonicalUrl?.trim() ||
+    `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/about-us`;
+
+  const keywords =
+    data?.seo?.keywords?.trim() ||
+    [
       "Stoneza about us",
       "Bijolia sandstone quarry",
       "Kota stone manufacturer",
@@ -29,21 +39,26 @@ export async function generateMetadata() {
       "Devanshi Jain",
       "natural stone cladding",
       "architectural stone solutions",
-    ].join(", "),
+    ].join(", ");
+
+  return {
+    title,
+    description,
+    keywords,
     alternates: {
-      canonical: "https://stoneza.in/pages/about-us",
+      canonical: canonicalUrl,
     },
     openGraph: {
       title,
       description,
-      url: "https://stoneza.in/pages/about-us",
+      url: canonicalUrl,
       siteName: "Stoneza",
       images: [
         {
           url: heroImageUrl,
           width: 1200,
           height: 630,
-          alt: "Stoneza Natural Stone Story",
+          alt: title,
         },
       ],
       type: "website",

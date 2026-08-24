@@ -19,35 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Could not read the selected file"));
-    reader.readAsDataURL(file);
-  });
-}
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
-async function uploadImage(file, folder = "collections") {
-  const base64 = await fileToBase64(file);
-  const response = await fetch("/api/admin/upload", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      image: base64,
-      folder,
-    }),
-  });
-
-  const data = await response.json();
-  if (!data.success) {
-    throw new Error(data.message || "Image upload failed");
-  }
-
-  return data.data;
-}
+const uploadImage = (file, folder = "collections") => uploadAdminImage(file, folder);
 
 const EMPTY_FORM = {
   name: "",
@@ -209,9 +183,18 @@ export default function CollectionForm({
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.message);
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        if (res.status === 413) {
+          throw new Error("Collection data or images are too large for the server.");
+        }
+        throw new Error(`Server error (${res.status}: ${res.statusText || "Invalid response"})`);
+      }
+
+      if (!res.ok || !data.success) {
+        throw new Error(data?.message || "Failed to save collection");
       }
 
       toast.success(
@@ -232,7 +215,7 @@ export default function CollectionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl pb-16">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
       <Section title="Basic Details">
         <div className="grid gap-6 md:grid-cols-2">
           <Field label="Collection Name *">

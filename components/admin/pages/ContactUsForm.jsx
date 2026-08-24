@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 const DEFAULT_CONTACT_DATA = {
   hero: {
@@ -48,6 +49,13 @@ const DEFAULT_CONTACT_DATA = {
   whatsapp: "",
   email: "",
   mapEmbedCode: "",
+  seo: {
+    metaTitle: "",
+    metaDescription: "",
+    keywords: "",
+    canonicalUrl: "",
+    ogImage: "",
+  },
 };
 
 export default function ContactUsForm() {
@@ -61,17 +69,7 @@ export default function ContactUsForm() {
 
   const uploadImage = async (file, folder = "pages/contact") => {
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", folder);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await res.json();
-      if (!result.success) throw new Error(result.message || "Upload failed");
-      return result.data; // returns { url, publicId }
+      return await uploadAdminImage(file, folder);
     } catch (e) {
       console.error(e);
       toast.error(e.message || "Failed to upload image");
@@ -213,6 +211,13 @@ export default function ContactUsForm() {
       }
       delete payload.hero?.pendingFile;
 
+      // Sync legacy fields so DB remains consistent across both schemas
+      payload.phone = payload.cards?.whatsappPhone || payload.phone || "";
+      payload.whatsapp = payload.cards?.whatsappHref || payload.cards?.whatsappPhone || payload.whatsapp || "";
+      payload.email = payload.cards?.emailAddress || payload.email || "";
+      payload.address = payload.cards?.officeLocation || payload.address || "";
+      payload.mapEmbedCode = payload.location?.mapEmbedUrl || payload.mapEmbedCode || "";
+
       toast.loading("Saving contact page...", { id: "contact-save" });
       const res = await fetch("/api/admin/cms/pages/contactUs", {
         method: "PATCH",
@@ -248,7 +253,7 @@ export default function ContactUsForm() {
   }
 
   return (
-    <div className="space-y-6 w-full pb-12">
+    <div className="space-y-6 w-full">
       {/* STICKY SAVE BAR */}
       <div className="sticky top-14 z-30 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
         <div>
@@ -447,6 +452,56 @@ export default function ContactUsForm() {
             placeholder="https://www.google.com/maps/embed?pb=..."
             value={data.location?.mapEmbedUrl || ""}
             onChange={(e) => handleLocationChange("mapEmbedUrl", e.target.value)}
+          />
+        </div>
+      </section>
+
+      {/* 5. SEO & METADATA */}
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70 space-y-4">
+        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">
+          5. SEO & Metadata
+        </h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Title</Label>
+            <Input
+              placeholder="e.g. Contact Stoneza | Natural Stone Supply & Specification, Bhilwara"
+              value={data.seo?.metaTitle || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, metaTitle: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
+            <Input
+              placeholder="e.g. https://stoneza.in/pages/contact"
+              value={data.seo?.canonicalUrl || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, canonicalUrl: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Keywords (Comma separated)</Label>
+            <Input
+              placeholder="e.g. contact stoneza, stone manufacturer bhilwara, natural stone sample box"
+              value={data.seo?.keywords || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, keywords: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">OG Image URL</Label>
+            <Input
+              placeholder="https://..."
+              value={data.seo?.ogImage || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, ogImage: e.target.value } })}
+            />
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Description</Label>
+          <Textarea
+            rows={3}
+            placeholder="Search engine description for the Contact Us page..."
+            value={data.seo?.metaDescription || ""}
+            onChange={(e) => setData({ ...data, seo: { ...data.seo, metaDescription: e.target.value } })}
           />
         </div>
       </section>

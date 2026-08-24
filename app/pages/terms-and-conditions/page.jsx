@@ -1,17 +1,51 @@
 import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
+import Seo from "@/models/Seo.model";
 
 export async function generateMetadata() {
   try {
     await connectDB();
-    const pages = await Pages.findOne().lean();
+    const [pages, seo] = await Promise.all([
+      Pages.findOne().lean(),
+      Seo.findOne().lean(),
+    ]);
+
+    const policySeo = pages?.termsAndConditions?.seo;
+    const title =
+      policySeo?.metaTitle?.trim() ||
+      (pages?.termsAndConditions?.title
+        ? `${pages.termsAndConditions.title} | Stoneza`
+        : "Terms & Conditions | Stoneza");
+    const description =
+      policySeo?.metaDescription?.trim() ||
+      "Read the Terms and Conditions for purchasing, specifying, and ordering natural stone products from Stoneza.";
+    const canonicalUrl =
+      policySeo?.canonicalUrl?.trim() ||
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/terms-and-conditions`;
+    const ogImage =
+      policySeo?.ogImage?.trim() ||
+      seo?.ogImage ||
+      "";
+    const keywords = policySeo?.keywords?.trim() || "terms and conditions, stoneza terms, quarry orders";
+
     return {
-      title: pages?.termsAndConditions?.title || "Terms & Conditions - Stoneza",
-      description: "Read the Terms & Conditions of Stoneza.",
+      title,
+      description,
+      keywords,
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        images: ogImage ? [{ url: ogImage }] : [],
+        type: "website",
+      },
     };
   } catch {
     return {
-      title: "Terms & Conditions - Stoneza",
+      title: "Terms & Conditions | Stoneza",
       description: "Read the Terms & Conditions of Stoneza.",
     };
   }

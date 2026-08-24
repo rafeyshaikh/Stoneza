@@ -86,7 +86,7 @@ export default function MultipleImageUploader({
           type="file"
           accept="image/*"
           multiple
-          hidden
+          className="hidden"
           onChange={handlePick}
         />
 

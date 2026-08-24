@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 export default function AboutEditor() {
   const [data, setData] = useState({
@@ -19,6 +20,7 @@ export default function AboutEditor() {
     showroom: { eyebrow: "", title: "", description: "", buttonText: "", buttonLink: "" },
     manifesto: { quote: "", sub: "" },
     cta: { eyebrow: "", title: "", description: "", buttonText: "", buttonLink: "" },
+    seo: { metaTitle: "", metaDescription: "", keywords: "", canonicalUrl: "", ogImage: "" },
   });
 
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,7 @@ export default function AboutEditor() {
             showroom: result.data.showroom || { eyebrow: "", title: "", description: "", buttonText: "", buttonLink: "" },
             manifesto: result.data.manifesto || { quote: "", sub: "" },
             cta: result.data.cta || { eyebrow: "", title: "", description: "", buttonText: "", buttonLink: "" },
+            seo: result.data.seo || { metaTitle: "", metaDescription: "", keywords: "", canonicalUrl: "", ogImage: "" },
           });
         }
       } catch (e) {
@@ -58,17 +61,7 @@ export default function AboutEditor() {
 
   const uploadImage = async (file, folder = "about") => {
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", folder);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await res.json();
-      if (!result.success) throw new Error(result.message || "Upload failed");
-      return result.data;
+      return await uploadAdminImage(file, folder);
     } catch (e) {
       console.error(e);
       toast.error(e.message || "Failed to upload image");
@@ -141,7 +134,7 @@ export default function AboutEditor() {
   }
 
   return (
-    <div className="space-y-6 pb-20 relative">
+    <div className="space-y-6 relative">
       {/* STICKY SAVE BAR */}
       <div className="sticky top-14 z-30 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
         <div>
@@ -339,6 +332,54 @@ export default function AboutEditor() {
             placeholder="Subtitle"
             value={data.manifesto?.sub || ""}
             onChange={(e) => setData({ ...data, manifesto: { ...data.manifesto, sub: e.target.value } })}
+          />
+        </div>
+      </section>
+
+      {/* 5. SEO & METADATA */}
+      <section className="space-y-4 rounded-2xl border p-5 bg-stone-50/80 dark:bg-stone-950/70">
+        <h3 className="font-heading text-base font-semibold">SEO & Metadata</h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Title</Label>
+            <Input
+              placeholder="e.g. About Stoneza | 34+ Years of Natural Stone Quarries"
+              value={data.seo?.metaTitle || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, metaTitle: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
+            <Input
+              placeholder="e.g. https://stoneza.in/pages/about-us"
+              value={data.seo?.canonicalUrl || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, canonicalUrl: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Keywords (Comma separated)</Label>
+            <Input
+              placeholder="e.g. Stoneza about us, Bijolia sandstone, natural stone Rajasthan"
+              value={data.seo?.keywords || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, keywords: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">OG Image URL</Label>
+            <Input
+              placeholder="https://..."
+              value={data.seo?.ogImage || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, ogImage: e.target.value } })}
+            />
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Description</Label>
+          <Textarea
+            rows={3}
+            placeholder="Search engine description for the About Us page..."
+            value={data.seo?.metaDescription || ""}
+            onChange={(e) => setData({ ...data, seo: { ...data.seo, metaDescription: e.target.value } })}
           />
         </div>
       </section>

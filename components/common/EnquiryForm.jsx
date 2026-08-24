@@ -536,7 +536,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
               <p className="mt-3 text-center font-sans text-[12px] text-[#8F8477]">
                 Or call / WhatsApp directly:{" "}
                 <a
-                  href={`tel:${(phone || whatsapp).replace(/\s+/g, "")}`}
+                  href={phone ? `tel:${phone.replace(/\s+/g, "")}` : (whatsapp.startsWith("http") ? whatsapp : `https://wa.me/${whatsapp.replace(/\D/g, "")}`)}
                   className="hover:underline text-[#D7CFC4]"
                 >
                   {phone || whatsapp}

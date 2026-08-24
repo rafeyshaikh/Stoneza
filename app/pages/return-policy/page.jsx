@@ -1,17 +1,51 @@
 import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
+import Seo from "@/models/Seo.model";
 
 export async function generateMetadata() {
   try {
     await connectDB();
-    const pages = await Pages.findOne().lean();
+    const [pages, seo] = await Promise.all([
+      Pages.findOne().lean(),
+      Seo.findOne().lean(),
+    ]);
+
+    const policySeo = pages?.returnPolicy?.seo;
+    const title =
+      policySeo?.metaTitle?.trim() ||
+      (pages?.returnPolicy?.title
+        ? `${pages.returnPolicy.title} | Stoneza`
+        : "Return & Cancellation Policy | Stoneza");
+    const description =
+      policySeo?.metaDescription?.trim() ||
+      "Read the Return & Cancellation Policy for custom-cut and quarry-direct natural stone orders at Stoneza.";
+    const canonicalUrl =
+      policySeo?.canonicalUrl?.trim() ||
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/return-policy`;
+    const ogImage =
+      policySeo?.ogImage?.trim() ||
+      seo?.ogImage ||
+      "";
+    const keywords = policySeo?.keywords?.trim() || "return policy, stoneza cancellation, refund policy";
+
     return {
-      title: pages?.returnPolicy?.title || "Return Policy - Stoneza",
-      description: "Read the Return Policy of Stoneza.",
+      title,
+      description,
+      keywords,
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        images: ogImage ? [{ url: ogImage }] : [],
+        type: "website",
+      },
     };
   } catch {
     return {
-      title: "Return Policy - Stoneza",
+      title: "Return Policy | Stoneza",
       description: "Read the Return Policy of Stoneza.",
     };
   }

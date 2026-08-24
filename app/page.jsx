@@ -32,10 +32,31 @@ export async function generateMetadata() {
   try {
     await connectDB();
     const seo = await Seo.findOne().lean();
+    const title = seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry";
+    const description = seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.";
+    const ogImage = seo?.ogImage || "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
+    const canonicalUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in";
+
     return {
-      title: seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry",
-      description: seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
+      title,
+      description,
       keywords: seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [ogImage],
+      },
     };
   } catch (err) {
     return {

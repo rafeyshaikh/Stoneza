@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 import HeroManager from "./HeroManager";
 import FeaturedCategoriesManager from "./FeaturedCategoriesManager";
@@ -60,17 +61,7 @@ export default function HomepageEditor() {
 
   const uploadImage = async (file, folder = "homepage") => {
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", folder);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await res.json();
-      if (!result.success) throw new Error(result.message || "Upload failed");
-      return result.data; // returns { url, publicId }
+      return await uploadAdminImage(file, folder);
     } catch (e) {
       console.error(e);
       toast.error(e.message || "Failed to upload image");
@@ -186,7 +177,7 @@ export default function HomepageEditor() {
   }
 
   return (
-    <div className="space-y-6 pb-20 relative">
+    <div className="space-y-6 relative">
       {/* STICKY ACTION SAVE BAR */}
       <div className="sticky top-14 z-30 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
         <div>

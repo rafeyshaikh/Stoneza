@@ -13,29 +13,9 @@ import { Switch } from "@/components/ui/switch";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import MultipleImageUploader from "@/components/admin/products/MultipleImageUploader";
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Could not read file"));
-    reader.readAsDataURL(file);
-  });
-}
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
-async function uploadImage(file, folder = "projects") {
-  const base64 = await fileToBase64(file);
-  const response = await fetch("/api/admin/upload", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ image: base64, folder }),
-  });
-
-  const data = await response.json();
-  if (!data.success) {
-    throw new Error(data.message || "Failed to upload image");
-  }
-  return data.data; // { url, publicId }
-}
+const uploadImage = (file, folder = "projects") => uploadAdminImage(file, folder);
 
 const SEGMENTS = [
   "Hospitality",
@@ -227,10 +207,18 @@ export default function ProjectForm({ initialData = null, isEdit = false }) {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        if (res.status === 413) {
+          throw new Error("Project data or images are too large for the server.");
+        }
+        throw new Error(`Server error (${res.status}: ${res.statusText || "Invalid response"})`);
+      }
 
-      if (!data.success) {
-        throw new Error(data.message || "Failed to save project");
+      if (!res.ok || !data.success) {
+        throw new Error(data?.message || "Failed to save project");
       }
 
       toast.success(
@@ -250,7 +238,7 @@ export default function ProjectForm({ initialData = null, isEdit = false }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-7xl space-y-8 pb-12">
+    <form onSubmit={handleSubmit} className="mx-auto max-w-7xl space-y-6">
       {/* Header Back Bar */}
       <div className="flex items-center justify-between">
         <Link href="/admin/projects">

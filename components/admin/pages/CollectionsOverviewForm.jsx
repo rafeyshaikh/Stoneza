@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 const DEFAULT_COLLECTIONS_DATA = {
   title: "Collections",
@@ -26,6 +27,13 @@ const DEFAULT_COLLECTIONS_DATA = {
       href: "",
     },
   },
+  seo: {
+    metaTitle: "",
+    metaDescription: "",
+    keywords: "",
+    canonicalUrl: "",
+    ogImage: "",
+  },
 };
 
 export default function CollectionsOverviewForm() {
@@ -39,17 +47,7 @@ export default function CollectionsOverviewForm() {
 
   const uploadImage = async (file, folder = "pages/collections") => {
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder", folder);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await res.json();
-      if (!result.success) throw new Error(result.message || "Upload failed");
-      return result.data; // returns { url, publicId }
+      return await uploadAdminImage(file, folder);
     } catch (e) {
       console.error(e);
       toast.error(e.message || "Failed to upload image");
@@ -174,7 +172,7 @@ export default function CollectionsOverviewForm() {
   }
 
   return (
-    <div className="space-y-6 w-full pb-12">
+    <div className="space-y-6 w-full">
       {/* STICKY SAVE BAR */}
       <div className="sticky top-14 z-30 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
         <div>
@@ -404,6 +402,56 @@ export default function CollectionsOverviewForm() {
               hint="Upload card image displayed in the navigation megamenu."
             />
           </div>
+        </div>
+      </section>
+
+      {/* 3. SEO & METADATA */}
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70 space-y-4">
+        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">
+          3. SEO & Metadata
+        </h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Title</Label>
+            <Input
+              placeholder="e.g. Natural Stone Collections | Stoneza"
+              value={data.seo?.metaTitle || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, metaTitle: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
+            <Input
+              placeholder="e.g. https://stoneza.in/collections"
+              value={data.seo?.canonicalUrl || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, canonicalUrl: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Keywords (Comma separated)</Label>
+            <Input
+              placeholder="e.g. natural stone collections, sandstone paving, cladding ranges"
+              value={data.seo?.keywords || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, keywords: e.target.value } })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">OG Image URL</Label>
+            <Input
+              placeholder="https://..."
+              value={data.seo?.ogImage || ""}
+              onChange={(e) => setData({ ...data, seo: { ...data.seo, ogImage: e.target.value } })}
+            />
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Description</Label>
+          <Textarea
+            rows={3}
+            placeholder="Search engine description for the Collections overview page..."
+            value={data.seo?.metaDescription || ""}
+            onChange={(e) => setData({ ...data, seo: { ...data.seo, metaDescription: e.target.value } })}
+          />
         </div>
       </section>
 

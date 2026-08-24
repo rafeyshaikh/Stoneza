@@ -93,6 +93,14 @@ const aboutPageSchema = new mongoose.Schema(
       buttonText: { type: String, trim: true },
       buttonLink: { type: String, trim: true },
     },
+
+    seo: {
+      metaTitle: { type: String, trim: true, default: "" },
+      metaDescription: { type: String, trim: true, default: "" },
+      keywords: { type: String, trim: true, default: "" },
+      canonicalUrl: { type: String, trim: true, default: "" },
+      ogImage: { type: String, trim: true, default: "" },
+    },
   },
   { timestamps: true }
 );

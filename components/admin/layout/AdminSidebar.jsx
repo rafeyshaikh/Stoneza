@@ -50,7 +50,7 @@ export default function AdminSidebar({ className, onClose }) {
   return (
     <aside
       className={cn(
-        "flex w-72 shrink-0 flex-col border-r border-stone-300/60 bg-stone-100/90 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/90 h-screen sticky top-0 z-40 select-none",
+        "flex w-72 shrink-0 flex-col border-r border-stone-300/60 bg-stone-100/90 backdrop-blur-xl dark:border-stone-800 dark:bg-stone-950/90 h-full z-40 select-none",
         className
       )}
     >

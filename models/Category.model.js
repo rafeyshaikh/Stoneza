@@ -80,15 +80,7 @@ const categorySchema = new mongoose.Schema(
 
     bannerImage: {
       square: imageSchema,
-
-      wide: {
-        type: [imageSchema],
-        validate: {
-          validator: (value) => value.length <= 2,
-          message: "Maximum 2 wide banners are allowed",
-        },
-        default: [],
-      },
+      wide: imageSchema,
     },
 
     categoryLevel: {

@@ -57,6 +57,7 @@ export async function PATCH(request) {
     if (body.showroom !== undefined) doc.showroom = body.showroom;
     if (body.manifesto !== undefined) doc.manifesto = body.manifesto;
     if (body.cta !== undefined) doc.cta = body.cta;
+    if (body.seo !== undefined) doc.seo = body.seo;
 
     await doc.save();
 

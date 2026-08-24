@@ -51,12 +51,30 @@ const contactUsSchema = new mongoose.Schema(
     facebook: String,
     email: String,
     mapEmbedCode: String,
+
+    seo: {
+      metaTitle: { type: String, trim: true, default: "" },
+      metaDescription: { type: String, trim: true, default: "" },
+      keywords: { type: String, trim: true, default: "" },
+      canonicalUrl: { type: String, trim: true, default: "" },
+      ogImage: { type: String, trim: true, default: "" },
+    },
   },
   { _id: false },
 );
 
 const policySchema = new mongoose.Schema(
-  { title: String, content: String },
+  {
+    title: String,
+    content: String,
+    seo: {
+      metaTitle: { type: String, trim: true, default: "" },
+      metaDescription: { type: String, trim: true, default: "" },
+      keywords: { type: String, trim: true, default: "" },
+      canonicalUrl: { type: String, trim: true, default: "" },
+      ogImage: { type: String, trim: true, default: "" },
+    },
+  },
   { _id: false },
 );
 
@@ -137,6 +155,13 @@ const collectionsOverviewSchema = new mongoose.Schema(
       },
     },
     megamenu: megamenuSchema,
+    seo: {
+      metaTitle: { type: String, trim: true, default: "" },
+      metaDescription: { type: String, trim: true, default: "" },
+      keywords: { type: String, trim: true, default: "" },
+      canonicalUrl: { type: String, trim: true, default: "" },
+      ogImage: { type: String, trim: true, default: "" },
+    },
   },
   { _id: false }
 );

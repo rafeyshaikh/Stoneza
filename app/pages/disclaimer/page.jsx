@@ -1,17 +1,51 @@
 import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
+import Seo from "@/models/Seo.model";
 
 export async function generateMetadata() {
   try {
     await connectDB();
-    const pages = await Pages.findOne().lean();
+    const [pages, seo] = await Promise.all([
+      Pages.findOne().lean(),
+      Seo.findOne().lean(),
+    ]);
+
+    const policySeo = pages?.disclaimer?.seo;
+    const title =
+      policySeo?.metaTitle?.trim() ||
+      (pages?.disclaimer?.title
+        ? `${pages.disclaimer.title} | Stoneza`
+        : "Disclaimer | Stoneza");
+    const description =
+      policySeo?.metaDescription?.trim() ||
+      "Read the Legal Disclaimer and natural stone variation notices of Stoneza.";
+    const canonicalUrl =
+      policySeo?.canonicalUrl?.trim() ||
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/disclaimer`;
+    const ogImage =
+      policySeo?.ogImage?.trim() ||
+      seo?.ogImage ||
+      "";
+    const keywords = policySeo?.keywords?.trim() || "disclaimer, stone variation notice, stoneza legal";
+
     return {
-      title: pages?.disclaimer?.title || "Disclaimer - Stoneza",
-      description: "Read the Disclaimer of Stoneza.",
+      title,
+      description,
+      keywords,
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        images: ogImage ? [{ url: ogImage }] : [],
+        type: "website",
+      },
     };
   } catch {
     return {
-      title: "Disclaimer - Stoneza",
+      title: "Disclaimer | Stoneza",
       description: "Read the Disclaimer of Stoneza.",
     };
   }

@@ -63,6 +63,14 @@ export default async function EditCategoryPage({ params }) {
         ? plainCategory.parentCategory._id
         : plainCategory.parentCategory
       : "none",
+    bannerImage: {
+      square: plainCategory.bannerImage?.square || { url: "", publicId: "" },
+      wide: plainCategory.bannerImage?.wide?.url
+        ? plainCategory.bannerImage.wide
+        : Array.isArray(plainCategory.bannerImage?.wide) && plainCategory.bannerImage.wide[0]
+        ? plainCategory.bannerImage.wide[0]
+        : { url: "", publicId: "" },
+    },
   };
 
   return (
