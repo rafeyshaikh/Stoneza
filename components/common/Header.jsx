@@ -39,6 +39,28 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    };
+  }, [mobileMenuOpen]);
+
+  // Auto close mobile drawer on route navigation
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setActiveTab(null);
+    setOpenCategory(null);
+  }, [pathname]);
+
   // Safely retrieve context categories & collections from DB
   let categoriesFromDb = [];
   let collectionsFromDb = null;
@@ -93,12 +115,12 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(true)}
-          className={`lg:hidden text-2xl p-1 cursor-pointer transition-colors ${
-            isSolidHeader ? "text-[#26221E]" : "text-white"
+          className={`lg:hidden flex items-center justify-center w-10 h-10 -ml-2 rounded-lg cursor-pointer transition-colors active:scale-95 ${
+            isSolidHeader ? "text-[#26221E] hover:bg-[#26221E]/10" : "text-white hover:bg-white/15"
           }`}
           aria-label="Open mobile menu"
         >
-          <HiOutlineMenuAlt3 />
+          <HiOutlineMenuAlt3 className="w-6 h-6" />
         </button>
 
         {/* Left Links (Desktop) */}
@@ -335,65 +357,99 @@ export default function Header() {
       {/* MOBILE SLIDE-OUT DRAWER MENU */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <>
+          <div className="fixed inset-0 z-[10000] lg:hidden">
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000]"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
+
+            {/* Slide-out Drawer */}
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-[#C9BDB2] text-[#26221E] z-[10001] flex flex-col justify-between p-6 overflow-y-auto"
+              transition={{ type: "spring", damping: 28, stiffness: 300 }}
+              className="relative w-[88%] max-w-[360px] h-[100dvh] bg-[#C9BDB2] text-[#26221E] shadow-2xl flex flex-col z-10 overflow-hidden"
             >
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-[#26221E]/20 pb-4">
-                  <div className="relative w-32 h-9">
-                    <Image
-                      src="/assets/logo/The-Stoneza-Logo.webp"
-                      alt="Stoneza Logo"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-2xl text-[#26221E] cursor-pointer"
-                    aria-label="Close menu"
-                  >
-                    <PiXBold />
-                  </button>
-                </div>
+              {/* Drawer Header with Logo & Close */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[#26221E]/15 bg-[#C9BDB2]/95 backdrop-blur-md shrink-0">
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="relative w-28 h-8 block"
+                >
+                  <Image
+                    src="/assets/logo/The-Stoneza-Logo.webp"
+                    alt="Stoneza Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg text-2xl text-[#26221E] hover:bg-[#26221E]/10 active:scale-95 transition-transform cursor-pointer"
+                  aria-label="Close menu"
+                >
+                  <PiXBold />
+                </button>
+              </div>
 
-                <div className="space-y-4 font-heading text-sm tracking-widest uppercase">
+              {/* Quick Search Button in Drawer */}
+              <div className="px-5 pt-3 pb-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setIsSearchOpen(true);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-[#FAF8F5]/70 border border-[#26221E]/15 text-[#26221E]/70 font-sans text-xs tracking-wide text-left cursor-pointer transition-colors hover:bg-[#FAF8F5]"
+                >
+                  <CiSearch className="w-4 h-4 text-[#26221E]" />
+                  <span>Search natural stones, paving...</span>
+                </button>
+              </div>
+
+              {/* Scrollable Navigation List */}
+              <div className="flex-1 overflow-y-auto px-5 py-2 space-y-1 divide-y divide-[#26221E]/10 overscroll-contain">
+                {/* Product Categories & Collections */}
+                <div className="space-y-1 pb-3">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#9C7233] font-bold px-1 pt-2 pb-1">
+                    Collections &amp; Stones
+                  </p>
                   {displayNavItems.map((item) => {
                     const isOpen = openCategory === item.title;
+                    const hasChildren = item.categories && item.categories.length > 0;
+                    const mainHref = item.isCollection || item.slug === "collections"
+                      ? "/collections"
+                      : `/product-category/${item.slug}`;
+
                     return (
                       <div
                         key={item.title}
-                        className="border-b border-[#26221E]/15 pb-3"
+                        className="rounded-lg overflow-hidden transition-colors"
                       >
                         <div className="flex items-center justify-between">
                           <Link
-                            href={`/product-category/${item.slug}`}
+                            href={mainHref}
                             onClick={() => setMobileMenuOpen(false)}
-                            className="font-bold text-[#26221E] hover:underline"
+                            className="flex-1 py-2.5 px-2 font-heading text-sm font-semibold tracking-wider uppercase text-[#26221E] hover:text-[#9A4A2E] transition-colors"
                           >
                             {item.title}
                           </Link>
-                          {item.categories && item.categories.length > 0 && (
+                          {hasChildren && (
                             <button
                               type="button"
                               onClick={() =>
                                 setOpenCategory(isOpen ? null : item.title)
                               }
-                              className="text-lg text-[#26221E] p-1 cursor-pointer"
-                              aria-label="Expand category"
+                              className="w-10 h-10 flex items-center justify-center text-lg text-[#26221E] hover:bg-[#26221E]/10 rounded-lg cursor-pointer transition-transform active:scale-90"
+                              aria-label={`Toggle ${item.title} subcategories`}
                             >
                               {isOpen ? <LuMinus /> : <GoPlus />}
                             </button>
@@ -401,45 +457,58 @@ export default function Header() {
                         </div>
 
                         <AnimatePresence>
-                          {isOpen && item.categories && (
+                          {isOpen && hasChildren && (
                             <motion.div
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden pl-4 pt-3 space-y-3 normal-case tracking-normal font-sans text-xs"
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden bg-[#FAF8F5]/40 rounded-lg mx-1 mb-2 p-3 space-y-2.5 text-xs font-sans"
                             >
+                              {/* Direct view-all link */}
+                              <Link
+                                href={mainHref}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="block font-semibold text-[#9A4A2E] pb-1 border-b border-[#26221E]/10 uppercase font-heading text-[10.5px] tracking-wider"
+                              >
+                                View all {item.title} →
+                              </Link>
+
                               {item.categories.map((sub) => {
                                 const isClickable = !sub.isCmsColumn && (sub.isDbCategory || sub.isCollection || Boolean(sub.href));
+                                const subHref = sub.href || (sub.isCollection ? `/collections/${sub.slug}` : `/product-category/${sub.slug}`);
+
                                 return (
                                   <div key={sub.title} className="space-y-1">
                                     {isClickable ? (
                                       <Link
-                                        href={sub.href || `/product-category/${sub.slug}`}
+                                        href={subHref}
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className="font-semibold text-[#26221E] block hover:underline"
+                                        className="font-medium text-[#26221E] block hover:underline hover:text-[#9A4A2E] transition-colors"
                                       >
                                         {sub.title}
                                       </Link>
                                     ) : (
-                                      <span className="font-semibold text-[#26221E] block select-none cursor-default">
+                                      <span className="font-semibold text-[#26221E]/80 block text-[11.5px] uppercase font-heading tracking-wide">
                                         {sub.title}
                                       </span>
                                     )}
-                                  {sub.links && (
-                                    <div className="pl-3 space-y-1 border-l border-[#26221E]/20">
-                                      {sub.links.map((link) => (
-                                        <Link
-                                          key={link.name}
-                                          href={link.href || `/product-category/${link.slug}`}
-                                          onClick={() => setMobileMenuOpen(false)}
-                                          className="block hover:underline"
-                                        >
-                                          {link.name}
-                                        </Link>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
+
+                                    {sub.links && sub.links.length > 0 && (
+                                      <div className="pl-3 space-y-1 border-l-2 border-[#26221E]/20 mt-1">
+                                        {sub.links.map((link) => (
+                                          <Link
+                                            key={link.name}
+                                            href={link.href || `/product-category/${link.slug}`}
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className="block text-[#4A423C] hover:text-[#1C1714] hover:underline transition-colors py-0.5"
+                                          >
+                                            {link.name}
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
                                 );
                               })}
                             </motion.div>
@@ -448,38 +517,64 @@ export default function Header() {
                       </div>
                     );
                   })}
+                </div>
 
+                {/* Company & Resource Links */}
+                <div className="space-y-1 pt-3 pb-3 font-heading text-sm tracking-wider uppercase">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#9C7233] font-bold px-1 pt-1 pb-1">
+                    Explore
+                  </p>
                   <Link
                     href="/projects"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block font-bold text-[#26221E] hover:underline border-b border-[#26221E]/15 pb-3"
+                    className="block py-2.5 px-2 font-semibold text-[#26221E] hover:text-[#9A4A2E] transition-colors"
                   >
                     Projects
                   </Link>
                   <Link
+                    href="/blogs"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-2.5 px-2 font-semibold text-[#26221E] hover:text-[#9A4A2E] transition-colors"
+                  >
+                    The Journal
+                  </Link>
+                  <Link
                     href="/pages/about-us"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block font-bold text-[#26221E] hover:underline border-b border-[#26221E]/15 pb-3"
+                    className="block py-2.5 px-2 font-semibold text-[#26221E] hover:text-[#9A4A2E] transition-colors"
                   >
                     About Us
                   </Link>
                   <Link
                     href="/pages/contact"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block font-bold text-[#26221E] hover:underline border-b border-[#26221E]/15 pb-3"
+                    className="block py-2.5 px-2 font-semibold text-[#26221E] hover:text-[#9A4A2E] transition-colors"
                   >
                     Contact
                   </Link>
                 </div>
               </div>
 
-              <div className="border-t border-[#26221E]/20 pt-6 space-y-2">
-                <p className="text-[10.5px] text-[#26221E]/70 font-mono tracking-wider">
-                  © 2026 Anantay Exports Pvt. Ltd. — trading as Stoneza.
-                </p>
+              {/* Drawer Bottom Actions: WhatsApp & Enquiry CTA */}
+              <div className="p-4 border-t border-[#26221E]/15 bg-[#FAF8F5]/80 shrink-0 space-y-2">
+                <a
+                  href="https://wa.me/917877108154?text=Hi%20Stoneza%2C%20I%20would%20like%20to%20enquire%20about%20natural%20stone%20surfaces."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 bg-[#1C1714] text-white font-heading text-xs font-bold tracking-[0.15em] uppercase rounded flex items-center justify-center gap-2 hover:bg-[#25D366] transition-colors no-underline shadow-xs"
+                >
+                  WhatsApp Enquiry
+                </a>
+                <Link
+                  href="/pages/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-2 px-4 border border-[#26221E]/30 text-[#26221E] font-heading text-[11px] font-semibold tracking-[0.15em] uppercase rounded flex items-center justify-center hover:bg-[#26221E]/10 transition-colors no-underline"
+                >
+                  Request Sample Box
+                </Link>
               </div>
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
 
