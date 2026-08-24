@@ -27,8 +27,49 @@ const contactUsSchema = new mongoose.Schema(
       whatsappPhone: { type: String, default: "+91 78771 08154" },
       whatsappHref: { type: String, default: "https://wa.me/917877108154" },
       emailAddress: { type: String, default: "sales@stoneza.in" },
-      officeLocation: { type: String, default: "Bhilwara, Rajasthan" },
+      officeLocation: {
+        type: String,
+        default:
+          "F-124, RIICO Growth Centre, Hamirgarh, Bhilwara, Rajasthan — 311025, India",
+      },
       workingHours: { type: String, default: "Mon–Sat, 9:30–18:30 IST" },
+      gstin: { type: String, default: "08AAWCA2095G1Z9" },
+      cin: { type: String, default: "U14100RJ2021PTC076892" },
+    },
+
+    legal: {
+      legalEntity: { type: String, default: "Anantay Exports Pvt. Ltd." },
+      tradeName: { type: String, default: "trading as Stoneza" },
+      cin: { type: String, default: "U14100RJ2021PTC076892" },
+      gstin: { type: String, default: "08AAWCA2095G1Z9" },
+      registeredAddress: {
+        type: String,
+        default:
+          "F-124, RIICO Growth Centre, Hamirgarh, Bhilwara, Rajasthan — 311025, India",
+      },
+      displayAddress: {
+        type: String,
+        default: "Bhilwara, Rajasthan — 311025",
+      },
+    },
+
+    socials: {
+      instagram: {
+        type: String,
+        default: "https://www.instagram.com/thestoneza",
+      },
+      facebook: {
+        type: String,
+        default: "https://www.facebook.com/thestoneza",
+      },
+      youtube: {
+        type: String,
+        default: "https://www.youtube.com/@thestoneza",
+      },
+      linkedin: {
+        type: String,
+        default: "https://www.linkedin.com/company/thestoneza",
+      },
     },
 
     peopleSection: {
@@ -49,7 +90,11 @@ const contactUsSchema = new mongoose.Schema(
     youtube: String,
     instagram: String,
     facebook: String,
+    linkedIn: String,
     email: String,
+    gstin: String,
+    cin: String,
+    registeredAddress: String,
     mapEmbedCode: String,
 
     seo: {

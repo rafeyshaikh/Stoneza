@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/databaseConnection";
 import { ensureAdminApi } from "@/lib/adminAuth";
 import { response } from "@/lib/helperFunction";
 import { revalidateTag } from "next/cache";
+import { COMPANY_INFO } from "@/lib/constants";
 
 import Pages from "@/models/Pages.model";
 
@@ -20,14 +21,44 @@ async function getOrCreatePagesDocument() {
   if (!pages) {
     pages = await Pages.create({
       contactUs: {
-        address: "",
-        phone: "",
-        whatsapp: "",
-        youtube: "",
-        instagram: "",
-        facebook: "",
-        email: "",
-        mapEmbedCode: "",
+        legal: {
+          legalEntity: COMPANY_INFO.legalEntity,
+          tradeName: COMPANY_INFO.tradeName,
+          cin: COMPANY_INFO.cin,
+          gstin: COMPANY_INFO.gstin,
+          registeredAddress: COMPANY_INFO.registeredAddress,
+          displayAddress: COMPANY_INFO.displayAddress,
+        },
+        cards: {
+          whatsappPhone: COMPANY_INFO.phone,
+          whatsappHref: COMPANY_INFO.whatsappUrl,
+          emailAddress: COMPANY_INFO.email,
+          officeLocation: COMPANY_INFO.registeredAddress,
+          workingHours: COMPANY_INFO.workingHours,
+          gstin: COMPANY_INFO.gstin,
+          cin: COMPANY_INFO.cin,
+        },
+        socials: {
+          instagram: COMPANY_INFO.socials.instagram,
+          facebook: COMPANY_INFO.socials.facebook,
+          youtube: COMPANY_INFO.socials.youtube,
+          linkedin: COMPANY_INFO.socials.linkedin,
+        },
+        location: {
+          mapEmbedUrl: COMPANY_INFO.mapEmbedUrl,
+        },
+        address: COMPANY_INFO.registeredAddress,
+        phone: COMPANY_INFO.phone,
+        whatsapp: COMPANY_INFO.whatsappUrl,
+        youtube: COMPANY_INFO.socials.youtube,
+        instagram: COMPANY_INFO.socials.instagram,
+        facebook: COMPANY_INFO.socials.facebook,
+        linkedIn: COMPANY_INFO.socials.linkedin,
+        email: COMPANY_INFO.email,
+        gstin: COMPANY_INFO.gstin,
+        cin: COMPANY_INFO.cin,
+        registeredAddress: COMPANY_INFO.registeredAddress,
+        mapEmbedCode: COMPANY_INFO.mapEmbedUrl,
       },
 
       privacyPolicy: {

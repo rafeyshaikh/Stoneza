@@ -9,18 +9,35 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import { uploadAdminImage } from "@/lib/uploadAdminImage";
+import { COMPANY_INFO } from "@/lib/constants";
 
 const DEFAULT_CONTACT_DATA = {
   hero: {
     bgImage:
       "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png",
   },
+  legal: {
+    legalEntity: COMPANY_INFO.legalEntity,
+    tradeName: COMPANY_INFO.tradeName,
+    cin: COMPANY_INFO.cin,
+    gstin: COMPANY_INFO.gstin,
+    registeredAddress: COMPANY_INFO.registeredAddress,
+    displayAddress: COMPANY_INFO.displayAddress,
+  },
+  socials: {
+    instagram: COMPANY_INFO.socials.instagram,
+    facebook: COMPANY_INFO.socials.facebook,
+    youtube: COMPANY_INFO.socials.youtube,
+    linkedin: COMPANY_INFO.socials.linkedin,
+  },
   cards: {
-    whatsappPhone: "+91 78771 08154",
-    whatsappHref: "https://wa.me/917877108154",
-    emailAddress: "sales@stoneza.in",
-    officeLocation: "Bhilwara, Rajasthan",
-    workingHours: "Mon–Sat, 9:30–18:30 IST",
+    whatsappPhone: COMPANY_INFO.phone,
+    whatsappHref: COMPANY_INFO.whatsappUrl,
+    emailAddress: COMPANY_INFO.email,
+    officeLocation: COMPANY_INFO.registeredAddress,
+    workingHours: COMPANY_INFO.workingHours,
+    gstin: COMPANY_INFO.gstin,
+    cin: COMPANY_INFO.cin,
   },
   peopleSection: {
     people: [
@@ -41,13 +58,15 @@ const DEFAULT_CONTACT_DATA = {
     ],
   },
   location: {
-    mapEmbedUrl:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d115682.49392576307!2d74.57076418854448!3d25.348612140417937!2m3!1f0!0f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3968c237a505b38d%3A0xb3cf51d8b72445b2!2sBhilwara%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin",
+    mapEmbedUrl: COMPANY_INFO.mapEmbedUrl,
   },
   address: "",
   phone: "",
   whatsapp: "",
   email: "",
+  gstin: "",
+  cin: "",
+  registeredAddress: "",
   mapEmbedCode: "",
   seo: {
     metaTitle: "",
@@ -90,6 +109,49 @@ export default function ContactUsForm() {
               result.data.hero?.bgImage ||
               DEFAULT_CONTACT_DATA.hero.bgImage,
           },
+          legal: {
+            legalEntity:
+              result.data.legal?.legalEntity ||
+              DEFAULT_CONTACT_DATA.legal.legalEntity,
+            tradeName:
+              result.data.legal?.tradeName ||
+              DEFAULT_CONTACT_DATA.legal.tradeName,
+            cin:
+              result.data.legal?.cin ||
+              result.data.cin ||
+              DEFAULT_CONTACT_DATA.legal.cin,
+            gstin:
+              result.data.legal?.gstin ||
+              result.data.gstin ||
+              DEFAULT_CONTACT_DATA.legal.gstin,
+            registeredAddress:
+              result.data.legal?.registeredAddress ||
+              result.data.registeredAddress ||
+              result.data.cards?.officeLocation ||
+              DEFAULT_CONTACT_DATA.legal.registeredAddress,
+            displayAddress:
+              result.data.legal?.displayAddress ||
+              DEFAULT_CONTACT_DATA.legal.displayAddress,
+          },
+          socials: {
+            instagram:
+              result.data.socials?.instagram ||
+              result.data.instagram ||
+              DEFAULT_CONTACT_DATA.socials.instagram,
+            facebook:
+              result.data.socials?.facebook ||
+              result.data.facebook ||
+              DEFAULT_CONTACT_DATA.socials.facebook,
+            youtube:
+              result.data.socials?.youtube ||
+              result.data.youtube ||
+              DEFAULT_CONTACT_DATA.socials.youtube,
+            linkedin:
+              result.data.socials?.linkedin ||
+              result.data.socials?.linkedIn ||
+              result.data.linkedIn ||
+              DEFAULT_CONTACT_DATA.socials.linkedin,
+          },
           cards: {
             whatsappPhone:
               result.data.cards?.whatsappPhone ||
@@ -106,6 +168,14 @@ export default function ContactUsForm() {
             workingHours:
               result.data.cards?.workingHours ||
               DEFAULT_CONTACT_DATA.cards.workingHours,
+            gstin:
+              result.data.cards?.gstin ||
+              result.data.gstin ||
+              DEFAULT_CONTACT_DATA.cards.gstin,
+            cin:
+              result.data.cards?.cin ||
+              result.data.cin ||
+              DEFAULT_CONTACT_DATA.cards.cin,
           },
           peopleSection: {
             people:
@@ -123,7 +193,17 @@ export default function ContactUsForm() {
           phone: result.data.phone || "",
           whatsapp: result.data.whatsapp || "",
           email: result.data.email || "",
+          gstin: result.data.gstin || "",
+          cin: result.data.cin || "",
+          registeredAddress: result.data.registeredAddress || "",
           mapEmbedCode: result.data.mapEmbedCode || "",
+          seo: {
+            metaTitle: result.data.seo?.metaTitle || "",
+            metaDescription: result.data.seo?.metaDescription || "",
+            keywords: result.data.seo?.keywords || "",
+            canonicalUrl: result.data.seo?.canonicalUrl || "",
+            ogImage: result.data.seo?.ogImage || "",
+          },
         });
       }
     } catch (error) {
@@ -138,6 +218,20 @@ export default function ContactUsForm() {
     setData((prev) => ({
       ...prev,
       hero: { ...(prev.hero || {}), [field]: value },
+    }));
+  };
+
+  const handleLegalChange = (field, value) => {
+    setData((prev) => ({
+      ...prev,
+      legal: { ...(prev.legal || {}), [field]: value },
+    }));
+  };
+
+  const handleSocialChange = (field, value) => {
+    setData((prev) => ({
+      ...prev,
+      socials: { ...(prev.socials || {}), [field]: value },
     }));
   };
 
@@ -211,12 +305,28 @@ export default function ContactUsForm() {
       }
       delete payload.hero?.pendingFile;
 
-      // Sync legacy fields so DB remains consistent across both schemas
+      // Sync legacy and cross-component fields so DB remains consistent across both schemas
       payload.phone = payload.cards?.whatsappPhone || payload.phone || "";
       payload.whatsapp = payload.cards?.whatsappHref || payload.cards?.whatsappPhone || payload.whatsapp || "";
       payload.email = payload.cards?.emailAddress || payload.email || "";
-      payload.address = payload.cards?.officeLocation || payload.address || "";
+      payload.address = payload.legal?.registeredAddress || payload.cards?.officeLocation || payload.address || "";
+      payload.registeredAddress = payload.legal?.registeredAddress || "";
+      payload.gstin = payload.legal?.gstin || payload.cards?.gstin || "";
+      payload.cin = payload.legal?.cin || payload.cards?.cin || "";
+      payload.instagram = payload.socials?.instagram || "";
+      payload.facebook = payload.socials?.facebook || "";
+      payload.youtube = payload.socials?.youtube || "";
+      payload.linkedIn = payload.socials?.linkedin || "";
       payload.mapEmbedCode = payload.location?.mapEmbedUrl || payload.mapEmbedCode || "";
+
+      // Ensure card mirror has GSTIN / CIN / Address
+      if (payload.cards) {
+        payload.cards.gstin = payload.gstin;
+        payload.cards.cin = payload.cin;
+        if (!payload.cards.officeLocation) {
+          payload.cards.officeLocation = payload.address;
+        }
+      }
 
       toast.loading("Saving contact page...", { id: "contact-save" });
       const res = await fetch("/api/admin/cms/pages/contactUs", {
@@ -293,10 +403,59 @@ export default function ContactUsForm() {
         />
       </section>
 
-      {/* 2. CONTACT CARDS GRID */}
+      {/* 2. LEGAL ENTITY & TAX IDENTIFICATION */}
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
         <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
-          2. Contact Information Cards
+          2. Legal Entity &amp; Statutory Registration
+        </h3>
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-2">
+            <Label>Legal Entity Name</Label>
+            <Input
+              placeholder="Anantay Exports Pvt. Ltd."
+              value={data.legal?.legalEntity || ""}
+              onChange={(e) => handleLegalChange("legalEntity", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Trade / Brand Name</Label>
+            <Input
+              placeholder="trading as Stoneza"
+              value={data.legal?.tradeName || ""}
+              onChange={(e) => handleLegalChange("tradeName", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>GSTIN</Label>
+            <Input
+              placeholder="08AAWCA2095G1Z9"
+              value={data.legal?.gstin || ""}
+              onChange={(e) => handleLegalChange("gstin", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>CIN (Corporate Identity Number)</Label>
+            <Input
+              placeholder="U14100RJ2021PTC076892"
+              value={data.legal?.cin || ""}
+              onChange={(e) => handleLegalChange("cin", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2 lg:col-span-2">
+            <Label>Registered Works &amp; Headquarters Address</Label>
+            <Input
+              placeholder="F-124, RIICO Growth Centre, Hamirgarh, Bhilwara, Rajasthan — 311025, India"
+              value={data.legal?.registeredAddress || ""}
+              onChange={(e) => handleLegalChange("registeredAddress", e.target.value)}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 3. CONTACT CARDS & WORKING HOURS */}
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
+          3. Contact Information Cards
         </h3>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-2">
@@ -326,7 +485,7 @@ export default function ContactUsForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Office / Works Location</Label>
+            <Label>Office / Works Location (Display)</Label>
             <Input
               placeholder="Bhilwara, Rajasthan"
               value={data.cards?.officeLocation || ""}
@@ -346,11 +505,52 @@ export default function ContactUsForm() {
         </div>
       </section>
 
-      {/* 3. DIRECT CONTACT PERSONS */}
+      {/* 4. COMPANY SOCIAL PROFILES */}
+      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
+        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
+          4. Company Social Media Profiles
+        </h3>
+        <div className="grid gap-5 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label>LinkedIn Company Page</Label>
+            <Input
+              placeholder="https://www.linkedin.com/company/thestoneza"
+              value={data.socials?.linkedin || ""}
+              onChange={(e) => handleSocialChange("linkedin", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Instagram URL</Label>
+            <Input
+              placeholder="https://www.instagram.com/thestoneza"
+              value={data.socials?.instagram || ""}
+              onChange={(e) => handleSocialChange("instagram", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Facebook URL</Label>
+            <Input
+              placeholder="https://www.facebook.com/thestoneza"
+              value={data.socials?.facebook || ""}
+              onChange={(e) => handleSocialChange("facebook", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>YouTube URL</Label>
+            <Input
+              placeholder="https://www.youtube.com/@thestoneza"
+              value={data.socials?.youtube || ""}
+              onChange={(e) => handleSocialChange("youtube", e.target.value)}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 5. DIRECT CONTACT PERSONS */}
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">
-            3. Direct Contact People
+            5. Direct Contact People
           </h3>
           <Button
             type="button"
