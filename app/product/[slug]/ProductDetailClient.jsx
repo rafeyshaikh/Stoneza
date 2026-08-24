@@ -31,17 +31,25 @@ export default function ProductDetailClient({ productData }) {
         )
       : [{ url: getPlaceholderImage(productData.name || "Stoneza Product"), bg: '#FAF8F5' }];
 
+  const rawDescription =
+    productData.description ||
+    productData.overview?.description ||
+    productData.shortDescription ||
+    '';
+
   // Normalize full product data with safe fallbacks matching Product schema
   const product = {
     ...productData,
     images: normalizedImages,
-    overview: productData.overview || {
-      description: Array.isArray(productData.description)
-        ? productData.description
-        : [productData.description || productData.shortDescription || ''],
-      specifyFor: 'Interior and exterior feature walls, facades, and accent features.',
-      steerElsewhereFor: 'High-traffic horizontal flooring applications without surface treatment.',
-      howItReads: {
+    overview: {
+      description: rawDescription,
+      specifyFor:
+        productData.overview?.specifyFor ||
+        'Interior and exterior feature walls, facades, and accent features.',
+      steerElsewhereFor:
+        productData.overview?.steerElsewhereFor ||
+        'High-traffic horizontal flooring applications without surface treatment.',
+      howItReads: productData.overview?.howItReads || {
         atDistance: 'Monolithic texture with soft tonal variation across elevation.',
         closeUp: 'Rich organic surface relief and tactile natural stone grain.',
         throughDay: 'Shifting micro-shadows under changing natural directional light.',
