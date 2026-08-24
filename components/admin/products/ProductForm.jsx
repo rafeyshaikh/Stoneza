@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import ImageUploader from "@/components/admin/products/ImageUploader";
 import MultipleImageUploader from "@/components/admin/products/MultipleImageUploader";
 import ProductSeoForm from "@/components/admin/products/ProductSeoForm";
-import TipTapEditor from "@/components/admin/editor/TipTapEditor";
 import VariantManager from "@/components/admin/products/VariantManager";
 import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
@@ -607,10 +606,12 @@ export default function ProductForm({
           </Field>
 
           <Field label="Description *" className="md:col-span-2">
-            <TipTapEditor
+            <Textarea
+              rows={5}
               value={formData.description}
-              onChange={(value) => handleChange("description", value)}
+              onChange={(e) => handleChange("description", e.target.value)}
               placeholder="Write product description here..."
+              required
             />
           </Field>
 
