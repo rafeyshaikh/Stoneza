@@ -12,9 +12,9 @@ import {
 export const whyChooseData = [
   {
     id: 1,
-    title: "FACTORY-DIRECT SOURCING",
+    title: "QUARRY-DIRECT SOURCING",
     description:
-      "Premium stones sourced directly from our quarries—making us one of the most reliable natural stone suppliers in India, with no middlemen involved.",
+      "Premium natural stone sourced directly from our owned quarries and verified partner mines across India with zero middle trader markups.",
     icon: FaTag,
   },
   {

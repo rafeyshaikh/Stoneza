@@ -6,7 +6,7 @@ import { DEFAULT_JOURNAL_ARTICLES } from "@/lib/getJournalArticlesData";
 export default function JournalSection({
   eyebrow = "THE JOURNAL",
   title = "Knowing your stone",
-  subtitle = "What thirty-four years at the quarry face has taught us, written for the people who specify it.",
+  subtitle = "What three decades at the quarry face since 1992 has taught us, written for the people who specify it.",
   articles = DEFAULT_JOURNAL_ARTICLES,
   allArticlesHref = "/blogs",
   className = "",

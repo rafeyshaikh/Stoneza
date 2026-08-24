@@ -128,7 +128,7 @@ export default function ProductInfo({
 
       {/* Micro Benefits */}
       <div className="flex gap-x-6 gap-y-2 flex-wrap text-xs text-[#3a322c] mb-6">
-        <span><b>Quarry-direct</b> · no middlemen</span>
+        <span><b>Quarry-direct</b> · direct supply</span>
         <span><b>Pan-India</b> insured delivery</span>
         <span><b>Custom</b> sizes & finishes</span>
       </div>

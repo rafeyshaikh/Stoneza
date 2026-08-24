@@ -117,7 +117,7 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
       <div className="grid grid-cols-3 border-y border-[#CBC9C4] divide-x divide-[#CBC9C4] text-center">
         <div className="px-2 py-3">
           <b className="block font-serif text-[13.5px] font-semibold text-[#1C1714] mb-0.5">Quarry-direct</b>
-          <span className="font-heading text-[8.5px] tracking-[0.14em] uppercase text-[#78716C] font-semibold">No middlemen</span>
+          <span className="font-heading text-[8.5px] tracking-[0.14em] uppercase text-[#78716C] font-semibold">Direct Supply</span>
         </div>
         <div className="px-2 py-3">
           <b className="block font-serif text-[13.5px] font-semibold text-[#1C1714] mb-0.5">Pan-India</b>

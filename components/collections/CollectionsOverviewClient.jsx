@@ -106,7 +106,7 @@ export default function CollectionsOverviewClient({ data }) {
                 100%
               </span>
               <span className="font-mono text-[10.5px] uppercase tracking-[2px] text-white/70 mt-1">
-                Natural &amp; Sawn
+                Genuine Natural Stone
               </span>
             </div>
           </div>
@@ -313,7 +313,7 @@ export default function CollectionsOverviewClient({ data }) {
                 Quarry-Direct Sourcing
               </h3>
               <p className="font-sans text-[13.5px] leading-relaxed text-[#57504A]">
-                We partner directly with 60+ select mines across Rajasthan, South India, and international quarries to eliminate intermediaries.
+                We partner directly with 60+ select mines across Rajasthan and key Indian stone belts to eliminate intermediaries.
               </p>
             </div>
 
@@ -349,7 +349,7 @@ export default function CollectionsOverviewClient({ data }) {
                 Architectural Samples
               </h3>
               <p className="font-sans text-[13.5px] leading-relaxed text-[#57504A]">
-                Physical hand sample boxes dispatched promptly to your studio or project site for mood-board approvals.
+                Physical hand sample boxes dispatched promptly in 48 hours to your studio or project site for mood-board approvals.
               </p>
             </div>
           </div>
@@ -360,7 +360,7 @@ export default function CollectionsOverviewClient({ data }) {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-16">
         <CategoryCTA
           title="Require Custom Stone Sizes or Quarry Samples?"
-          description="Share your project drawings or material specifications. Our stone specialists provide quarry-direct quotations and sample kits dispatched within 24 hours."
+          description="Share your project drawings or material specifications. Our stone specialists provide quarry-direct quotations and sample kits dispatched within 48 hours."
           buttonText="REQUEST SAMPLES &amp; QUOTE"
           buttonLink="/#enquire"
         />

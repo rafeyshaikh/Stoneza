@@ -253,7 +253,7 @@ export default function AboutEditor() {
 
       {/* 3. FOUNDERS */}
       <section className="space-y-4 rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
-        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">3. From The Founders</h3>
+        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">3. Leadership &amp; Direction</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-3">
             <div>
@@ -267,7 +267,7 @@ export default function AboutEditor() {
             {(data.founders?.people || []).map((person, pIdx) => (
               <div key={pIdx} className="rounded-xl border p-3 bg-white space-y-2 dark:bg-stone-900">
                 <Input
-                  placeholder="Founder Name"
+                  placeholder="Director Name"
                   value={person.name || ""}
                   onChange={(e) => {
                     const people = [...data.founders.people];
@@ -276,7 +276,7 @@ export default function AboutEditor() {
                   }}
                 />
                 <Input
-                  placeholder="Role (e.g. Founder)"
+                  placeholder="Role (e.g. Director, Director — Operations)"
                   value={person.role || ""}
                   onChange={(e) => {
                     const people = [...data.founders.people];

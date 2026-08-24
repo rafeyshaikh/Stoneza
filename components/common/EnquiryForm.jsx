@@ -30,8 +30,8 @@ const VALUE_PILLARS = [
 
 const STATS = [
   { value: "48h", label: "Sample Dispatch" },
-  { value: "150+", label: "Quarried Formats" },
-  { value: "100%", label: "Calibrated & Checked" },
+  { value: "273", label: "Stone Products" },
+  { value: "100%", label: "Genuine Natural Stone" },
 ];
 
 function Field({ label, children, error }) {

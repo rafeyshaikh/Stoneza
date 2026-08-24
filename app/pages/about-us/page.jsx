@@ -100,30 +100,30 @@ export default async function AboutUsPage() {
   };
 
   const stats = data?.stats || [
-    { number: "34", label: "Years in stone" },
-    { number: "3", label: "Owned quarries" },
-    { number: "40+", label: "Signature stones" },
-    { number: "1000+", label: "Architects & designers" },
+    { number: "273", label: "Natural Stone Products" },
+    { number: "34+", label: "Years Since 1992" },
+    { number: "18", label: "Named Series (4 Families)" },
+    { number: "60+", label: "Quarry Partners & Mines" },
   ];
 
   const founders = data?.founders || {
-    eyebrow: "From The Founders",
+    eyebrow: "Leadership & Direction",
     image: { url: "/assets/others/Below_Banner_1.jpg" },
     people: [
       {
         name: "Kanishk Ostwal",
-        role: "Founder",
+        role: "Director",
         quotes: [
-          '"My journey with Stoneza is driven by one commitment — to make natural stone reliable, consistent, and accessible across India."',
-          '"From sourcing at quarries to quality checks and logistics, my role is to ensure every order is delivered with honesty and precision. Your trust motivates us to keep raising the benchmark for quality and service."',
+          '"My commitment with Stoneza is to make natural stone reliable, calibrated, and directly accessible across India with zero middle trader markups."',
+          '"From quarry extraction to micron-level factory QC and logistics, we ensure every crate is delivered with uncompromised integrity and precision."',
         ],
       },
       {
         name: "Devanshi Jain",
-        role: "Co-Founder",
+        role: "Director — Operations",
         quotes: [
-          '"At Stoneza, my focus has always been on design, detail, and the emotion that a material brings into a space."',
-          '"India has such incredible natural stone, and my mission is to curate it in a way that feels modern, premium, and effortless for architects and homeowners."',
+          '"At Stoneza, our focus is on architectural precision, texture curation, and the authentic tactile character that genuine natural stone brings to a space."',
+          '"We bridge India’s finest stone belts with contemporary architectural standards through rigorous in-house grading and calibration."',
         ],
       },
     ],
@@ -307,7 +307,7 @@ export default async function AboutUsPage() {
         </div>
       </section>
 
-      {/* 4. FROM THE FOUNDERS */}
+      {/* 4. LEADERSHIP & DIRECTION */}
       <section className="py-20 lg:py-28">
         <div className="max-w-[1240px] mx-auto px-6">
           <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20 items-center">
@@ -315,7 +315,7 @@ export default async function AboutUsPage() {
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg shadow-sm">
                 <Image
                   src={founders.image?.url || "/assets/others/Below_Banner_1.jpg"}
-                  alt="Founders of Stoneza"
+                  alt="Leadership of Stoneza"
                   fill
                   className="object-cover object-center"
                   unoptimized={Boolean(founders.image?.url && founders.image.url.startsWith("http"))}
