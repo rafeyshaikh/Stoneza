@@ -14,28 +14,65 @@ const DEFAULT_CMS_DATA = {
     whatsappPhone: COMPANY_INFO.phone,
     whatsappHref: COMPANY_INFO.whatsappUrl,
     emailAddress: COMPANY_INFO.email,
-    officeLocation: COMPANY_INFO.registeredAddress,
-    workingHours: COMPANY_INFO.workingHours,
-    gstin: COMPANY_INFO.gstin,
-    cin: COMPANY_INFO.cin,
+    officeLocation: COMPANY_INFO.displayAddress || "Bhilwara, Rajasthan",
+    workingHours: COMPANY_INFO.workingHours || "Mon–Sat, 9:30–18:30 IST",
   },
   peopleSection: {
     people: [
       {
         name: "Saniya",
+        role: "Sales — first point of contact",
+        title: "Sales Consultant",
+        description:
+          "Start here for quotations, samples, availability and lead times. Saniya works with architects, contractors and homeowners across India and will pull in technical support where a drawing needs it.",
         phone: "+91 78771 08154",
         whatsapp: "+91 78771 08154",
         email: "saniya@stoneza.in",
+        hours: "Mon–Sat, 9:30–18:30 IST",
         linkedIn: "",
+        tag: "Quotations · Samples · Lead times",
       },
       {
         name: "Kanishk Ostwal",
+        role: "Direct line",
+        title: "Director — Anantay Exports Pvt. Ltd.",
+        description:
+          "For large projects, specification support, partnership and distribution enquiries, export programmes, or anything that has not been resolved to your satisfaction. Reach out directly — it comes to me, not to a queue.",
         phone: "+91 99500 36866",
         whatsapp: "+91 99500 36866",
         email: "kanishk.ostwal@stoneza.in",
+        hours: "Mon–Sat, 9:30–18:30 IST",
         linkedIn: "https://www.linkedin.com/company/thestoneza",
+        tag: "Projects · Specification · Partnerships · Export",
       },
     ],
+  },
+  whatHappensNext: {
+    eyebrow: "What happens next",
+    title: "Four steps, no chasing",
+    steps: [
+      {
+        number: "01",
+        text: "A consultant reads what you sent and comes back with the stones that fit — including ones you did not ask about, if they suit the job better.",
+      },
+      {
+        number: "02",
+        text: "You get a firm quotation against the actual requirement, with lead time. Not an indicative range that changes later.",
+      },
+      {
+        number: "03",
+        text: "Physical samples go out free — wet and dry, because every stone darkens in rain and no photograph shows it.",
+      },
+      {
+        number: "04",
+        text: "On approval, one consultant carries the order through production, dispatch and delivery. You are not handed between departments.",
+      },
+    ],
+    specifyingNote: {
+      title: "Specifying rather than buying?",
+      description:
+        "Ask for the specification pack — technical datasheets, Stoneza spec codes and physical samples for the stones on your drawing. Written into a BOQ, a spec code names the stone, finish and thickness, so what arrives is what you drew.",
+    },
   },
   location: {
     mapEmbedUrl: COMPANY_INFO.mapEmbedUrl,
@@ -62,6 +99,22 @@ export default function ContactClientView({ initialData = null }) {
             ? initialData.peopleSection.people
             : DEFAULT_CMS_DATA.peopleSection.people,
       },
+      whatHappensNext: {
+        eyebrow: initialData.whatHappensNext?.eyebrow || DEFAULT_CMS_DATA.whatHappensNext.eyebrow,
+        title: initialData.whatHappensNext?.title || DEFAULT_CMS_DATA.whatHappensNext.title,
+        steps:
+          initialData.whatHappensNext?.steps && initialData.whatHappensNext.steps.length > 0
+            ? initialData.whatHappensNext.steps
+            : DEFAULT_CMS_DATA.whatHappensNext.steps,
+        specifyingNote: {
+          title:
+            initialData.whatHappensNext?.specifyingNote?.title ||
+            DEFAULT_CMS_DATA.whatHappensNext.specifyingNote.title,
+          description:
+            initialData.whatHappensNext?.specifyingNote?.description ||
+            DEFAULT_CMS_DATA.whatHappensNext.specifyingNote.description,
+        },
+      },
       location: {
         mapEmbedUrl: initialData.location?.mapEmbedUrl || DEFAULT_CMS_DATA.location.mapEmbedUrl,
       },
@@ -78,6 +131,7 @@ export default function ContactClientView({ initialData = null }) {
     city: "",
     stoneType: "",
     message: "",
+    website: "", // honeypot
   });
 
   const [loading, setLoading] = useState(false);
@@ -85,7 +139,6 @@ export default function ContactClientView({ initialData = null }) {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    if (initialData) return;
     async function loadCmsData() {
       try {
         const res = await fetch("/api/public/pages/contactUs");
@@ -93,37 +146,39 @@ export default function ContactClientView({ initialData = null }) {
         if (json.success && json.data) {
           setCmsData({
             hero: {
-              bgImage:
-                json.data.hero?.bgImage || DEFAULT_CMS_DATA.hero.bgImage,
+              bgImage: json.data.hero?.bgImage || DEFAULT_CMS_DATA.hero.bgImage,
             },
             cards: {
-              whatsappPhone:
-                json.data.cards?.whatsappPhone ||
-                DEFAULT_CMS_DATA.cards.whatsappPhone,
-              whatsappHref:
-                json.data.cards?.whatsappHref ||
-                DEFAULT_CMS_DATA.cards.whatsappHref,
-              emailAddress:
-                json.data.cards?.emailAddress ||
-                DEFAULT_CMS_DATA.cards.emailAddress,
-              officeLocation:
-                json.data.cards?.officeLocation ||
-                DEFAULT_CMS_DATA.cards.officeLocation,
-              workingHours:
-                json.data.cards?.workingHours ||
-                DEFAULT_CMS_DATA.cards.workingHours,
+              whatsappPhone: json.data.cards?.whatsappPhone || DEFAULT_CMS_DATA.cards.whatsappPhone,
+              whatsappHref: json.data.cards?.whatsappHref || DEFAULT_CMS_DATA.cards.whatsappHref,
+              emailAddress: json.data.cards?.emailAddress || DEFAULT_CMS_DATA.cards.emailAddress,
+              officeLocation: json.data.cards?.officeLocation || DEFAULT_CMS_DATA.cards.officeLocation,
+              workingHours: json.data.cards?.workingHours || DEFAULT_CMS_DATA.cards.workingHours,
             },
             peopleSection: {
               people:
-                json.data.peopleSection?.people &&
-                json.data.peopleSection.people.length > 0
+                json.data.peopleSection?.people && json.data.peopleSection.people.length > 0
                   ? json.data.peopleSection.people
                   : DEFAULT_CMS_DATA.peopleSection.people,
             },
+            whatHappensNext: {
+              eyebrow: json.data.whatHappensNext?.eyebrow || DEFAULT_CMS_DATA.whatHappensNext.eyebrow,
+              title: json.data.whatHappensNext?.title || DEFAULT_CMS_DATA.whatHappensNext.title,
+              steps:
+                json.data.whatHappensNext?.steps && json.data.whatHappensNext.steps.length > 0
+                  ? json.data.whatHappensNext.steps
+                  : DEFAULT_CMS_DATA.whatHappensNext.steps,
+              specifyingNote: {
+                title:
+                  json.data.whatHappensNext?.specifyingNote?.title ||
+                  DEFAULT_CMS_DATA.whatHappensNext.specifyingNote.title,
+                description:
+                  json.data.whatHappensNext?.specifyingNote?.description ||
+                  DEFAULT_CMS_DATA.whatHappensNext.specifyingNote.description,
+              },
+            },
             location: {
-              mapEmbedUrl:
-                json.data.location?.mapEmbedUrl ||
-                DEFAULT_CMS_DATA.location.mapEmbedUrl,
+              mapEmbedUrl: json.data.location?.mapEmbedUrl || DEFAULT_CMS_DATA.location.mapEmbedUrl,
             },
           });
         }
@@ -131,11 +186,14 @@ export default function ContactClientView({ initialData = null }) {
         console.error("Error loading Contact Us CMS data:", err);
       }
     }
-    loadCmsData();
+    if (!initialData) {
+      loadCmsData();
+    }
   }, [initialData]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -144,661 +202,628 @@ export default function ContactClientView({ initialData = null }) {
     setErrorMsg("");
 
     try {
-      const res = await fetch("/api/public/contact", {
+      const cleanPhone = formData.phone.replace(/\D/g, "").slice(-10);
+      if (!cleanPhone || cleanPhone.length < 10) {
+        throw new Error("Please enter a valid 10-digit phone number");
+      }
+
+      const numArea = Number(formData.area.toString().replace(/[^\d.]/g, ""));
+      if (!numArea || numArea <= 0 || isNaN(numArea)) {
+        throw new Error("Please enter a valid approximate area (in sq m)");
+      }
+
+      const payload = {
+        name: formData.name.trim(),
+        phone: cleanPhone,
+        email: formData.email.trim(),
+        role: formData.role,
+        projectType: formData.projectType,
+        area: numArea,
+        city: formData.city.trim() || "General",
+        stoneType: formData.stoneType.trim() || "Natural Stone",
+        message: formData.message.trim(),
+        website: formData.website || "",
+      };
+
+      const res = await fetch("/api/public/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setSubmitted(true);
-      } else {
-        setErrorMsg(
-          data.error ||
-            data.message ||
-            "Something went wrong. Please try again."
-        );
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        if (json.errors) {
+          const firstErr = Object.values(json.errors).flat()[0];
+          throw new Error(firstErr || json.message || "Validation failed");
+        }
+        throw new Error(json.message || "Failed to submit enquiry");
       }
+
+      setSubmitted(true);
     } catch (err) {
-      setErrorMsg("Network error. Please try again later.");
+      setErrorMsg(err.message || "Failed to submit enquiry. Please try again or WhatsApp us directly.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-[#FAF7F2] text-[#26221E] font-sans antialiased min-h-screen">
-      {/* 1. HERO SECTION */}
-      <section className="relative min-h-[460px] md:min-h-[520px] flex items-end bg-[#1C1714] text-[#FAF7F2] overflow-hidden pt-32 pb-16 px-6 md:px-12 lg:px-20 border-b border-[#FAF7F2]/10">
-        {/* Background Image with Cinematic Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"
-          style={{
-            backgroundImage: `url('${cmsData.hero.bgImage}')`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#14100E] via-[#1C1714]/80 to-[#1C1714]/40" />
-
-        <div className="relative z-10 max-w-[1440px] w-full mx-auto">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#C25E3E]/20 text-[#E07A5F] border border-[#C25E3E]/30 rounded-full font-mono text-xs uppercase tracking-widest mb-6 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#E07A5F] animate-pulse"></span>
-              Direct From Quarry to Site
-            </span>
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal leading-[1.05] tracking-tight mb-6 text-balance">
-              Let’s talk about your stone.
-            </h1>
-            <p className="font-sans text-base sm:text-lg md:text-xl text-[#FAF7F2]/80 font-light leading-relaxed max-w-2xl">
-              Whether you need 20,000 sq ft of custom-split sandstone for a
-              resort, cut-to-size cladding panels for a facade, or a single
-              sample box to confirm a finish — we’re here.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* BREADCRUMB */}
-      <nav className="border-b border-[#26221E]/10 bg-white/60 backdrop-blur-md sticky top-0 z-20">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-3.5 font-mono text-[11px] tracking-wider uppercase text-[#8A8078] flex items-center gap-2">
-          <Link
-            href="/"
-            className="hover:text-[#26221E] transition-colors flex items-center gap-1"
-          >
+    <div className="bg-white text-[#26221E] font-sans antialiased">
+      {/* BREADCRUMB BAR */}
+      <nav className="border-b border-[#26221E]/13 bg-white">
+        <div className="max-w-[1320px] mx-auto px-4.5 sm:px-8 lg:px-16 py-3.5 font-mono text-[10px] tracking-[0.1em] uppercase text-[#8A8078] flex items-center gap-2">
+          <Link href="/" className="text-[#8A8078] hover:text-[#26221E] transition-colors">
             Home
           </Link>
           <span>/</span>
-          <span className="text-[#26221E] font-medium">Contact</span>
+          <span className="text-[#26221E]">Contact</span>
         </div>
       </nav>
 
-      {/* 2. DIRECT ACTION CHANNELS (4 Pillars) */}
-      <section className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {/* Channel 1: WhatsApp */}
-          <div className="bg-white border border-[#26221E]/10 p-7 flex flex-col justify-between hover:border-[#25D366]/40 hover:shadow-md transition-all duration-300 group rounded-sm">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-[#8A8078]">
-                  Fastest
-                </span>
-                <div className="w-8 h-8 rounded-full bg-[#25D366]/10 flex items-center justify-center text-[#25D366]">
-                  <svg
-                    className="w-4 h-4 fill-current"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.058.376-.058c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.125.556 4.12 1.528 5.86l-1.621 5.922 6.079-1.595c1.7 1.002 3.673 1.577 5.787 1.577 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z" />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="font-display text-xl font-medium mb-1">
-                WhatsApp Desk
-              </h3>
-              <p className="text-xs text-[#8A8078] leading-relaxed mb-4">
-                Average reply in 15 mins. Send site plans, BOQs, or photos.
-              </p>
-            </div>
-            <a
-              href={cmsData.cards.whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-mono font-medium tracking-wider uppercase text-[#26221E] group-hover:text-[#25D366] transition-colors"
-            >
-              <span>{cmsData.cards.whatsappPhone}</span>
-              <span className="text-sm">→</span>
-            </a>
-          </div>
+      {/* HERO SECTION */}
+      <section className="relative min-h-[clamp(320px,46vh,470px)] flex items-end px-4.5 sm:px-8 lg:px-16 py-[clamp(38px,6vw,74px)] overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-[#7C7466]"
+          style={{
+            backgroundImage: `url('${cmsData.hero.bgImage}')`,
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-[#26221E]/14 via-[#26221E]/68 to-[#26221E]/90" />
+        </div>
 
-          {/* Channel 2: Email */}
-          <div className="bg-white border border-[#26221E]/10 p-7 flex flex-col justify-between hover:border-[#26221E]/40 hover:shadow-md transition-all duration-300 group rounded-sm">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-[#8A8078]">
-                  Formal BOQ
-                </span>
-                <div className="w-8 h-8 rounded-full bg-[#26221E]/5 flex items-center justify-center text-[#26221E]">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="font-display text-xl font-medium mb-1">
-                Direct Email
-              </h3>
-              <p className="text-xs text-[#8A8078] leading-relaxed mb-4">
-                Send tender files, specification sheets, and project estimates.
-              </p>
-            </div>
-            <a
-              href={`mailto:${cmsData.cards.emailAddress}`}
-              className="inline-flex items-center gap-2 text-xs font-mono font-medium tracking-wider uppercase text-[#26221E] group-hover:text-[#C25E3E] transition-colors"
-            >
-              <span>{cmsData.cards.emailAddress}</span>
-              <span className="text-sm">→</span>
-            </a>
-          </div>
+        <div className="relative max-w-[1320px] mx-auto w-full z-10">
+          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/70 mb-3.5">
+            Get in touch
+          </p>
+          <h1 className="font-serif font-normal text-[clamp(32px,5.4vw,62px)] leading-[1.04] text-white mb-4 tracking-[-0.02em] max-w-[20ch]">
+            Tell us the project. <em className="italic opacity-93">Get a real quotation.</em>
+          </h1>
+          <p className="max-w-[58ch] text-white/85 text-[16px] leading-[1.62]">
+            Send the drawing, the area or just the idea. A Stoneza consultant responds with the right stones, quarry-direct pricing, lead times and samples &mdash; usually the same day.
+          </p>
+        </div>
+      </section>
 
-          {/* Channel 3: Sample Box */}
-          <div className="bg-[#EFEAE2] border border-[#26221E]/10 p-7 flex flex-col justify-between hover:border-[#C25E3E]/50 hover:shadow-md transition-all duration-300 group rounded-sm">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-[#C25E3E]">
-                  Complimentary
-                </span>
-                <div className="w-8 h-8 rounded-full bg-[#C25E3E]/10 flex items-center justify-center text-[#C25E3E]">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="font-display text-xl font-medium mb-1">
-                Sample Kit
-              </h3>
-              <p className="text-xs text-[#6B635B] leading-relaxed mb-4">
-                Delivered across India and worldwide. 4–6 stone cuts in your
-                finishes.
+      {/* CONTACT CARDS GRID */}
+      <section className="py-[clamp(46px,6vw,86px)] border-b border-[#26221E]/13">
+        <div className="max-w-[1320px] mx-auto px-4.5 sm:px-8 lg:px-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border-t border-[#26221E]">
+            {/* Card 1: WhatsApp */}
+            <div className="py-6.5 px-0 sm:pr-6 lg:pr-7 border-b sm:border-r border-[#26221E]/13 last:border-r-0">
+              <span className="font-mono text-[9px] tracking-[0.16em] uppercase text-[#8A8078] block mb-2.5">
+                WhatsApp &mdash; fastest
+              </span>
+              <p className="font-serif text-[19px] leading-[1.35] mb-1.75">
+                <a
+                  href={cmsData.cards.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="no-underline border-b border-[#CFC6B9] hover:border-[#26221E] transition-colors"
+                >
+                  {cmsData.cards.whatsappPhone}
+                </a>
+              </p>
+              <p className="text-[13.5px] leading-[1.62] text-[#8A8078] m-0">
+                Send a photo, a drawing or a voice note. Usually answered within the hour, Monday to Saturday.
               </p>
             </div>
-            <a
-              href="#enquiry-form"
-              className="inline-flex items-center gap-2 text-xs font-mono font-medium tracking-wider uppercase text-[#C25E3E] group-hover:translate-x-1 transition-transform"
-            >
-              <span>Request Sample Box</span>
-              <span className="text-sm">↓</span>
-            </a>
-          </div>
 
-          {/* Channel 4: HQ & Yard Visit */}
-          <div className="bg-white border border-[#26221E]/10 p-7 flex flex-col justify-between hover:border-[#26221E]/40 hover:shadow-md transition-all duration-300 group rounded-sm">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-[#8A8078]">
-                  Yard & Processing
-                </span>
-                <div className="w-8 h-8 rounded-full bg-[#26221E]/5 flex items-center justify-center text-[#26221E]">
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="font-display text-xl font-medium mb-1">
-                {cmsData.cards.officeLocation}
-              </h3>
-              <p className="text-xs text-[#8A8078] leading-relaxed mb-4">
-                {cmsData.cards.workingHours}. Yard visits by appointment.
+            {/* Card 2: Email */}
+            <div className="py-6.5 px-0 sm:px-6 lg:px-7 border-b lg:border-r border-[#26221E]/13">
+              <span className="font-mono text-[9px] tracking-[0.16em] uppercase text-[#8A8078] block mb-2.5">
+                Email
+              </span>
+              <p className="font-serif text-[19px] leading-[1.35] mb-1.75">
+                <a
+                  href={`mailto:${cmsData.cards.emailAddress}`}
+                  className="no-underline border-b border-[#CFC6B9] hover:border-[#26221E] transition-colors"
+                >
+                  {cmsData.cards.emailAddress}
+                </a>
+              </p>
+              <p className="text-[13.5px] leading-[1.62] text-[#8A8078] m-0">
+                Best for BOQs, drawings and tender documents. Attach what you have and we will work from it.
               </p>
             </div>
-            <a
-              href="#location-map"
-              className="inline-flex items-center gap-2 text-xs font-mono font-medium tracking-wider uppercase text-[#26221E] group-hover:text-[#C25E3E] transition-colors"
-            >
-              <span>View Map & Directions</span>
-              <span className="text-sm">↓</span>
-            </a>
+
+            {/* Card 3: Office */}
+            <div className="py-6.5 px-0 sm:pr-6 lg:px-7 border-b sm:border-r border-[#26221E]/13">
+              <span className="font-mono text-[9px] tracking-[0.16em] uppercase text-[#8A8078] block mb-2.5">
+                Works &amp; office
+              </span>
+              <p className="font-serif text-[19px] leading-[1.35] mb-1.75">
+                <a href="#location-map" className="no-underline border-b border-[#CFC6B9] hover:border-[#26221E] transition-colors">
+                  {cmsData.cards.officeLocation}
+                </a>
+              </p>
+              <p className="text-[13.5px] leading-[1.62] text-[#8A8078] m-0">
+                Works and head office in Bhilwara. Architects and site managers welcome by appointment.
+              </p>
+            </div>
+
+            {/* Card 4: Hours */}
+            <div className="py-6.5 px-0 sm:px-6 lg:pl-7 border-b border-[#26221E]/13">
+              <span className="font-mono text-[9px] tracking-[0.16em] uppercase text-[#8A8078] block mb-2.5">
+                Hours
+              </span>
+              <p className="font-serif text-[19px] leading-[1.35] mb-1.75">
+                {cmsData.cards.workingHours}
+              </p>
+              <p className="text-[13.5px] leading-[1.62] text-[#8A8078] m-0">
+                Saturday till 2 PM. Sunday closed. WhatsApp messages monitored for urgent site requirements.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. MAIN INTERACTION SECTION: FORM & WHO YOU ARE TALKING TO */}
-      <section
-        id="enquiry-form"
-        className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-12 md:py-16 scroll-mt-20"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Left Column: The Comprehensive Specification Form */}
-          <div className="lg:col-span-7 bg-white border border-[#26221E]/10 p-8 sm:p-10 md:p-12 rounded-sm shadow-xs">
-            <div className="mb-8">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#C25E3E] block mb-2">
-                Project Specification
-              </span>
-              <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-normal text-[#1C1714]">
-                Tell us what your site requires.
-              </h2>
-              <p className="text-sm text-[#6B635B] mt-2 font-light">
-                Fill what you know. We’ll calculate sq ft, wastage, jointing,
-                and crate weight for you.
-              </p>
-            </div>
+      {/* SPEAK TO SOMEONE DIRECTLY — TWO PEOPLE, NOT A CALL CENTRE (LOADED FROM DB) */}
+      {cmsData.peopleSection?.people && cmsData.peopleSection.people.length > 0 && (
+        <section className="py-[clamp(46px,6vw,86px)] border-b border-[#26221E]/13 bg-[#F5F1EB]">
+          <div className="max-w-[1320px] mx-auto px-4.5 sm:px-8 lg:px-16">
+            <p className="font-mono text-[9.5px] tracking-[0.2em] uppercase text-[#8A8078] mb-3">
+              Speak to someone directly
+            </p>
+            <h2 className="font-serif font-normal text-[clamp(25px,3.3vw,38px)] leading-[1.12] tracking-[-0.012em] mb-4 text-[#26221E]">
+              Two people, not a call centre
+            </h2>
+            <p className="font-sans text-[15px] leading-[1.78] text-[#57504A] max-w-[66ch] mb-8">
+              Every enquiry is handled by a named person who stays with it from quotation to delivery. If you would rather skip the form, call or write to either of us directly.
+            </p>
 
-            {submitted ? (
-              <div className="bg-[#FAF7F2] border border-[#25D366]/30 p-8 rounded-sm text-center">
-                <div className="w-12 h-12 rounded-full bg-[#25D366]/10 text-[#25D366] flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <h3 className="font-display text-2xl text-[#1C1714] mb-2">
-                  Enquiry Dispatched.
-                </h3>
-                <p className="text-sm text-[#6B635B] max-w-md mx-auto mb-6">
-                  Thank you, {formData.name}. Our stone team in Bhilwara has
-                  received your specification. You will hear back via WhatsApp /
-                  Email shortly.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubmitted(false);
-                    setFormData({
-                      name: "",
-                      phone: "",
-                      email: "",
-                      role: "Architect / Designer",
-                      projectType: "Resort / Hotel",
-                      area: "",
-                      city: "",
-                      stoneType: "",
-                      message: "",
-                    });
-                  }}
-                  className="px-6 py-2.5 border border-[#26221E]/20 font-mono text-xs uppercase tracking-wider text-[#26221E] hover:bg-[#26221E] hover:text-white transition-colors"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-t border-[#26221E]">
+              {cmsData.peopleSection.people.map((person, idx) => (
+                <div
+                  key={idx}
+                  className={`py-7 flex flex-col justify-between ${
+                    idx === 0
+                      ? "md:pr-8 lg:pr-10 border-b md:border-b-0 md:border-r border-[#26221E]/13"
+                      : "md:pl-8 lg:pl-10"
+                  }`}
                 >
-                  Send another specification
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {errorMsg && (
-                  <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs font-mono">
-                    {errorMsg}
-                  </div>
-                )}
-
-                {/* Row 1: Contact Identity */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      Full Name <span className="text-[#C25E3E]">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      placeholder="e.g. Rahul Sharma"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      Phone / WhatsApp <span className="text-[#C25E3E]">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      required
-                      placeholder="+91 98765 43210"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Row 2: Email & City */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      Email Address <span className="text-[#C25E3E]">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      placeholder="rahul@studio.in"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      Site / Delivery City
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      placeholder="e.g. Udaipur, Bangalore, Dubai"
-                      value={formData.city}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Row 3: Role & Project Type Selectors */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      I am specifying as
-                    </label>
-                    <select
-                      name="role"
-                      value={formData.role}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all text-[#26221E]"
-                    >
-                      {ENQUIRER_ROLES.map((role) => (
-                        <option key={role} value={role}>
-                          {role}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      Project Type
-                    </label>
-                    <select
-                      name="projectType"
-                      value={formData.projectType}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all text-[#26221E]"
-                    >
-                      {PROJECT_TYPES.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Row 4: Quantity and Stone Requirement */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      Approximate Area / Quantity
-                    </label>
-                    <input
-                      type="text"
-                      name="area"
-                      placeholder="e.g. 5,000 sq ft or 2 crates"
-                      value={formData.area}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                      Stone / Collection of Interest
-                    </label>
-                    <input
-                      type="text"
-                      name="stoneType"
-                      placeholder="e.g. Bhilwara Sandstone, Kota, EarthSkin"
-                      value={formData.stoneType}
-                      onChange={handleChange}
-                      className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Row 5: Specification Details / Message */}
-                <div>
-                  <label className="block font-mono text-xs uppercase tracking-wider text-[#26221E] mb-2">
-                    Project Notes / Custom Cutting Specs
-                  </label>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    placeholder="Mention custom thicknesses, edge profiles (tumbled, sawn, hand-cut), delivery timeline, or sample requests..."
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full bg-[#FAF7F2]/60 border border-[#26221E]/15 px-4 py-3 text-sm focus:outline-none focus:border-[#C25E3E] focus:bg-white transition-all resize-y"
-                  />
-                </div>
-
-                {/* Submit button */}
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full sm:w-auto px-8 py-4 bg-[#C25E3E] text-white font-mono text-xs uppercase tracking-widest hover:bg-[#A94F33] transition-all flex items-center justify-center gap-3 disabled:opacity-50 cursor-pointer shadow-sm"
-                  >
-                    {loading ? (
-                      <>
-                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                        Transmitting to Quarry Desk...
-                      </>
-                    ) : (
-                      <>
-                        Submit Specification for Quotation
-                        <span>→</span>
-                      </>
+                    {person.role && (
+                      <span className="font-mono text-[9px] tracking-[0.16em] uppercase text-[#8E4B2A] block mb-2.5">
+                        {person.role}
+                      </span>
                     )}
-                  </button>
-                  <p className="font-mono text-[11px] text-[#8A8078] mt-3">
-                    Direct quarry pricing • Zero middlemen • Non-binding
-                    estimates
-                  </p>
-                </div>
-              </form>
-            )}
-          </div>
+                    <h3 className="font-serif text-[24px] font-normal text-[#26221E] mb-1">
+                      {person.name}
+                    </h3>
+                    {person.title && (
+                      <p className="font-sans text-[13.5px] text-[#8A8078] mb-4">
+                        {person.title}
+                      </p>
+                    )}
+                    {person.description && (
+                      <p className="font-sans text-[14px] leading-[1.68] text-[#57504A] mb-6 max-w-[44ch]">
+                        {person.description}
+                      </p>
+                    )}
+                  </div>
 
-          {/* Right Column: Direct Team Contacts + Process Guarantees */}
-          <div className="lg:col-span-5 space-y-8">
-            {/* The Specific People You Talk To */}
-            <div className="bg-white border border-[#26221E]/10 p-8 rounded-sm">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#8A8078] block mb-1">
-                The Quarry & Project Team
-              </span>
-              <h3 className="font-display text-2xl text-[#1C1714] mb-6">
-                You speak directly to stone specialists.
-              </h3>
-
-              <div className="space-y-6 divide-y divide-[#26221E]/10">
-                {cmsData.peopleSection.people.map((person, idx) => (
-                  <div key={idx} className={idx > 0 ? "pt-6" : ""}>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h4 className="font-display text-lg font-medium text-[#1C1714]">
-                          {person.name}
-                        </h4>
-                        <p className="font-mono text-xs text-[#C25E3E] uppercase tracking-wider mt-0.5">
-                          Technical & Project Lead
-                        </p>
-                      </div>
-                      {person.linkedIn && (
-                        <a
-                          href={person.linkedIn}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#8A8078] hover:text-[#0077b5] transition-colors"
-                          title="LinkedIn Profile"
-                        >
-                          <svg
-                            className="w-4 h-4 fill-current"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                          </svg>
-                        </a>
-                      )}
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono text-[#6B635B]">
+                  <div>
+                    <div className="border-t border-[#26221E]/13 divide-y divide-[#26221E]/13 text-[14.5px]">
                       {person.phone && (
                         <a
-                          href={`tel:${person.phone.replace(/\s+/g, "")}`}
-                          className="hover:text-[#26221E] transition-colors flex items-center gap-1.5"
+                          href={`tel:${person.phone}`}
+                          className="flex items-baseline gap-3 py-2.5 text-[#26221E] hover:text-[#8E4B2A] transition-colors no-underline"
                         >
-                          <span>TEL:</span> {person.phone}
+                          <b className="font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078] w-[74px] font-normal shrink-0">Phone</b>
+                          <span>{person.phone}</span>
                         </a>
                       )}
                       {person.whatsapp && (
                         <a
-                          href={`https://wa.me/${person.whatsapp.replace(/[^0-9]/g, "")}`}
+                          href={`https://wa.me/${person.whatsapp.replace(/\D/g, "")}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#25D366] hover:underline flex items-center gap-1.5"
+                          className="flex items-baseline gap-3 py-2.5 text-[#26221E] hover:text-[#8E4B2A] transition-colors no-underline"
                         >
-                          <span>WA:</span> {person.whatsapp}
+                          <b className="font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078] w-[74px] font-normal shrink-0">WhatsApp</b>
+                          <span>{person.whatsapp}</span>
                         </a>
                       )}
                       {person.email && (
                         <a
                           href={`mailto:${person.email}`}
-                          className="hover:text-[#26221E] transition-colors flex items-center gap-1.5"
+                          className="flex items-baseline gap-3 py-2.5 text-[#26221E] hover:text-[#8E4B2A] transition-colors no-underline"
                         >
-                          <span>EMAIL:</span> {person.email}
+                          <b className="font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078] w-[74px] font-normal shrink-0">Email</b>
+                          <span>{person.email}</span>
                         </a>
                       )}
+                      {person.hours ? (
+                        <div className="flex items-baseline gap-3 py-2.5 text-[#26221E]">
+                          <b className="font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078] w-[74px] font-normal shrink-0">Hours</b>
+                          <span>{person.hours}</span>
+                        </div>
+                      ) : person.linkedIn ? (
+                        <a
+                          href={person.linkedIn}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-baseline gap-3 py-2.5 text-[#26221E] hover:text-[#8E4B2A] transition-colors no-underline"
+                        >
+                          <b className="font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078] w-[74px] font-normal shrink-0">LinkedIn</b>
+                          <span>Connect &rarr;</span>
+                        </a>
+                      ) : null}
                     </div>
+
+                    {person.tag && (
+                      <span className="inline-block font-mono text-[8.5px] tracking-[0.13em] uppercase bg-[#EAE5DC] border border-[#CBC9C4] px-2.5 py-1 text-[#57504A] mt-5">
+                        {person.tag}
+                      </span>
+                    )}
                   </div>
-                ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* MAIN CONTENT SPLIT: LEFT EDITORIAL (WHAT HAPPENS NEXT FROM DB) + RIGHT ENQUIRY FORM */}
+      <section className="py-[clamp(54px,7vw,100px)] border-b border-[#26221E]/13">
+        <div className="max-w-[1320px] mx-auto px-4.5 sm:px-8 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1.3fr] gap-12 lg:gap-18 items-start">
+            {/* Left Column: What Happens Next — Loaded Dynamically From DB */}
+            <div className="space-y-7">
+              <div>
+                <p className="font-mono text-[9.5px] tracking-[0.2em] uppercase text-[#8A8078] mb-3">
+                  {cmsData.whatHappensNext?.eyebrow || "What happens next"}
+                </p>
+                <h2 className="font-serif font-normal text-[clamp(26px,3.5vw,40px)] leading-[1.15] tracking-[-0.015em] mb-4 text-[#26221E]">
+                  {cmsData.whatHappensNext?.title || "Four steps, no chasing"}
+                </h2>
               </div>
+
+              {cmsData.whatHappensNext?.steps && cmsData.whatHappensNext.steps.length > 0 && (
+                <ul className="list-none m-0 p-0 border-t border-[#26221E]/13 divide-y divide-[#26221E]/13">
+                  {cmsData.whatHappensNext.steps.map((step, idx) => (
+                    <li key={idx} className="py-3.5 flex items-start gap-3.5 text-[14.5px] leading-[1.62] text-[#26221E]">
+                      <b className="font-mono text-[11px] text-[#C8A980] tracking-wider pt-0.5 shrink-0 font-medium">
+                        {step.number || String(idx + 1).padStart(2, "0")}
+                      </b>
+                      <span>{step.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {cmsData.whatHappensNext?.specifyingNote && (
+                <div className="pt-2">
+                  <p className="font-mono text-[9px] tracking-[0.16em] uppercase text-[#8A8078] mb-2 font-medium">
+                    {cmsData.whatHappensNext.specifyingNote.title}
+                  </p>
+                  <p className="font-sans text-[14px] leading-[1.68] text-[#57504A]">
+                    {cmsData.whatHappensNext.specifyingNote.description}
+                  </p>
+                </div>
+              )}
             </div>
 
-            {/* Practical Specification Guarantees */}
-            <div className="bg-[#FAF7F2] border border-[#26221E]/10 p-8 rounded-sm space-y-5">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#8A8078] block">
-                How We Deliver
-              </span>
+            {/* Right Column: Form Container */}
+            <div className="bg-[#F5F1EB] border border-[#CFC6B9] p-6 sm:p-9">
+              <h2 className="font-serif text-[22px] font-normal leading-[1.2] text-[#26221E] mb-1.5">
+                Send a project enquiry
+              </h2>
+              <p className="text-xs text-[#8A8078] mb-6">
+                Fill in what you know &mdash; we will guide the rest.
+              </p>
 
-              <div className="space-y-4 text-xs font-sans text-[#6B635B] leading-relaxed">
-                <div className="flex gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#C25E3E]/10 text-[#C25E3E] font-mono flex items-center justify-center shrink-0 text-[10px]">
-                    01
+              {submitted ? (
+                <div className="bg-white border border-[#CFC6B9] p-8 text-center space-y-4">
+                  <div className="w-12 h-12 rounded-full bg-[#8E4B2A]/10 text-[#8E4B2A] flex items-center justify-center mx-auto text-xl font-bold">
+                    ✓
                   </div>
-                  <div>
-                    <strong className="text-[#1C1714] font-medium block mb-0.5">
-                      Direct Quarry Invoicing & Dispatch
-                    </strong>
-                    Dispatched on full trucks or container loads directly from
-                    our extraction units in Rajasthan.
+                  <h3 className="font-serif text-2xl text-[#26221E]">
+                    Enquiry Dispatched
+                  </h3>
+                  <p className="font-sans text-sm text-[#57504A] leading-relaxed max-w-md mx-auto">
+                    Thank you, <strong className="text-[#26221E]">{formData.name}</strong>. A Stoneza stone specialist is reviewing your request and will get back to you promptly.
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      onClick={() => {
+                        setSubmitted(false);
+                        setFormData({
+                          name: "",
+                          phone: "",
+                          email: "",
+                          role: "Architect / Designer",
+                          projectType: "Resort / Hotel",
+                          area: "",
+                          city: "",
+                          stoneType: "",
+                          message: "",
+                          website: "",
+                        });
+                      }}
+                      className="font-mono text-[10px] tracking-[0.14em] uppercase text-[#8E4B2A] border-b border-[#8E4B2A] pb-0.5 cursor-pointer bg-transparent"
+                    >
+                      Send another enquiry
+                    </button>
                   </div>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {errorMsg && (
+                    <div className="bg-[#9A4A2E]/10 border border-[#9A4A2E]/30 text-[#9A4A2E] p-3 text-xs">
+                      {errorMsg}
+                    </div>
+                  )}
 
-                <div className="flex gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#C25E3E]/10 text-[#C25E3E] font-mono flex items-center justify-center shrink-0 text-[10px]">
-                    02
-                  </div>
-                  <div>
-                    <strong className="text-[#1C1714] font-medium block mb-0.5">
-                      Palletized & Corner-Protected Crates
-                    </strong>
-                    Fumigated wooden boxes built for transport without edge
-                    chipping or in-transit breakages.
-                  </div>
-                </div>
+                  {/* Honeypot */}
+                  <input
+                    type="text"
+                    id="website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    className="hidden"
+                    tabIndex="-1"
+                    autoComplete="off"
+                  />
 
-                <div className="flex gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#C25E3E]/10 text-[#C25E3E] font-mono flex items-center justify-center shrink-0 text-[10px]">
-                    03
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="name"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        Your name *
+                      </label>
+                      <input
+                        id="name"
+                        type="text"
+                        placeholder="e.g. Rahul Sharma"
+                        required
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="phone"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        Phone / WhatsApp *
+                      </label>
+                      <input
+                        id="phone"
+                        type="tel"
+                        placeholder="10-digit number"
+                        required
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <strong className="text-[#1C1714] font-medium block mb-0.5">
-                      On-Site Dry Lays Before Shipping
-                    </strong>
-                    For large project batches, we dry-lay and share high-res video
-                    footage for tone confirmation.
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="email"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        Email address
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        placeholder="For quotations & drawings"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="role"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        You are
+                      </label>
+                      <select
+                        id="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none appearance-none cursor-pointer pr-7 focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7'><path d='M0 0l5 6 5-6z' fill='%2357504A'/></svg>")`,
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "right 11px center",
+                        }}
+                      >
+                        {ENQUIRER_ROLES.map((role) => (
+                          <option key={role} value={role}>
+                            {role}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                </div>
-              </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="projectType"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        Project type
+                      </label>
+                      <select
+                        id="projectType"
+                        value={formData.projectType}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none appearance-none cursor-pointer pr-7 focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7'><path d='M0 0l5 6 5-6z' fill='%2357504A'/></svg>")`,
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "right 11px center",
+                        }}
+                      >
+                        {PROJECT_TYPES.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="area"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        Approx. area (sq m)
+                      </label>
+                      <input
+                        id="area"
+                        type="number"
+                        placeholder="e.g. 500"
+                        required
+                        value={formData.area}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="city"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        City / site
+                      </label>
+                      <input
+                        id="city"
+                        type="text"
+                        placeholder="e.g. Alibaug"
+                        required
+                        value={formData.city}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="stoneType"
+                        className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                      >
+                        Stone of interest
+                      </label>
+                      <input
+                        id="stoneType"
+                        type="text"
+                        placeholder="e.g. Kota Blue, or unsure"
+                        value={formData.stoneType}
+                        onChange={handleChange}
+                        className="w-full bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="message"
+                      className="block font-mono text-[8.5px] tracking-[0.14em] uppercase text-[#8A8078]"
+                    >
+                      Anything else (Optional)
+                    </label>
+                    <textarea
+                      id="message"
+                      placeholder="Timeline, finish, thickness, whether you need samples or a site visit"
+                      value={formData.message}
+                      onChange={handleChange}
+                      className="w-full min-h-[96px] bg-white border border-[#CFC6B9] px-3 py-2.75 text-sm text-[#26221E] rounded-none resize-y focus:outline-2 focus:outline-[#26221E] focus:-outline-offset-2"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full font-mono text-[10.5px] tracking-[0.14em] uppercase bg-[#26221E] text-[#C9BDB2] border-0 py-4 px-4 cursor-pointer hover:bg-[#8E4B2A] transition-colors mt-1.5 disabled:opacity-50"
+                  >
+                    {loading ? "Sending..." : "Send enquiry"}
+                  </button>
+
+                  <p className="text-center font-mono text-[10px] tracking-[0.06em] text-[#8A8078] pt-1">
+                    Or WhatsApp us directly &mdash;{" "}
+                    <a
+                      href={cmsData.cards.whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#8E4B2A] no-underline border-b border-current"
+                    >
+                      {cmsData.cards.whatsappPhone}
+                    </a>
+                  </p>
+                </form>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. PHYSICAL ADDRESS & GOOGLE MAP EMBED */}
-      <section
-        id="location-map"
-        className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-12 border-t border-[#26221E]/10 scroll-mt-20"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8">
-          <div className="lg:col-span-6 space-y-3">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#C25E3E] block">
-              Registered Works &amp; Headquarters
-            </span>
-            <h2 className="font-display text-3xl font-normal text-[#1C1714]">
-              Stoneza Natural Stones HQ
-            </h2>
-            <p className="text-sm text-[#6B635B] font-light max-w-lg leading-relaxed">
-              {cmsData.cards.officeLocation}
-            </p>
-            <div className="pt-1 flex flex-wrap gap-4 text-xs font-mono text-[#8A8078]">
-              <span>CIN: {COMPANY_INFO.cin}</span>
-              <span>•</span>
-              <span className="text-[#26221E] font-medium">GSTIN: {COMPANY_INFO.gstin}</span>
-            </div>
-          </div>
-          <div className="lg:col-span-6 flex flex-wrap lg:justify-end gap-4 font-mono text-xs">
-            <div className="px-5 py-3 bg-white border border-[#26221E]/10">
-              <span className="text-[#8A8078] block">Hours:</span>
-              <strong className="text-[#26221E]">
-                {cmsData.cards.workingHours}
-              </strong>
-            </div>
-            <div className="px-5 py-3 bg-white border border-[#26221E]/10">
-              <span className="text-[#8A8078] block">Visits:</span>
-              <strong className="text-[#26221E]">By Appointment</strong>
-            </div>
+      {/* LOCATION / MAP SECTION */}
+      <section id="location-map" className="py-[clamp(46px,6vw,86px)] border-b border-[#26221E]/13">
+        <div className="max-w-[1320px] mx-auto px-4.5 sm:px-8 lg:px-16">
+          <p className="font-mono text-[9.5px] tracking-[0.2em] uppercase text-[#8A8078] mb-3">
+            Find us
+          </p>
+          <h2 className="font-serif font-normal text-[clamp(25px,3.3vw,38px)] leading-[1.12] tracking-[-0.012em] mb-4">
+            Bhilwara, Rajasthan
+          </h2>
+          <p className="font-sans text-[15px] leading-[1.78] text-[#57504A] max-w-[66ch] mb-6">
+            The works and the head office are in Bhilwara, roughly four hours from Jaipur and two from Udaipur. Our Bijolia quarry is an hour away &mdash; architects specifying a large job are welcome at both.
+          </p>
+
+          <div className="aspect-[21/9] min-h-[360px] w-full border border-[#CFC6B9] relative overflow-hidden bg-[#F5F1EB]">
+            <iframe
+              src={cmsData.location.mapEmbedUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Stoneza Bhilwara Location Map"
+              className="w-full h-full min-h-[360px]"
+            />
           </div>
         </div>
+      </section>
 
-        {/* Embedded Map */}
-        <div className="w-full h-[420px] rounded-sm overflow-hidden border border-[#26221E]/15 shadow-inner bg-[#EFEAE2] relative">
-          <iframe
-            src={cmsData.location.mapEmbedUrl}
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Stoneza HQ Location Map"
-            className="w-full h-full grayscale hover:grayscale-0 transition-all duration-700"
-          />
+      {/* BOTTOM CTA SECTION */}
+      <section className="bg-[#C9BDB2] py-[clamp(48px,6vw,84px)] px-4.5 sm:px-8 lg:px-16 text-center">
+        <h2 className="font-serif font-normal text-[clamp(25px,3.3vw,38px)] leading-[1.12] tracking-[-0.012em] mb-3.5 text-[#26221E]">
+          Not sure which stone yet?
+        </h2>
+        <p className="max-w-[56ch] mx-auto mb-6.5 text-[#544B42] text-[15px] leading-[1.7]">
+          That is the normal starting point. Tell us the surface, the exposure and the look you are after, and we will narrow it down before you commit to anything.
+        </p>
+
+        <div className="flex gap-3 justify-center flex-wrap">
+          <a
+            href={cmsData.cards.whatsappHref || "https://wa.me/917877108154"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[10.5px] tracking-[0.14em] uppercase no-underline py-3.75 px-6.5 bg-[#26221E] text-[#C9BDB2] hover:bg-[#8E4B2A] transition-colors"
+          >
+            WhatsApp a consultant
+          </a>
+          <Link
+            href="/product"
+            className="font-mono text-[10.5px] tracking-[0.14em] uppercase no-underline py-3.75 px-6.5 border border-[#26221E]/35 text-[#26221E] hover:border-[#26221E] transition-colors"
+          >
+            Browse the catalogue
+          </Link>
         </div>
       </section>
     </div>

@@ -3,10 +3,15 @@ import mongoose from "mongoose";
 const personContactSchema = new mongoose.Schema(
   {
     name: String,
+    role: String,
+    title: String,
+    description: String,
     phone: String,
     whatsapp: String,
     email: String,
+    hours: String,
     linkedIn: String,
+    tag: String,
   },
   { _id: false }
 );
@@ -74,6 +79,24 @@ const contactUsSchema = new mongoose.Schema(
 
     peopleSection: {
       people: [personContactSchema],
+    },
+    whatHappensNext: {
+      eyebrow: { type: String, default: "What happens next" },
+      title: { type: String, default: "Four steps, no chasing" },
+      steps: [
+        {
+          number: String,
+          text: String,
+        },
+      ],
+      specifyingNote: {
+        title: { type: String, default: "Specifying rather than buying?" },
+        description: {
+          type: String,
+          default:
+            "Ask for the specification pack — technical datasheets, Stoneza spec codes and physical samples for the stones on your drawing. Written into a BOQ, a spec code names the stone, finish and thickness, so what arrives is what you drew.",
+        },
+      },
     },
     location: {
       mapEmbedUrl: {
