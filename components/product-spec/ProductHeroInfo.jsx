@@ -18,8 +18,31 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
     stoneDetails = {},
   } = product;
 
+  // Accurate collection derivation (D-05)
+  const skuUpper = (sku || '').toUpperCase();
+  const derivedCollection =
+    collectionName && collectionName !== 'Stonefield'
+      ? collectionName
+      : skuUpper.startsWith('STZ-NM-')
+      ? 'Nature Mosaic'
+      : skuUpper.startsWith('STZ-CO-')
+      ? 'CobbleCraft'
+      : skuUpper.startsWith('STZ-FO-') || skuUpper.startsWith('STZ-FD-')
+      ? 'Foundations'
+      : skuUpper.startsWith('STZ-FA-')
+      ? 'Facets & Finishes'
+      : skuUpper.startsWith('STZ-SW-')
+      ? 'StoneWeave'
+      : skuUpper.startsWith('STZ-FL-')
+      ? 'Flagstone'
+      : skuUpper.startsWith('STZ-STP-')
+      ? 'Steps & Coping'
+      : skuUpper.startsWith('STZ-ST-')
+      ? 'Stonefield'
+      : collectionName || '';
+
   const eyebrowElements = [];
-  if (collectionName) eyebrowElements.push({ label: collectionName, href: collectionSlug ? `/collections/${collectionSlug}` : '/collections' });
+  if (derivedCollection) eyebrowElements.push({ label: `${derivedCollection} Collection`, href: collectionSlug ? `/collections/${collectionSlug}` : '/collections' });
   if (categoryName) eyebrowElements.push({ label: categoryName, href: categorySlug ? `/product-category/${categorySlug}` : '/collections' });
   if (sku) eyebrowElements.push({ label: `SKU: ${sku}` });
 
@@ -45,7 +68,7 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
       </h1>
 
       <p className="font-heading text-xs uppercase tracking-[0.14em] text-[#78716C] mb-4">
-        {[stoneDetails.stoneType, stoneDetails.quarryLocation, stoneDetails.recommendedUse]
+        {[stoneDetails.stoneType, stoneDetails.tradeName, stoneDetails.faceTexture]
           .filter(Boolean)
           .join(' · ')}
       </p>

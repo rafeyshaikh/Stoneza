@@ -105,6 +105,18 @@ export default async function ProductDetailPage({ params }) {
         }
       }
 
+      // Fallback collection derivation from SKU if collection is missing or generic (D-05)
+      if (!collectionName || collectionName === "Stonefield" && !product.sku?.startsWith("STZ-ST-")) {
+        const skuUpper = (product.sku || "").toUpperCase();
+        if (skuUpper.startsWith("STZ-NM-")) collectionName = "Nature Mosaic";
+        else if (skuUpper.startsWith("STZ-CO-")) collectionName = "CobbleCraft";
+        else if (skuUpper.startsWith("STZ-FO-") || skuUpper.startsWith("STZ-FD-")) collectionName = "Foundations";
+        else if (skuUpper.startsWith("STZ-FA-")) collectionName = "Facets & Finishes";
+        else if (skuUpper.startsWith("STZ-SW-")) collectionName = "StoneWeave";
+        else if (skuUpper.startsWith("STZ-FL-")) collectionName = "Flagstone";
+        else if (skuUpper.startsWith("STZ-STP-")) collectionName = "Steps & Coping";
+      }
+
       let relatedProductsRaw = [];
       let relatedCategoriesRaw = [];
 
@@ -112,8 +124,10 @@ export default async function ProductDetailPage({ params }) {
         categoryName = categoryObj.name || "";
         categorySlug = categoryObj.slug || "";
 
-        // 1. Fetch products of the SAME category or collection
+        // 1. Fetch products of the SAME category or collection, EXCLUDING current product (D-08)
         relatedProductsRaw = await Product.find({
+          _id: { $ne: product._id },
+          slug: { $ne: product.slug },
           ...(collectionObj ? { collection: collectionObj._id } : { category: categoryObj._id }),
           status: "published",
         })
@@ -125,6 +139,7 @@ export default async function ProductDetailPage({ params }) {
         if (categoryObj.parentCategory) {
           parentCategoryName = categoryObj.parentCategory.name || "";
           relatedCategoriesRaw = await Category.find({
+            _id: { $ne: categoryObj._id },
             parentCategory: categoryObj.parentCategory._id,
             isActive: true,
           })
@@ -133,6 +148,7 @@ export default async function ProductDetailPage({ params }) {
             .lean();
         } else {
           relatedCategoriesRaw = await Category.find({
+            _id: { $ne: categoryObj._id },
             categoryLevel: categoryObj.categoryLevel || 1,
             isActive: true,
           })
@@ -142,6 +158,8 @@ export default async function ProductDetailPage({ params }) {
         }
       } else if (collectionObj) {
         relatedProductsRaw = await Product.find({
+          _id: { $ne: product._id },
+          slug: { $ne: product.slug },
           collection: collectionObj._id,
           status: "published",
         })
@@ -152,34 +170,42 @@ export default async function ProductDetailPage({ params }) {
 
       // Fallback if no same category products found
       if (relatedProductsRaw.length === 0) {
-        relatedProductsRaw = await Product.find({ status: "published" })
+        relatedProductsRaw = await Product.find({
+          _id: { $ne: product._id },
+          slug: { $ne: product.slug },
+          status: "published",
+        })
           .select("name slug images stoneDetails price")
           .limit(12)
           .lean();
       }
 
-      // Format Track 1 items: Products of the same category / collection
-      const relatedProducts = relatedProductsRaw.map((p) => ({
-        title: p.name,
-        subtitle: p.stoneDetails?.stoneType || p.stoneDetails?.faceTexture || "Natural Stone",
-        href: `/product/${p.slug}`,
-        imageUrl: p.images?.[0]?.url || "",
-        bg: "#FAF8F5",
-        isCurrent: p.slug === product.slug,
-      }));
+      // Format Track 1 items: Products of the same category / collection (strictly excluding current)
+      const relatedProducts = relatedProductsRaw
+        .filter((p) => p.slug !== product.slug)
+        .map((p) => ({
+          title: p.name,
+          subtitle: p.stoneDetails?.stoneType || p.stoneDetails?.faceTexture || "Natural Stone",
+          href: `/product/${p.slug}`,
+          imageUrl: p.images?.[0]?.url || "",
+          bg: "#FAF8F5",
+          isCurrent: false,
+        }));
 
       // Format Track 2 items: Related categories
-      const relatedCategories = relatedCategoriesRaw.map((c) => ({
-        title: c.name,
-        subtitle: c.description || "Category",
-        href: `/product-category/${c.slug}`,
-        imageUrl:
-          c.bannerImage?.square?.url ||
-          (Array.isArray(c.bannerImage?.wide) && c.bannerImage.wide[0]?.url) ||
-          "",
-        bg: "#FAF8F5",
-        isCurrent: categoryObj && c._id.toString() === categoryObj._id.toString(),
-      }));
+      const relatedCategories = relatedCategoriesRaw
+        .filter((c) => !categoryObj || c._id.toString() !== categoryObj._id.toString())
+        .map((c) => ({
+          title: c.name,
+          subtitle: c.description || "Category",
+          href: `/product-category/${c.slug}`,
+          imageUrl:
+            c.bannerImage?.square?.url ||
+            (Array.isArray(c.bannerImage?.wide) && c.bannerImage.wide[0]?.url) ||
+            "",
+          bg: "#FAF8F5",
+          isCurrent: false,
+        }));
 
       safeProduct = JSON.parse(
         JSON.stringify({

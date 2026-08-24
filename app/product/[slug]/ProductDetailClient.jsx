@@ -21,34 +21,106 @@ export default function ProductDetailClient({ productData }) {
   const [t2PrevDisabled, setT2PrevDisabled] = useState(true);
   const [t2NextDisabled, setT2NextDisabled] = useState(false);
 
-  // Normalize images array to ensure compatibility with ProductHeroGallery
+  // De-duplicate images array (D-10)
+  const rawImages = productData.images && productData.images.length > 0 ? productData.images : [];
+  const seenUrls = new Set();
+  const deduplicatedImages = [];
+  rawImages.forEach((img, idx) => {
+    const url = typeof img === 'string' ? img : img?.url || '';
+    if (url && !seenUrls.has(url)) {
+      seenUrls.add(url);
+      deduplicatedImages.push(
+        typeof img === 'string'
+          ? { url: img, bg: '#FAF8F5' }
+          : { url: img.url || getPlaceholderImage(productData.name, idx), bg: img.bg || '#FAF8F5', caption: img.caption || '' }
+      );
+    }
+  });
+
   const normalizedImages =
-    productData.images && productData.images.length > 0
-      ? productData.images.map((img, idx) =>
-          typeof img === 'string'
-            ? { url: img, bg: '#FAF8F5' }
-            : { url: img.url || getPlaceholderImage(productData.name, idx), bg: img.bg || '#FAF8F5', caption: img.caption || '' }
-        )
+    deduplicatedImages.length > 0
+      ? deduplicatedImages
       : [{ url: getPlaceholderImage(productData.name || "Stoneza Product"), bg: '#FAF8F5' }];
 
+  // Clean description fallback (D-06)
   const rawDescription =
-    productData.description ||
-    productData.overview?.description ||
     productData.shortDescription ||
-    '';
+    productData.overview?.description ||
+    productData.description ||
+    `${productData.name} — premium ${productData.stoneDetails?.stoneType || 'natural stone'} calibrated for demanding architectural applications.`;
+
+  // Clean "Specify it for" (D-11)
+  let specifyFor = productData.overview?.specifyFor || '';
+  const finishText = productData.stoneDetails?.installationMethod || '';
+  if (
+    specifyFor.startsWith('Grip when wet') ||
+    specifyFor.startsWith('Hand-laid character with the laying speed') ||
+    (finishText && specifyFor === finishText)
+  ) {
+    specifyFor =
+      productData.stoneDetails?.application && productData.stoneDetails.application.length > 0
+        ? productData.stoneDetails.application.join(', ')
+        : 'Interior and exterior architectural applications.';
+  }
+
+  // Derive variants dynamically to guarantee 100% sync with TDS (D-01, D-02)
+  let activeVariants = [];
+  if (productData.variants && productData.variants.length > 0) {
+    activeVariants = productData.variants.map((v) => ({
+      name: v.name,
+      label: v.name,
+      key: v.key || v.name.toLowerCase().replace(/\s+/g, '-'),
+      options: v.options && v.options.length > 0 ? v.options : ['Standard'],
+      defaultOption: v.options && v.options.length > 0 ? v.options[0] : 'Standard',
+    }));
+  } else {
+    // Dynamic fallback matching stoneDetails exactly
+    const sd = productData.stoneDetails || {};
+    if (sd.calibratedThickness) {
+      activeVariants.push({
+        name: 'Thickness',
+        label: 'Thickness',
+        key: 'thickness',
+        options: sd.calibratedThickness.split('|').map((s) => s.trim()).filter(Boolean),
+      });
+    }
+    if (sd.pieceSize) {
+      activeVariants.push({
+        name: 'Size',
+        label: 'Size',
+        key: 'size',
+        options: sd.pieceSize.split('|').map((s) => s.trim()).filter(Boolean),
+      });
+    }
+    if (sd.faceTexture || sd.productForm) {
+      activeVariants.push({
+        name: 'Finish',
+        label: 'Finish',
+        key: 'finish',
+        options: (sd.faceTexture || sd.productForm).split('|').map((s) => s.trim()).filter(Boolean),
+      });
+    }
+    if (sd.edges) {
+      activeVariants.push({
+        name: 'Edges',
+        label: 'Edges',
+        key: 'edges',
+        options: sd.edges.split('|').map((s) => s.trim()).filter(Boolean),
+      });
+    }
+  }
 
   // Normalize full product data with safe fallbacks matching Product schema
   const product = {
     ...productData,
     images: normalizedImages,
+    variants: activeVariants,
     overview: {
       description: rawDescription,
-      specifyFor:
-        productData.overview?.specifyFor ||
-        'Interior and exterior feature walls, facades, and accent features.',
+      specifyFor,
       steerElsewhereFor:
         productData.overview?.steerElsewhereFor ||
-        'High-traffic horizontal flooring applications without surface treatment.',
+        'Applications requiring non-standard structural tolerances without quarry consultation.',
       howItReads: productData.overview?.howItReads || {
         atDistance: 'Monolithic texture with soft tonal variation across elevation.',
         closeUp: 'Rich organic surface relief and tactile natural stone grain.',
@@ -71,11 +143,11 @@ export default function ProductDetailClient({ productData }) {
           ],
   };
 
-  // Initialize specs state dynamically from product.variants
+  // Initialize specs state dynamically from activeVariants
   const [specs, setSpecs] = useState(() => {
     const initial = {};
-    if (product?.variants) {
-      product.variants.forEach((v) => {
+    if (activeVariants.length > 0) {
+      activeVariants.forEach((v) => {
         initial[v.key || v.name.toLowerCase()] = v.defaultOption || v.options[0];
       });
     }
