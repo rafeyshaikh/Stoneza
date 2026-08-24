@@ -3,6 +3,7 @@ import BlogsPagination from "@/components/blogs/BlogsPagination";
 
 import { connectDB } from "@/lib/databaseConnection";
 import Seo from "@/models/Seo.model";
+import Blog from "@/models/Blog.model";
 
 export const dynamic = "force-dynamic";
 
