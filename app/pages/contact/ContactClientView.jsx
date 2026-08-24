@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ENQUIRER_ROLES, PROJECT_TYPES } from "@/lib/validations/enquiry";
+import { COMPANY_INFO } from "@/lib/constants";
 
 const DEFAULT_CMS_DATA = {
   hero: {
@@ -10,11 +11,13 @@ const DEFAULT_CMS_DATA = {
       "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png",
   },
   cards: {
-    whatsappPhone: "+91 78771 08154",
-    whatsappHref: "https://wa.me/917877108154",
-    emailAddress: "sales@stoneza.in",
-    officeLocation: "Bhilwara, Rajasthan",
-    workingHours: "Mon–Sat, 9:30–18:30 IST",
+    whatsappPhone: COMPANY_INFO.phone,
+    whatsappHref: COMPANY_INFO.whatsappUrl,
+    emailAddress: COMPANY_INFO.email,
+    officeLocation: COMPANY_INFO.registeredAddress,
+    workingHours: COMPANY_INFO.workingHours,
+    gstin: COMPANY_INFO.gstin,
+    cin: COMPANY_INFO.cin,
   },
   peopleSection: {
     people: [
@@ -35,8 +38,7 @@ const DEFAULT_CMS_DATA = {
     ],
   },
   location: {
-    mapEmbedUrl:
-      "https://maps.google.com/maps?q=stoneza&t=m&z=12&ie=UTF8&iwloc=B&output=embed",
+    mapEmbedUrl: COMPANY_INFO.mapEmbedUrl,
   },
 };
 
@@ -667,7 +669,7 @@ export default function ContactClientView({ initialData = null }) {
                     <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono text-[#6B635B]">
                       {person.phone && (
                         <a
-                          href={`tel:${person.phone}`}
+                          href={`tel:${person.phone.replace(/\s+/g, "")}`}
                           className="hover:text-[#26221E] transition-colors flex items-center gap-1.5"
                         >
                           <span>TEL:</span> {person.phone}
@@ -753,20 +755,24 @@ export default function ContactClientView({ initialData = null }) {
         id="location-map"
         className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-12 border-t border-[#26221E]/10 scroll-mt-20"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-8">
-          <div className="lg:col-span-6">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#C25E3E] block mb-2">
-              Extraction & Office Location
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8">
+          <div className="lg:col-span-6 space-y-3">
+            <span className="font-mono text-xs uppercase tracking-widest text-[#C25E3E] block">
+              Registered Works &amp; Headquarters
             </span>
             <h2 className="font-display text-3xl font-normal text-[#1C1714]">
               Stoneza Natural Stones HQ
             </h2>
-            <p className="text-sm text-[#6B635B] mt-2 font-light max-w-lg">
-              Bhilwara, Rajasthan, India — the epicenter of sandstone and
-              quartzite extraction in North-Western India.
+            <p className="text-sm text-[#6B635B] font-light max-w-lg leading-relaxed">
+              {cmsData.cards.officeLocation}
             </p>
+            <div className="pt-1 flex flex-wrap gap-4 text-xs font-mono text-[#8A8078]">
+              <span>CIN: {COMPANY_INFO.cin}</span>
+              <span>•</span>
+              <span className="text-[#26221E] font-medium">GSTIN: {COMPANY_INFO.gstin}</span>
+            </div>
           </div>
-          <div className="lg:col-span-6 flex lg:justify-end gap-4 font-mono text-xs">
+          <div className="lg:col-span-6 flex flex-wrap lg:justify-end gap-4 font-mono text-xs">
             <div className="px-5 py-3 bg-white border border-[#26221E]/10">
               <span className="text-[#8A8078] block">Hours:</span>
               <strong className="text-[#26221E]">

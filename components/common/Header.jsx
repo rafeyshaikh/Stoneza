@@ -11,6 +11,7 @@ import { PiXBold } from "react-icons/pi";
 import { GoPlus } from "react-icons/go";
 import { LuMinus } from "react-icons/lu";
 import { AnimatePresence, motion } from "framer-motion";
+import { COMPANY_INFO } from "@/lib/constants";
 
 import HeaderSearchOverlay from "./HeaderSearchOverlay";
 
@@ -558,7 +559,7 @@ export default function Header() {
               {/* Drawer Bottom Actions: WhatsApp & Enquiry CTA */}
               <div className="p-4 border-t border-[#26221E]/15 bg-[#FAF8F5]/80 shrink-0 space-y-2">
                 <a
-                  href="https://wa.me/917877108154?text=Hi%20Stoneza%2C%20I%20would%20like%20to%20enquire%20about%20natural%20stone%20surfaces."
+                  href={`${COMPANY_INFO.whatsappUrl}?text=${encodeURIComponent("Hi Stoneza, I would like to enquire about natural stone surfaces.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-2.5 px-4 bg-[#1C1714] text-white font-heading text-xs font-bold tracking-[0.15em] uppercase rounded flex items-center justify-center gap-2 hover:bg-[#25D366] transition-colors no-underline shadow-xs"

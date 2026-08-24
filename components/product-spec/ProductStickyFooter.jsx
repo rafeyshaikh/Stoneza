@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { COMPANY_INFO } from '@/lib/constants';
 
 export default function ProductStickyFooter({
   showSticky,
@@ -24,7 +25,7 @@ export default function ProductStickyFooter({
         className="font-heading text-[10px] font-bold tracking-[0.14em] uppercase bg-[#C8A980] text-[#1C1714] no-underline px-5.5 py-3 rounded-[3px] whitespace-nowrap transition-colors hover:bg-white"
         href={
           whatsappUrl ||
-          `https://wa.me/917877108154?text=${encodeURIComponent(`Hi Stoneza, I'd like a quote for ${productName}`)}`
+          `${COMPANY_INFO.whatsappUrl}?text=${encodeURIComponent(`Hi Stoneza, I'd like a quote for ${productName}`)}`
         }
         target="_blank"
         rel="noopener noreferrer"

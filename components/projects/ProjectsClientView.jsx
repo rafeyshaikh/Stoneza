@@ -12,6 +12,7 @@ import {
   Building,
   ArrowUpRight,
 } from "lucide-react";
+import { COMPANY_INFO } from "@/lib/constants";
 
 export default function ProjectsClientView({
   initialProjects = [],
@@ -587,7 +588,7 @@ export default function ProjectsClientView({
               Start a project
             </Link>
             <a
-              href="https://wa.me/917877108154"
+              href={COMPANY_INFO.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="border border-[#26221E]/35 text-[#26221E] hover:border-[#26221E] font-mono text-[10.5px] uppercase tracking-[0.14em] px-7 py-4 transition-colors"
