@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 
 import { uploadAdminImage } from "@/lib/uploadAdminImage";
+import { generateSlug } from "@/lib/generateSlug";
 
 const uploadImage = (file, folder = "categories") => uploadAdminImage(file, folder);
 
@@ -41,6 +42,8 @@ const EMPTY_MEGAMENU = {
 
 const EMPTY_FORM = {
   name: "",
+  slug: "",
+  isSlugManual: false,
   description: "",
   parentCategory: "none",
   sortOrder: 0,
@@ -87,6 +90,8 @@ export default function CategoryForm({
 
     return {
       name: initialData.name || "",
+      slug: initialData.slug || "",
+      isSlugManual: Boolean(isEdit && initialData.slug),
       description: initialData.description || "",
       parentCategory: parentVal,
       sortOrder: initialData.sortOrder || 0,
@@ -150,6 +155,23 @@ export default function CategoryForm({
     formData.parentCategory === null;
 
   const handleChange = (key, value) => {
+    if (key === "name") {
+      setFormData((prev) => ({
+        ...prev,
+        name: value,
+        slug: prev.isSlugManual ? prev.slug : generateSlug(value),
+      }));
+      return;
+    }
+    if (key === "slug") {
+      const formatted = generateSlug(value);
+      setFormData((prev) => ({
+        ...prev,
+        slug: formatted,
+        isSlugManual: true,
+      }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       [key]: value,
@@ -380,6 +402,8 @@ export default function CategoryForm({
         },
       };
 
+      delete payload.isSlugManual;
+
       const response = await fetch(
         isEdit
           ? `/api/admin/categories/${initialData._id}`
@@ -441,13 +465,46 @@ export default function CategoryForm({
         </h3>
 
         <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Category name" htmlFor="category-name">
+          <Field label="Category name *" htmlFor="category-name">
             <Input
               id="category-name"
               placeholder="e.g. Paving & Flooring"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
+              required
             />
+          </Field>
+
+          <Field label="Slug (URL Path) *" htmlFor="category-slug">
+            <div className="relative flex items-center">
+              <span className="inline-flex h-9 items-center px-3 rounded-l-md border border-r-0 border-stone-300 bg-stone-100 text-xs text-stone-500 font-mono select-none dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
+                /product-category/
+              </span>
+              <Input
+                id="category-slug"
+                placeholder="e.g. paving-flooring"
+                value={formData.slug || ""}
+                onChange={(e) => handleChange("slug", e.target.value)}
+                className="rounded-l-none font-mono text-sm pr-14"
+                required
+              />
+              {formData.isSlugManual && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      slug: generateSlug(prev.name),
+                      isSlugManual: false,
+                    }));
+                  }}
+                  className="absolute right-2 text-[10px] text-amber-600 hover:text-amber-700 underline font-sans cursor-pointer"
+                  title="Sync slug with category name"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
           </Field>
 
           <Field label="Parent category" htmlFor="parent-category">

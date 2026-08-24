@@ -20,11 +20,14 @@ import {
 } from "@/components/ui/select";
 
 import { uploadAdminImage } from "@/lib/uploadAdminImage";
+import { generateSlug } from "@/lib/generateSlug";
 
 const uploadImage = (file, folder = "collections") => uploadAdminImage(file, folder);
 
 const EMPTY_FORM = {
   name: "",
+  slug: "",
+  isSlugManual: false,
   description: "",
   parentCollection: "none",
   sortOrder: 0,
@@ -56,6 +59,8 @@ export default function CollectionForm({
 
     return {
       name: initialData.name || "",
+      slug: initialData.slug || "",
+      isSlugManual: Boolean(isEdit && initialData.slug),
       description: initialData.description || "",
       parentCollection: initialData.parentCollection?._id
         ? initialData.parentCollection._id.toString()
@@ -92,6 +97,23 @@ export default function CollectionForm({
   );
 
   const handleInputChange = (field, value) => {
+    if (field === "name") {
+      setFormData((prev) => ({
+        ...prev,
+        name: value,
+        slug: prev.isSlugManual ? prev.slug : generateSlug(value),
+      }));
+      return;
+    }
+    if (field === "slug") {
+      const formatted = generateSlug(value);
+      setFormData((prev) => ({
+        ...prev,
+        slug: formatted,
+        isSlugManual: true,
+      }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -169,6 +191,8 @@ export default function CollectionForm({
         },
       };
 
+      delete payload.isSlugManual;
+
       const url = isEdit
         ? `/api/admin/collections/${initialData._id}`
         : "/api/admin/collections";
@@ -223,7 +247,39 @@ export default function CollectionForm({
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               placeholder="e.g. Poolside Collection"
+              required
             />
+          </Field>
+
+          <Field label="Slug (URL Path) *">
+            <div className="relative flex items-center">
+              <span className="inline-flex h-9 items-center px-3 rounded-l-md border border-r-0 border-stone-300 bg-stone-100 text-xs text-stone-500 font-mono select-none dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
+                /collections/
+              </span>
+              <Input
+                value={formData.slug || ""}
+                onChange={(e) => handleInputChange("slug", e.target.value)}
+                placeholder="e.g. poolside-collection"
+                className="rounded-l-none font-mono text-sm pr-14"
+                required
+              />
+              {formData.isSlugManual && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      slug: generateSlug(prev.name),
+                      isSlugManual: false,
+                    }));
+                  }}
+                  className="absolute right-2 text-[10px] text-amber-600 hover:text-amber-700 underline font-sans cursor-pointer"
+                  title="Sync slug with collection name"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
           </Field>
 
           <Field label="Parent Collection (Optional)">

@@ -67,12 +67,19 @@ export async function POST(request) {
       return response(false, 409, "Collection already exists");
     }
 
-    const slug = generateSlug(normalizedName);
+    const slug = generateSlug(body.slug || normalizedName);
+    if (!slug) {
+      return response(false, 400, "Valid slug is required");
+    }
 
     const existingSlug = await Collection.findOne({ slug });
 
     if (existingSlug) {
-      return response(false, 409, "Slug already exists");
+      return response(
+        false,
+        409,
+        `Slug "${slug}" already exists. Please choose a unique slug.`
+      );
     }
 
     let collectionLevel = 1;

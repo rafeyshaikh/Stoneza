@@ -71,8 +71,11 @@ export async function POST(request) {
       return response(false, 409, "Category already exists");
     }
 
-    // Generate slug
-    const slug = generateSlug(normalizedName);
+    // Generate/Validate slug
+    const slug = generateSlug(body.slug || normalizedName);
+    if (!slug) {
+      return response(false, 400, "Valid slug is required");
+    }
 
     // Extra safety for duplicate slugs
     const existingSlug = await Category.findOne({
@@ -80,7 +83,11 @@ export async function POST(request) {
     });
 
     if (existingSlug) {
-      return response(false, 409, "Slug already exists");
+      return response(
+        false,
+        409,
+        `Slug "${slug}" already exists. Please choose a unique slug.`
+      );
     }
 
     let categoryLevel = 1;

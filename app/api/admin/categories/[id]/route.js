@@ -89,7 +89,10 @@ export async function PATCH(request, { params }) {
       return response(false, 409, "Category already exists");
     }
 
-    const slug = generateSlug(normalizedName);
+    const slug = generateSlug(body.slug || normalizedName);
+    if (!slug) {
+      return response(false, 400, "Valid slug is required");
+    }
 
     const duplicateSlug = await Category.findOne({
       _id: { $ne: id },
@@ -97,7 +100,11 @@ export async function PATCH(request, { params }) {
     });
 
     if (duplicateSlug) {
-      return response(false, 409, "Slug already exists");
+      return response(
+        false,
+        409,
+        `Slug "${slug}" already exists. Please choose a unique slug.`
+      );
     }
 
     let categoryLevel = 1;

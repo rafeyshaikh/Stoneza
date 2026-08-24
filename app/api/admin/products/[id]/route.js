@@ -136,30 +136,9 @@ export async function PATCH(request, { params }) {
       }
     }
 
-    // Determine slug: keep existing slug if name has not changed
-    let slug = product.slug;
-    if (body.slug && body.slug.trim()) {
-      slug = generateSlug(body.slug.trim());
-    } else if (!slug || product.name !== name.trim()) {
-      let baseSlug = generateSlug(name);
-      let duplicate = await Product.findOne({
-        _id: { $ne: id },
-        slug: baseSlug,
-      });
-
-      if (duplicate) {
-        if (categoryExists?.slug) {
-          baseSlug = `${baseSlug}-${categoryExists.slug}`;
-        }
-        duplicate = await Product.findOne({
-          _id: { $ne: id },
-          slug: baseSlug,
-        });
-        if (duplicate) {
-          baseSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
-        }
-      }
-      slug = baseSlug;
+    let slug = body.slug ? generateSlug(body.slug) : (product.slug || generateSlug(name));
+    if (!slug) {
+      return response(false, 400, "Valid slug is required");
     }
 
     const duplicate = await Product.findOne({
@@ -168,7 +147,11 @@ export async function PATCH(request, { params }) {
     });
 
     if (duplicate) {
-      slug = `${slug}-${Date.now().toString().slice(-4)}`;
+      return response(
+        false,
+        409,
+        `Slug "${slug}" is already in use by another product. Please choose a unique slug.`
+      );
     }
 
     product.name = name.trim();

@@ -95,18 +95,18 @@ export async function POST(req) {
       }
     }
 
-    let slug = body.slug ? generateSlug(body.slug) : generateSlug(name);
+    let slug = generateSlug(body.slug || name);
+    if (!slug) {
+      return response(false, 400, "Valid slug is required");
+    }
 
-    let existingProduct = await Product.findOne({ slug });
-
+    const existingProduct = await Product.findOne({ slug });
     if (existingProduct) {
-      if (categoryExists?.slug) {
-        slug = `${slug}-${categoryExists.slug}`;
-      }
-      existingProduct = await Product.findOne({ slug });
-      if (existingProduct) {
-        slug = `${slug}-${Date.now().toString().slice(-4)}`;
-      }
+      return response(
+        false,
+        409,
+        `Slug "${slug}" is already in use by another product. Please enter a unique slug.`
+      );
     }
 
     const sanitizedImages = Array.isArray(images)
