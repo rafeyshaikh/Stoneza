@@ -3,6 +3,7 @@
 import React from 'react';
 import SpecSelect from './SpecSelect';
 import { COMPANY_INFO } from '@/lib/constants';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 export default function ProductHeroInfo({ product, specOptions, specs, handleSpecChange }) {
   if (!product) return null;
@@ -99,8 +100,8 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
 
       <div className="flex flex-wrap gap-2.5 mb-5">
         <a
-          className="font-heading text-[11px] font-bold tracking-[0.15em] uppercase text-white bg-[#1C1714] hover:bg-[#25D366] px-6 py-3.5 rounded flex-1 min-w-[200px] inline-flex items-center justify-center gap-2 transition-all duration-200 shadow-sm no-underline"
-          href={`${COMPANY_INFO.whatsappUrl}?text=${encodeURIComponent(`Hi Stoneza, I'd like a quote for ${name}`)}`}
+          className="font-heading text-[11px] font-bold tracking-[0.15em] uppercase text-white bg-[#1C1714] hover:bg-[#25D366] px-6 py-3.5 rounded flex-1 min-w-[200px] inline-flex items-center justify-center gap-2 transition-all duration-200 shadow-sm no-underline cursor-pointer"
+          href={getWhatsAppUrl(product, specs)}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -108,7 +109,7 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
         </a>
         <a
           className="font-heading text-[11px] font-bold tracking-[0.15em] uppercase text-[#1C1714] bg-white border border-[#CBC9C4] hover:border-[#1C1714] hover:bg-[#F2EDE4] px-6 py-3.5 rounded flex-1 min-w-[180px] inline-flex items-center justify-center gap-2 transition-all duration-200 no-underline"
-          href={`mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(`${name} — sample request`)}`}
+          href={`mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(`${name} — sample request`)}&body=${encodeURIComponent(`Hello Stoneza,\n\nI would like to request physical sample swatches for ${name}.\n\nSelected Specifications:\n${Object.entries(specs || {}).filter(([_, v]) => Boolean(v)).map(([k, v]) => `• ${k}: ${v}`).join("\n")}\n\nDelivery Studio / Site Address:\n\nContact Number:`)}`}
         >
           Request a sample
         </a>

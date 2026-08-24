@@ -9,6 +9,7 @@ import ProductFaqAccordion from '@/components/product-spec/ProductFaqAccordion';
 import ProductBrowseTrack from '@/components/product-spec/ProductBrowseTrack';
 import ProductStickyFooter from '@/components/product-spec/ProductStickyFooter';
 import { getPlaceholderImage } from '@/lib/placeholderImage';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 export default function ProductDetailClient({ productData }) {
   const [activeThumb, setActiveThumb] = useState(0);
@@ -345,8 +346,8 @@ export default function ProductDetailClient({ productData }) {
               Tell us your expected quantity and delivery site. A Stoneza consultant will calculate quarry-direct pricing, custom lead times, and arrange physical samples.
             </p>
             <a
-              className="h-12 px-8 bg-[#c8a980] hover:bg-white text-[#1c1714] text-xs tracking-[3px] font-bold uppercase transition-all duration-300 rounded shadow-md inline-flex items-center justify-center no-underline"
-              href={`https://wa.me/917877108154?text=${encodeURIComponent(`Hi Stoneza, I'd like a quote for ${product.name}`)}`}
+              className="h-12 px-8 bg-[#c8a980] hover:bg-white text-[#1c1714] text-xs tracking-[3px] font-bold uppercase transition-all duration-300 rounded shadow-md inline-flex items-center justify-center no-underline cursor-pointer"
+              href={getWhatsAppUrl(product, specs)}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -361,6 +362,7 @@ export default function ProductDetailClient({ productData }) {
         showSticky={showSticky}
         productName={product.name}
         priceLabel={product.priceLabel || 'Price on request • ex-factory'}
+        whatsappUrl={getWhatsAppUrl(product, specs)}
       />
     </div>
   );
