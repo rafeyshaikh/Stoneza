@@ -11,10 +11,10 @@ export async function generateMetadata() {
     await connectDB();
     const seo = await Seo.findOne().lean();
 
-    const title = "The Journal & Stories | Stoneza Natural Stones";
+    const title = "The Stone Journal & Architectural Insights";
     const description =
       "Explore natural stone guides, architectural design inspiration, poolside landscaping ideas, quarry insights, and stone craft stories from Stoneza.";
-    const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/blogs`;
+    const canonicalUrl = "https://stoneza.in/blogs";
     const ogImage =
       seo?.ogImage ||
       "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";

@@ -48,20 +48,28 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
 
   return (
     <div className="product-hero-info">
-      {eyebrowElements.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 mb-2 text-[11px] font-semibold tracking-[0.14em] uppercase text-[#78716C]">
-          {eyebrowElements.map((el, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <span className="text-[#CBC9C4]">·</span>}
-              {el.href ? (
-                <a href={el.href} className="hover:text-[#9A4A2E] transition-colors">{el.label}</a>
-              ) : (
-                <span>{el.label}</span>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      )}
+      {/* Breadcrumb Navigation (F-11) */}
+      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 mb-3 text-[11px] font-semibold tracking-[0.14em] uppercase text-[#78716C]">
+        <a href="/" className="hover:text-[#9A4A2E] transition-colors">Home</a>
+        <span className="text-[#CBC9C4]">/</span>
+        {categoryName && (
+          <>
+            <a href={categorySlug ? `/product-category/${categorySlug}` : '/collections'} className="hover:text-[#9A4A2E] transition-colors">
+              {categoryName}
+            </a>
+            <span className="text-[#CBC9C4]">/</span>
+          </>
+        )}
+        {derivedCollection && (
+          <>
+            <a href={collectionSlug ? `/collections/${collectionSlug}` : '/collections'} className="hover:text-[#9A4A2E] transition-colors">
+              {derivedCollection}
+            </a>
+            <span className="text-[#CBC9C4]">/</span>
+          </>
+        )}
+        {sku && <span className="text-[#1C1714] font-bold">SKU: {sku}</span>}
+      </nav>
 
       <h1 className="font-serif text-3xl sm:text-4xl text-[#1C1714] font-normal leading-tight tracking-tight mb-2">
         {name}

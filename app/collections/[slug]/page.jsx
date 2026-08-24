@@ -15,21 +15,23 @@ export async function generateMetadata({ params }) {
 
   const collection = data.collection;
 
-  const title = collection.seo?.metaTitle?.trim() || `${collection.name} Collection | Stoneza`;
+  let title =
+    collection.seo?.metaTitle?.trim() ||
+    `${collection.name} Collection`;
+  title = title.replace(/\s*\|\s*Stoneza.*$/i, "").replace(/\s*—\s*Stoneza.*$/i, "").trim();
+
   const description =
     collection.seo?.metaDescription?.trim() ||
     (collection.description?.replace(/<[^>]*>/g, "")?.slice(0, 160)?.trim() ||
-      `Explore our premium ${collection.name} collection of natural stones at Stoneza.`);
+      `Explore our premium ${collection.name} collection of architectural natural stones at Stoneza.`);
 
   const ogImage =
     collection.seo?.ogImage?.trim() ||
     (collection.bannerImage?.square?.url ||
       collection.bannerImage?.wide?.[0]?.url ||
-      "");
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png");
 
-  const canonicalUrl =
-    collection.seo?.canonicalUrl?.trim() ||
-    `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/collections/${slug}`;
+  const canonicalUrl = `https://stoneza.in/collections/${slug}`;
 
   const keywords = collection.seo?.keywords || [];
 

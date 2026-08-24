@@ -3,28 +3,27 @@ import Link from "next/link";
 import Script from "next/script";
 import { getAboutData } from "@/lib/getAboutData";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   const data = await getAboutData();
   const title =
     data?.seo?.metaTitle?.trim() ||
-    (data?.hero?.title
-      ? `${data.hero.title} | Stoneza Natural Stone`
-      : "About Stoneza | 34+ Years of Natural Stone Quarries & Processing in Rajasthan");
+    "About Us — Quarrying & Heritage Since 1992";
 
   const description =
     data?.seo?.metaDescription?.trim() ||
     (data?.story?.lead
       ? data.story.lead
-      : "Discover Stoneza's legacy since 1992. Three generations of quarrying Bijolia sandstone, Kota stone & Asind granite with in-house processing factories in Bhilwara, Rajasthan.");
+      : "Discover Stoneza's legacy since 1992. Three generations of quarrying Bijolia sandstone, Kota stone & Asind granite with in-house processing in Bhilwara, Rajasthan.");
 
   const heroImageUrl =
     data?.seo?.ogImage?.trim() ||
-    data?.hero?.image?.url ||
-    "https://stoneza.in/wp-content/uploads/2026/04/Home-Page.webp";
+    (data?.hero?.image?.url && !data.hero.image.url.includes("wp-content")
+      ? data.hero.image.url
+      : "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png");
 
-  const canonicalUrl =
-    data?.seo?.canonicalUrl?.trim() ||
-    `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/about-us`;
+  const canonicalUrl = "https://stoneza.in/pages/about-us";
 
   const keywords =
     data?.seo?.keywords?.trim() ||
@@ -35,8 +34,6 @@ export async function generateMetadata() {
       "Asind granite supplier",
       "natural stone suppliers Rajasthan",
       "Bhilwara stone factory",
-      "Kanishk Ostwal",
-      "Devanshi Jain",
       "natural stone cladding",
       "architectural stone solutions",
     ].join(", ");
@@ -75,10 +72,16 @@ export async function generateMetadata() {
 export default async function AboutUsPage() {
   const data = await getAboutData();
 
-  const hero = data?.hero || {
-    eyebrow: "Our Story · Since 1992",
-    title: "Three generations. One love affair with stone.",
-    image: { url: "https://stoneza.in/wp-content/uploads/2026/04/Home-Page.webp" },
+  const hero = {
+    ...data?.hero,
+    eyebrow: data?.hero?.eyebrow || "Our Story · Since 1992",
+    title: data?.hero?.title || "Three generations. One love affair with stone.",
+    image: {
+      url:
+        data?.hero?.image?.url && !data.hero.image.url.includes("wp-content")
+          ? data.hero.image.url
+          : "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png",
+    },
   };
 
   const story = data?.story || {
@@ -216,7 +219,7 @@ export default async function AboutUsPage() {
       {/* 1. HERO SECTION */}
       <section className="relative h-[72vh] min-h-[520px] text-white flex items-end overflow-hidden">
         <Image
-          src={hero.image?.url || "https://stoneza.in/wp-content/uploads/2026/04/Home-Page.webp"}
+          src={hero.image?.url || "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png"}
           alt={hero.title}
           fill
           priority

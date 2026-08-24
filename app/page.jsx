@@ -32,15 +32,23 @@ export async function generateMetadata() {
   try {
     await connectDB();
     const seo = await Seo.findOne().lean();
-    const title = seo?.metaTitle || "Stoneza - Natural Stone Showcase & Enquiry";
-    const description = seo?.metaDescription || "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.";
-    const ogImage = seo?.ogImage || "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
-    const canonicalUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in";
+    const title = seo?.metaTitle || "Stoneza | Natural Stone Manufacturer & Exporter | India";
+    const description =
+      seo?.metaDescription ||
+      "Quarry-direct natural stone manufacturer and exporter in India since 1992. Precision-calibrated sandstone, limestone, granite, cobblestones, and wall cladding.";
+    const ogImage =
+      seo?.ogImage ||
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
+    const canonicalUrl = "https://stoneza.in";
 
     return {
-      title,
+      title: {
+        absolute: title,
+      },
       description,
-      keywords: seo?.keywords || "natural stone, stoneza, marble, granite, flooring, wall cladding",
+      keywords:
+        seo?.keywords ||
+        "natural stone manufacturer, sandstone quarry rajasthan, kota stone supplier, cobblestones india, wall cladding stone, stoneza",
       alternates: {
         canonical: canonicalUrl,
       },
@@ -48,6 +56,7 @@ export async function generateMetadata() {
         title,
         description,
         url: canonicalUrl,
+        siteName: "Stoneza",
         images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
         type: "website",
       },
@@ -60,9 +69,15 @@ export async function generateMetadata() {
     };
   } catch (err) {
     return {
-      title: "Stoneza - Natural Stone Showcase & Enquiry",
-      description: "Elevate interiors and outdoor spaces with natural stone crafted for lasting strength, refined beauty, and enduring performance.",
-      keywords: "natural stone, stoneza, marble, granite, flooring, wall cladding",
+      title: {
+        absolute: "Stoneza | Natural Stone Manufacturer & Exporter | India",
+      },
+      description:
+        "Quarry-direct natural stone manufacturer and exporter in India since 1992. Precision-calibrated sandstone, limestone, granite, cobblestones, and wall cladding.",
+      keywords: "natural stone manufacturer, sandstone quarry rajasthan, kota stone supplier, cobblestones india, stoneza",
+      alternates: {
+        canonical: "https://stoneza.in",
+      },
     };
   }
 }

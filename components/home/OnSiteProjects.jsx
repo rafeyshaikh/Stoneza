@@ -10,7 +10,7 @@ export const DEFAULT_ON_SITE_PROJECTS = [
       "Castle Grey crazy paving and Burgundy Bliss fieldstone across the arrival court and entrance.",
     tag: "HOSPITALITY",
     image:
-      "https://stoneza.in/wp-content/uploads/2025/01/WhatsApp-Image-2025-01-20-at-3.41.21-PM-1-1.png",
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png",
     href: "/projects?project=jw-marriott-ranthambore",
     slug: "jw-marriott-ranthambore",
   },
@@ -21,7 +21,7 @@ export const DEFAULT_ON_SITE_PROJECTS = [
       "A cobblestone driveway carrying vehicles for over twenty years, and it has only gained sheen.",
     tag: "RESORT",
     image:
-      "https://stoneza.in/wp-content/uploads/2025/01/Untitled-design-2-1-2.jpg",
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785326287/stoneza/homepage/hero/newslide2-ms616c0w.png",
     href: "/projects?project=ananta-spa-resort",
     slug: "ananta-spa-resort",
   },

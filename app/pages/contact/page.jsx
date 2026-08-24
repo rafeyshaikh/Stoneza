@@ -16,7 +16,7 @@ export async function generateMetadata() {
     const contactSeo = pagesDoc?.contactUs?.seo;
     const title =
       contactSeo?.metaTitle?.trim() ||
-      "Contact Stoneza | Natural Stone Supply & Specification, Bhilwara";
+      "Contact Stoneza — Stone Supply & Specification";
     const description =
       contactSeo?.metaDescription?.trim() ||
       "Get a quotation for quarry-direct natural stone from Stoneza. Direct phone/WhatsApp, sample box requests, and technical project consultation from Bhilwara, Rajasthan.";
@@ -27,9 +27,7 @@ export async function generateMetadata() {
       seoDoc?.ogImage ||
       "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png";
 
-    const canonicalUrl =
-      contactSeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/contact`;
+    const canonicalUrl = "https://stoneza.in/pages/contact";
 
     const keywords =
       contactSeo?.keywords?.trim() ||

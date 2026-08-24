@@ -16,9 +16,10 @@ export async function generateMetadata({ params }) {
   const category = data.category;
 
   // Load SEO from category schema or fallback to details
-  const title =
+  let title =
     category.seo?.metaTitle?.trim() ||
     `${category.name} — Natural Stone`;
+  title = title.replace(/\s*\|\s*Stoneza.*$/i, "").replace(/\s*—\s*Stoneza.*$/i, "").trim();
 
   const description =
     category.seo?.metaDescription?.trim() ||
@@ -77,6 +78,44 @@ export default async function CategoryPage({ params }) {
   }
 
   const safeData = JSON.parse(JSON.stringify(data));
+  const category = safeData.category;
+  const parentCategory = safeData.parentCategory;
 
-  return <CategoryPageClient initialData={safeData} slug={slug} />;
+  const breadcrumbs = [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://stoneza.in" },
+  ];
+  let pos = 2;
+  if (parentCategory) {
+    breadcrumbs.push({
+      "@type": "ListItem",
+      position: pos++,
+      name: parentCategory.name,
+      item: `https://stoneza.in/product-category/${parentCategory.slug}`,
+    });
+  }
+  if (category) {
+    breadcrumbs.push({
+      "@type": "ListItem",
+      position: pos++,
+      name: category.name,
+      item: `https://stoneza.in/product-category/${category.slug}`,
+    });
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbs,
+  };
+
+  return (
+    <>
+      <script
+        id="category-breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <CategoryPageClient initialData={safeData} slug={slug} />
+    </>
+  );
 }

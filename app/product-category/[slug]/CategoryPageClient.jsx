@@ -225,9 +225,21 @@ export default function CategoryPageClient({ initialData, slug }) {
             height={575}
           />
           <div className="absolute top-0 w-full inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent z-10 h-full flex flex-col justify-center gap-2 sm:gap-4 md:gap-6 items-start px-5 sm:px-8 md:px-12 lg:px-16">
-            <p className="text-white font-heading uppercase text-[10px] sm:text-[11px] md:text-[12px] tracking-[0.25em] sm:tracking-[0.35em] font-medium">
-              Category
-            </p>
+            {/* Breadcrumb Navigation (F-11) */}
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-[0.16em] text-[#C8A980]">
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              <span className="text-white/40">/</span>
+              {parentCategory && (
+                <>
+                  <Link href={`/product-category/${parentCategory.slug}`} className="hover:text-white transition-colors">
+                    {parentCategory.name}
+                  </Link>
+                  <span className="text-white/40">/</span>
+                </>
+              )}
+              <span className="text-white">{categoryName}</span>
+            </nav>
+
             <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light tracking-wide">
               {categoryName}
             </h1>
@@ -248,6 +260,21 @@ export default function CategoryPageClient({ initialData, slug }) {
           />
           <div className="absolute top-0 inset-0 z-10 flex items-center px-4 sm:px-8 md:px-12 lg:px-24">
             <div className="bg-linear-to-br from-white/40 via-white/95 to-white/50 backdrop-blur-sm w-full sm:w-[85%] md:w-[70%] lg:w-[45%] max-w-[540px] p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-2 sm:gap-4 lg:gap-6 shadow-md">
+              {/* Breadcrumb Navigation (F-11) */}
+              <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[10.5px] font-heading font-semibold uppercase tracking-[0.14em] text-[#9A4A2E]">
+                <Link href="/" className="hover:underline">Home</Link>
+                <span className="text-[#78716C]">/</span>
+                {parentCategory && (
+                  <>
+                    <Link href={`/product-category/${parentCategory.slug}`} className="hover:underline">
+                      {parentCategory.name}
+                    </Link>
+                    <span className="text-[#78716C]">/</span>
+                  </>
+                )}
+                <span className="text-[#1A1613] font-bold">{categoryName}</span>
+              </nav>
+
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading capitalize font-semibold tracking-wide text-[#1A1613]">
                 {categoryName}
               </h1>

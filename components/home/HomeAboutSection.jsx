@@ -22,7 +22,7 @@ export default function HomeAboutSection({
 
   const imageUrl =
     storyData?.homepageImage?.url ||
-    "https://stoneza.in/wp-content/uploads/2026/04/Home-Page.webp";
+    "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png";
 
   return (
     <section className="w-full bg-[#FAF8F5] border-t border-[#26221E]/10 py-16 sm:py-20 md:py-24">

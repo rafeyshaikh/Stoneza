@@ -11,17 +11,20 @@ export async function generateMetadata() {
     await connectDB();
     const seo = await Seo.findOne().lean();
 
-    const title = "Projects — Natural Stone Supplied by Stoneza | JW Marriott Ranthambore & more";
+    const title = "Architectural Stone Projects & Portfolio";
     const description =
-      "Natural stone supplied by Stoneza to resorts, villas, townships and commercial projects across India and exported to four continents. Quarry-direct, batch-matched across construction phases.";
-    const canonicalUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/projects`;
+      "Natural stone supplied by Stoneza to luxury resorts, private villas, townships and institutional projects across India and internationally.";
+    const canonicalUrl = "https://stoneza.in/projects";
     const ogImage =
-      seo?.ogImage || "https://stoneza.in/assets/hero/fieldstone-cladding-facade-banner.webp";
+      seo?.ogImage ||
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png";
 
     return {
       title,
       description,
-      keywords: seo?.keywords || "natural stone projects, luxury stone resort, stoneza projects, sandstone paving supply",
+      keywords:
+        seo?.keywords ||
+        "natural stone projects, luxury stone resort, stoneza projects, sandstone paving supply",
       alternates: {
         canonical: canonicalUrl,
       },
@@ -29,6 +32,7 @@ export async function generateMetadata() {
         title,
         description,
         url: canonicalUrl,
+        siteName: "Stoneza",
         images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
         type: "website",
       },
@@ -41,9 +45,9 @@ export async function generateMetadata() {
     };
   } catch (err) {
     return {
-      title: "Projects — Natural Stone Supplied by Stoneza | JW Marriott Ranthambore & more",
+      title: "Architectural Stone Projects & Portfolio",
       description:
-        "Natural stone supplied by Stoneza to resorts, villas, townships and commercial projects across India and exported to four continents.",
+        "Natural stone supplied by Stoneza to resorts, villas, townships and commercial projects across India and internationally.",
     };
   }
 }
@@ -65,12 +69,12 @@ const fallbackProjects = [
     products: ["Crazy paving", "fieldstone cladding"],
     supply: "Quarry-direct, batch-matched across phases",
     bannerImage: {
-      url: "https://stoneza.in/wp-content/uploads/2025/01/WhatsApp-Image-2025-01-20-at-3.41.21-PM-1-1.png",
+      url: "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png",
       publicId: "jw-marriott-ranthambore",
     },
     images: [
       {
-        url: "https://stoneza.in/wp-content/uploads/2025/01/WhatsApp-Image-2025-01-20-at-3.41.21-PM-1-1.png",
+        url: "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png",
         caption: "Arrival Court & Main Entrance Paving",
       },
     ],
@@ -135,7 +139,7 @@ const fallbackProjects = [
     products: ["Cosmic Rust Stonefield", "Fieldstone"],
     supply: "Pre-blended crates to fixed ratio",
     bannerImage: {
-      url: "https://stoneza.in/wp-content/uploads/2026/04/Home-Page.webp",
+      url: "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png",
     },
     isFeatured: false,
     status: "published",
@@ -156,7 +160,7 @@ const fallbackProjects = [
     products: ["Lava Black Cascade", "Silver Grey coping"],
     supply: "Tested & certified < 0.5% absorption",
     bannerImage: {
-      url: "https://stoneza.in/wp-content/uploads/2026/02/Landscaping-Outdoor-Living-Natural-Stone.webp",
+      url: "https://res.cloudinary.com/chlmognp/image/upload/v1785340268/stoneza/homepage/hero/newslide3-kw98hw7m.png",
     },
     isFeatured: false,
     status: "published",
@@ -177,7 +181,7 @@ const fallbackProjects = [
     products: ["Castle Grey Facade Stone", "Facade Slabs"],
     supply: "BOQ spec-coded mechanical fixing",
     bannerImage: {
-      url: "https://stoneza.in/wp-content/uploads/2026/02/Wall-Facade-Cladding-Natural-Stone.webp",
+      url: "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png",
     },
     isFeatured: false,
     status: "published",
@@ -198,7 +202,7 @@ const fallbackProjects = [
     products: ["Sandy Brown CobbleCraft", "Patio packs"],
     supply: "Phased delivery across 3 phases",
     bannerImage: {
-      url: "https://stoneza.in/wp-content/uploads/2026/02/Flooring-Paving-Natural-Stone.webp",
+      url: "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png",
     },
     isFeatured: false,
     status: "published",
@@ -240,7 +244,7 @@ const fallbackProjects = [
     products: ["Asian Gold", "CNC Atelier jaali"],
     supply: "Number-coded custom architectural dispatch",
     bannerImage: {
-      url: "https://stoneza.in/wp-content/uploads/2026/02/Patterns-Finishes-natural-stone.webp",
+      url: "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png",
     },
     isFeatured: false,
     status: "published",

@@ -20,7 +20,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     categoryMeta: "KANDLA GREY · PAVING & CLADDING",
     href: "/product/castle-grey",
     image:
-      "https://stoneza.in/wp-content/uploads/2026/02/Flooring-Paving-Natural-Stone.webp",
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png",
   },
   {
     id: "burgundy-bliss",
@@ -28,7 +28,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     categoryMeta: "MANDANA RED · 7 FINISHES",
     href: "/product/burgundy-bliss",
     image:
-      "https://stoneza.in/wp-content/uploads/2025/01/Untitled-design-2-1-2.jpg",
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png",
   },
   {
     id: "cosmic-black",
@@ -36,7 +36,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     categoryMeta: "MONSOON BLACK · 6 FINISHES",
     href: "/product/cosmic-black",
     image:
-      "https://stoneza.in/wp-content/uploads/2026/02/Wall-Facade-Cladding-Natural-Stone.webp",
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png",
   },
   {
     id: "mint-frost",
@@ -52,7 +52,7 @@ export const DEFAULT_SIGNATURE_STONES = [
     categoryMeta: "JAISALMER · 5 FINISHES",
     href: "/product/asian-gold",
     image:
-      "https://stoneza.in/wp-content/uploads/2026/02/Landscaping-Outdoor-Living-Natural-Stone.webp",
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340268/stoneza/homepage/hero/newslide3-kw98hw7m.png",
   },
 ];
 

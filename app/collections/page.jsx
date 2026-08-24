@@ -26,8 +26,8 @@ export async function generateMetadata() {
     const title =
       collectionsSeo?.metaTitle?.trim() ||
       (cmsOverview?.title
-        ? `${cmsOverview.title} | ${seoDoc?.metaTitle || "Stoneza"}`
-        : `Natural Stone Collections | ${seoDoc?.metaTitle || "Stoneza"}`);
+        ? `${cmsOverview.title} — Natural Stone Series`
+        : "Natural Stone Collections");
 
     const description =
       collectionsSeo?.metaDescription?.trim() ||
@@ -40,11 +40,9 @@ export async function generateMetadata() {
       cmsOverview?.bannerImage?.square?.url ||
       cmsOverview?.bannerImage?.wide?.[0]?.url ||
       seoDoc?.ogImage ||
-      "";
+      "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png";
 
-    const canonicalUrl =
-      collectionsSeo?.canonicalUrl?.trim() ||
-      `${baseDomain}/collections`;
+    const canonicalUrl = "https://stoneza.in/collections";
 
     const keywords =
       collectionsSeo?.keywords?.trim() ||
