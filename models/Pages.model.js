@@ -244,6 +244,8 @@ const pageSchema = new mongoose.Schema(
 
     termsAndConditions: policySchema,
 
+    termsOfSupply: policySchema,
+
     disclaimer: policySchema,
 
     returnPolicy: policySchema,

@@ -3,7 +3,20 @@ import { useState } from "react";
 import { enquirySchema, PROJECT_TYPES, ENQUIRER_ROLES } from "@/lib/validations/enquiry";
 import { useContact } from "@/context/ContactContext";
 
-import { Package, Ruler, ShieldCheck, UserCheck, Phone, Mail, MessageSquare, Clock } from "lucide-react";
+import {
+  Package,
+  Ruler,
+  ShieldCheck,
+  UserCheck,
+  Phone,
+  Mail,
+  MessageSquare,
+  Clock,
+  ChevronDown,
+  CheckCircle2,
+  AlertCircle,
+  RotateCcw,
+} from "lucide-react";
 
 const VALUE_PILLARS = [
   {
@@ -34,22 +47,30 @@ const STATS = [
   { value: "100%", label: "Genuine Natural Stone" },
 ];
 
-function Field({ label, children, error }) {
+function Field({ label, children, error, required = false }) {
   return (
-    <div className="flex flex-col gap-2">
-      <span className="font-sans text-[10.5px] font-medium uppercase tracking-[0.16em] text-[#9C8D79]">
-        {label}
-      </span>
+    <div className="flex flex-col gap-1.5">
+      <label className="font-sans text-[11px] font-medium uppercase tracking-[0.16em] text-[#9C8D79] flex items-center justify-between">
+        <span>
+          {label} {required && <span className="text-[#E29578]">*</span>}
+        </span>
+      </label>
       {children}
       {error && (
-        <span className="font-sans text-[11.5px] text-[#E29578]">{error}</span>
+        <span className="font-sans text-[11.5px] text-[#E29578] flex items-center gap-1 mt-0.5">
+          <AlertCircle className="size-3 shrink-0" />
+          {error}
+        </span>
       )}
     </div>
   );
 }
 
 const fieldBase =
-  "w-full rounded-[4px] border border-[#54493F] bg-[#3B3530] px-3.5 py-[11px] text-[13.5px] leading-none text-[#EDE8E1] placeholder:text-[#8A7F73] outline-none transition-colors focus:border-[#B49A75] appearance-none";
+  "w-full rounded-[4px] border border-[#54493F] bg-[#3B3530] px-3.5 py-[11px] text-[13.5px] leading-tight text-[#EDE8E1] placeholder:text-[#8A7F73] outline-none transition-all duration-200 focus:border-[#C9A980] focus:ring-1 focus:ring-[#C9A980]/30";
+
+const selectBase =
+  `${fieldBase} appearance-none [-webkit-appearance:none] [-moz-appearance:none] [&::-ms-expand]:hidden pr-9 cursor-pointer`;
 
 export default function EnquiryForm({ initialStoneType = "", compact = false }) {
   const { contactDetails } = useContact();
@@ -75,8 +96,18 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [serverMessage, setServerMessage] = useState("");
 
-  const update = (field) => (e) =>
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+  const update = (field) => (e) => {
+    const val = e.target.value;
+    setFormData((prev) => ({ ...prev, [field]: val }));
+    // Clear field-specific error as user types
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -95,7 +126,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
       const res = await fetch("/api/public/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(result.data),
       });
 
       const data = await res.json();
@@ -110,7 +141,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
       setStatus("success");
       setFormData(getInitialState());
     } catch (err) {
-      setServerMessage("Network error. Please check your connection and try again.");
+      setServerMessage("Network error. Please check your internet connection and try again.");
       setStatus("error");
     }
   };
@@ -118,11 +149,21 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
   if (compact) {
     if (status === "success") {
       return (
-        <div className="text-center py-8 text-[#F5F1EA]">
-          <h2 className="font-serif text-[24px] text-[#F5F1EA]">Thank you!</h2>
-          <p className="mt-3 font-sans text-[14px] text-[#B7AC9E]">
-            A Stoneza consultant will reach out shortly with pricing and samples.
+        <div className="text-center py-10 px-6 rounded-[6px] border border-[#54493F] bg-[#28221D] text-[#F5F1EA]">
+          <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-[#1E3A2F] text-[#34D399] border border-[#059669]/40">
+            <CheckCircle2 className="size-6" />
+          </div>
+          <h2 className="font-serif text-[24px] text-[#F5F1EA]">Enquiry Received!</h2>
+          <p className="mt-2 font-sans text-[13.5px] text-[#B7AC9E] max-w-md mx-auto leading-relaxed">
+            Thank you. A Stoneza stone specialist will review your specifications and contact you shortly with pricing and sample schedules.
           </p>
+          <button
+            onClick={() => setStatus("idle")}
+            className="mt-5 inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-[#3B3530] hover:bg-[#4A413A] text-xs font-sans font-medium text-[#C9A980] border border-[#54493F] transition-colors cursor-pointer"
+          >
+            <RotateCcw className="size-3.5" />
+            Submit Another Enquiry
+          </button>
         </div>
       );
     }
@@ -133,7 +174,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
         onSubmit={onSubmit}
         noValidate
       >
-        {/* Honeypot — hidden from real users, off-screen not display:none */}
+        {/* Honeypot — hidden from real users, off-screen */}
         <input
           type="text"
           name="website"
@@ -145,19 +186,19 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           aria-hidden="true"
         />
 
-        <Field label="Name" error={errors.name?.[0]}>
+        <Field label="Full Name" error={errors.name?.[0]} required>
           <input
             className={fieldBase}
-            placeholder="Your name"
+            placeholder="Your full name"
             value={formData.name}
             onChange={update("name")}
           />
         </Field>
 
-        <Field label="Phone / WhatsApp" error={errors.phone?.[0]}>
+        <Field label="Phone / WhatsApp" error={errors.phone?.[0]} required>
           <input
             className={fieldBase}
-            placeholder="+91"
+            placeholder="10-digit number (e.g. 9876543210)"
             value={formData.phone}
             onChange={update("phone")}
           />
@@ -167,47 +208,51 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           <input
             type="email"
             className={fieldBase}
-            placeholder="you@example.com"
+            placeholder="you@company.com"
             value={formData.email}
             onChange={update("email")}
           />
         </Field>
 
         <Field label="Your Role" error={errors.role?.[0]}>
-          <select
-            className={fieldBase}
-            value={formData.role}
-            onChange={update("role")}
-          >
-            <option value="" disabled>
-              Select your role
-            </option>
-            {ENQUIRER_ROLES.map((role) => (
-              <option key={role} value={role}>
-                {role}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              className={selectBase}
+              value={formData.role}
+              onChange={update("role")}
+            >
+              <option value="">Select your role (Optional)</option>
+              {ENQUIRER_ROLES.map((role) => (
+                <option key={role} value={role} className="bg-[#28221D] text-[#EDE8E1]">
+                  {role}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 size-4 text-[#8A7F73]" />
+          </div>
         </Field>
 
-        <Field label="Project Type" error={errors.projectType?.[0]}>
-          <select
-            className={fieldBase}
-            value={formData.projectType}
-            onChange={update("projectType")}
-          >
-            <option value="" disabled>
-              Resort / Hotel
-            </option>
-            {PROJECT_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
+        <Field label="Project Type" error={errors.projectType?.[0]} required>
+          <div className="relative">
+            <select
+              className={selectBase}
+              value={formData.projectType}
+              onChange={update("projectType")}
+            >
+              <option value="" disabled>
+                Select project type
               </option>
-            ))}
-          </select>
+              {PROJECT_TYPES.map((type) => (
+                <option key={type} value={type} className="bg-[#28221D] text-[#EDE8E1]">
+                  {type}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 size-4 text-[#8A7F73]" />
+          </div>
         </Field>
 
-        <Field label="Approx. Area (sq m)" error={errors.area?.[0]}>
+        <Field label="Approx. Area (sq m / sq ft)" error={errors.area?.[0]}>
           <input
             type="number"
             className={`${fieldBase} no-spinner`}
@@ -217,10 +262,10 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           />
         </Field>
 
-        <Field label="City / Site" error={errors.city?.[0]}>
+        <Field label="City / Project Site" error={errors.city?.[0]} required>
           <input
             className={fieldBase}
-            placeholder="e.g. Alibaug"
+            placeholder="e.g. Mumbai, Bangalore, Goa"
             value={formData.city}
             onChange={update("city")}
           />
@@ -229,18 +274,18 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
         <Field label="Stone of Interest" error={errors.stoneType?.[0]}>
           <input
             className={fieldBase}
-            placeholder="e.g. Fieldstone"
+            placeholder="e.g. Fieldstone, Sandstone, Cobble"
             value={formData.stoneType}
             onChange={update("stoneType")}
           />
         </Field>
 
         <div className="md:col-span-2">
-          <Field label="Message / Project Details (Optional)" error={errors.message?.[0]}>
+          <Field label="Message / Specific Requirements (Optional)" error={errors.message?.[0]}>
             <textarea
               rows={3}
               className={`${fieldBase} resize-y min-h-[72px] leading-relaxed`}
-              placeholder="Tell us about specific sizes, textures, quantities, or timelines..."
+              placeholder="Detail preferred finishes, thickness calibration, edge details, or delivery timelines..."
               value={formData.message}
               onChange={update("message")}
             />
@@ -251,13 +296,14 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           <button
             type="submit"
             disabled={status === "submitting"}
-            className="mt-1 w-full rounded-[4px] bg-[#C9A980] py-3 font-sans text-[14px] font-semibold text-[#2A2118] transition-opacity hover:opacity-90 disabled:opacity-60 cursor-pointer"
+            className="mt-1 w-full rounded-[4px] bg-[#C9A980] py-3 font-sans text-[14px] font-semibold text-[#2A2118] transition-opacity hover:opacity-90 disabled:opacity-60 cursor-pointer shadow-xs"
           >
-            {status === "submitting" ? "Submitting..." : "Get My Quote"}
+            {status === "submitting" ? "Submitting..." : "Get Factory-Direct Quote"}
           </button>
 
           {status === "error" && serverMessage && (
-            <p className="mt-3 text-center font-sans text-[12.5px] text-[#E29578]">
+            <p className="mt-3 text-center font-sans text-[12.5px] text-[#E29578] flex items-center justify-center gap-1.5">
+              <AlertCircle className="size-4 shrink-0" />
               {serverMessage}
             </p>
           )}
@@ -266,7 +312,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
             <p className="mt-3 text-center font-sans text-[12px] text-[#8F8477]">
               Or call / WhatsApp directly:{" "}
               <a
-                href={`tel:${(phone || whatsapp).replace(/\s+/g, "")}`}
+                href={phone ? `tel:${phone.replace(/\s+/g, "")}` : (whatsapp.startsWith("http") ? whatsapp : `https://wa.me/${whatsapp.replace(/\D/g, "")}`)}
                 className="hover:underline text-[#D7CFC4]"
               >
                 {phone || whatsapp}
@@ -280,17 +326,55 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
 
   if (status === "success") {
     return (
-      <section id="enquiry-form" className="mx-auto max-w-[648px] rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-10 text-center text-[#F5F1EA] scroll-mt-20 lg:scroll-mt-32">
-        <h2 className="font-serif text-[24px] text-[#F5F1EA]">Thank you!</h2>
-        <p className="mt-3 font-sans text-[14px] text-[#B7AC9E]">
-          A Stoneza consultant will reach out shortly with pricing and samples.
+      <section
+        id="enquire"
+        className="mx-auto my-16 sm:my-20 lg:my-28 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-14 text-center text-[#F5F1EA] md:px-12 md:py-16 scroll-mt-20 lg:scroll-mt-32"
+      >
+        <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-[#1E3A2F] text-[#34D399] border border-[#059669]/40">
+          <CheckCircle2 className="size-7" />
+        </div>
+        <h2 className="font-serif text-[28px] md:text-[32px] text-[#F5F1EA]">
+          Enquiry Received Successfully!
+        </h2>
+        <p className="mt-3 font-sans text-[14px] md:text-[15px] text-[#B7AC9E] max-w-xl mx-auto leading-relaxed">
+          Thank you for sharing your project specifications. A Stoneza stone specialist will review your requirements and reach out within 24 hours with quarry-direct estimates and sample dispatch details.
         </p>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <button
+            onClick={() => setStatus("idle")}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[4px] bg-[#3B3530] hover:bg-[#4A413A] text-xs font-mono uppercase tracking-wider font-semibold text-[#C9A980] border border-[#54493F] transition-colors cursor-pointer"
+          >
+            <RotateCcw className="size-3.5" />
+            Submit Another Project
+          </button>
+
+          {(phone || whatsapp) && (
+            <a
+              href={`https://wa.me/91${(whatsapp || phone).replace(/\D/g, "").replace(/^91/, "")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[4px] bg-[#1E3A2F] hover:bg-[#254A3B] text-xs font-mono uppercase tracking-wider font-semibold text-[#D1FAE5] border border-[#059669]/40 transition-colors"
+            >
+              <MessageSquare className="size-3.5 text-[#34D399]" />
+              Chat on WhatsApp
+            </a>
+          )}
+        </div>
       </section>
     );
   }
 
   return (
-    <section id="enquiry-form" className="mx-auto my-16 sm:my-20 lg:my-28 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:items-stretch lg:gap-10 xl:gap-14 lg:px-12 lg:py-12 scroll-mt-20 lg:scroll-mt-32">
+    <section
+      id="enquire"
+      className="mx-auto my-16 sm:my-20 lg:my-28 max-w-[648px] md:max-w-[860px] lg:max-w-[1350px] md:rounded-[6px] bg-gradient-to-b from-[#2A2420] to-[#211C18] px-6 py-8 text-[#F5F1EA] md:px-10 md:py-10 lg:flex lg:items-stretch lg:gap-10 xl:gap-14 lg:px-12 lg:py-12 scroll-mt-20 lg:scroll-mt-32"
+    >
+      {/* Anchor for backward compatibility */}
+      <span id="enquiry-form" className="sr-only">
+        Enquiry Form
+      </span>
+
       {/* Left Column: Detailed Value Propositions & Direct Contact */}
       <div className="lg:w-1/2 flex flex-col justify-between">
         <div>
@@ -299,10 +383,10 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
             <span>Procurement & Project Consultation</span>
           </div>
 
-          <h1 className="font-serif text-[26px] md:text-[30px] xl:text-[34px] leading-[1.2] tracking-tight text-[#F5F1EA]">
+          <h2 className="font-serif text-[26px] md:text-[30px] xl:text-[34px] leading-[1.2] tracking-tight text-[#F5F1EA]">
             Tell us the project. Get a{" "}
             <span className="italic font-serif text-[#C9A980]">real</span> quote.
-          </h1>
+          </h2>
 
           <p className="mt-2.5 font-sans text-[13.5px] leading-[1.6] text-[#B7AC9E]">
             Direct quarry extraction, calibrated processing, and architectural consultation. 
@@ -397,13 +481,13 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
       </div>
 
       {/* Right Column: Form */}
-      <div className="mt-8 lg:mt-0 lg:w-1/2 flex flex-col">
+      <div className="mt-8 lg:mt-0 lg:w-1/2 flex flex-col justify-center">
         <form
-          className="mt-7 lg:mt-0 grid gap-x-5 gap-y-5 rounded-[6px] border border-[#4A413A] bg-[#28221D] p-5 md:grid-cols-2 md:p-6"
+          className="grid gap-x-5 gap-y-4 rounded-[6px] border border-[#4A413A] bg-[#28221D] p-5 md:grid-cols-2 md:p-6"
           onSubmit={onSubmit}
           noValidate
         >
-          {/* Honeypot — hidden from real users, off-screen not display:none */}
+          {/* Honeypot — hidden from real users, off-screen */}
           <input
             type="text"
             name="website"
@@ -415,19 +499,19 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
             aria-hidden="true"
           />
 
-          <Field label="Name" error={errors.name?.[0]}>
+          <Field label="Full Name" error={errors.name?.[0]} required>
             <input
               className={fieldBase}
-              placeholder="Your name"
+              placeholder="Your full name"
               value={formData.name}
               onChange={update("name")}
             />
           </Field>
 
-          <Field label="Phone / WhatsApp" error={errors.phone?.[0]}>
+          <Field label="Phone / WhatsApp" error={errors.phone?.[0]} required>
             <input
               className={fieldBase}
-              placeholder="+91"
+              placeholder="10-digit number (e.g. 9876543210)"
               value={formData.phone}
               onChange={update("phone")}
             />
@@ -437,47 +521,51 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
             <input
               type="email"
               className={fieldBase}
-              placeholder="you@example.com"
+              placeholder="you@company.com"
               value={formData.email}
               onChange={update("email")}
             />
           </Field>
 
           <Field label="Your Role" error={errors.role?.[0]}>
-            <select
-              className={fieldBase}
-              value={formData.role}
-              onChange={update("role")}
-            >
-              <option value="" disabled>
-                Select your role
-              </option>
-              {ENQUIRER_ROLES.map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                className={selectBase}
+                value={formData.role}
+                onChange={update("role")}
+              >
+                <option value="">Select your role (Optional)</option>
+                {ENQUIRER_ROLES.map((role) => (
+                  <option key={role} value={role} className="bg-[#28221D] text-[#EDE8E1]">
+                    {role}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 size-4 text-[#8A7F73]" />
+            </div>
           </Field>
 
-          <Field label="Project Type" error={errors.projectType?.[0]}>
-            <select
-              className={fieldBase}
-              value={formData.projectType}
-              onChange={update("projectType")}
-            >
-              <option value="" disabled>
-                Resort / Hotel
-              </option>
-              {PROJECT_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {type}
+          <Field label="Project Type" error={errors.projectType?.[0]} required>
+            <div className="relative">
+              <select
+                className={selectBase}
+                value={formData.projectType}
+                onChange={update("projectType")}
+              >
+                <option value="" disabled>
+                  Select project type
                 </option>
-              ))}
-            </select>
+                {PROJECT_TYPES.map((type) => (
+                  <option key={type} value={type} className="bg-[#28221D] text-[#EDE8E1]">
+                    {type}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 size-4 text-[#8A7F73]" />
+            </div>
           </Field>
 
-          <Field label="Approx. Area (sq m)" error={errors.area?.[0]}>
+          <Field label="Approx. Area (sq m / sq ft)" error={errors.area?.[0]}>
             <input
               type="number"
               className={`${fieldBase} no-spinner`}
@@ -487,10 +575,10 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
             />
           </Field>
 
-          <Field label="City / Site" error={errors.city?.[0]}>
+          <Field label="City / Project Site" error={errors.city?.[0]} required>
             <input
               className={fieldBase}
-              placeholder="e.g. Alibaug"
+              placeholder="e.g. Mumbai, Bangalore, Goa"
               value={formData.city}
               onChange={update("city")}
             />
@@ -499,35 +587,36 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           <Field label="Stone of Interest" error={errors.stoneType?.[0]}>
             <input
               className={fieldBase}
-              placeholder="e.g. Fieldstone"
+              placeholder="e.g. Fieldstone, Sandstone, Cobble"
               value={formData.stoneType}
               onChange={update("stoneType")}
             />
           </Field>
 
           <div className="md:col-span-2">
-            <Field label="Message / Project Details (Optional)" error={errors.message?.[0]}>
+            <Field label="Message / Specific Requirements (Optional)" error={errors.message?.[0]}>
               <textarea
                 rows={3}
                 className={`${fieldBase} resize-y min-h-[72px] leading-relaxed`}
-                placeholder="Tell us about specific sizes, textures, quantities, or timelines..."
+                placeholder="Detail preferred finishes, thickness calibration, edge details, or delivery timelines..."
                 value={formData.message}
                 onChange={update("message")}
               />
             </Field>
           </div>
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 pt-1">
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="mt-1 w-full rounded-[4px] bg-[#C9A980] py-3 font-sans text-[14px] font-semibold text-[#2A2118] transition-opacity hover:opacity-90 disabled:opacity-60 cursor-pointer"
+              className="w-full rounded-[4px] bg-[#C9A980] py-3 font-sans text-[14px] font-semibold text-[#2A2118] transition-all hover:bg-[#D5B892] disabled:opacity-60 cursor-pointer shadow-xs"
             >
-              {status === "submitting" ? "Submitting..." : "Get My Quote"}
+              {status === "submitting" ? "Submitting Enquiry..." : "Get Factory-Direct Quote"}
             </button>
 
             {status === "error" && serverMessage && (
-              <p className="mt-3 text-center font-sans text-[12.5px] text-[#E29578]">
+              <p className="mt-3 text-center font-sans text-[12.5px] text-[#E29578] flex items-center justify-center gap-1.5">
+                <AlertCircle className="size-4 shrink-0" />
                 {serverMessage}
               </p>
             )}

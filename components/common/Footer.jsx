@@ -71,12 +71,12 @@ export default function Footer() {
                   href="/pages/terms-and-conditions"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
-                  Terms of Use
+                  Terms & Conditions
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/pages/terms-and-conditions#terms-of-supply"
+                  href="/pages/terms-of-supply"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
                   Terms of Supply
@@ -229,7 +229,7 @@ export default function Footer() {
             </Link>
 
             <Link
-              href="/pages/terms-and-conditions#terms-of-supply"
+              href="/pages/terms-of-supply"
               className="transition-colors hover:text-white"
             >
               Terms of Supply

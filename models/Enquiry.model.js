@@ -31,8 +31,12 @@ const enquirySchema = new mongoose.Schema(
     },
     projectType: { type: String, required: true, trim: true },
     city: { type: String, required: true, trim: true },
-    area: { type: Number, required: true },
-    stoneType: { type: String, required: true, trim: true },
+    area: { type: Number, default: null },
+    stoneType: {
+      type: String,
+      default: "Natural Stone / General Enquiry",
+      trim: true,
+    },
     message: { type: String, default: "", trim: true },
     status: {
       type: String,
@@ -44,6 +48,8 @@ const enquirySchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Enquiry =
-  mongoose.models.Enquiry || mongoose.model("Enquiry", enquirySchema);
+if (mongoose.models.Enquiry) {
+  delete mongoose.models.Enquiry;
+}
+const Enquiry = mongoose.model("Enquiry", enquirySchema);
 export default Enquiry;

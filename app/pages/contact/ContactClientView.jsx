@@ -520,10 +520,10 @@ export default function ContactClientView({ initialData = null }) {
                     ✓
                   </div>
                   <h3 className="font-serif text-2xl text-[#26221E]">
-                    Enquiry Dispatched
+                    Enquiry Received!
                   </h3>
                   <p className="font-sans text-sm text-[#57504A] leading-relaxed max-w-md mx-auto">
-                    Thank you, <strong className="text-[#26221E]">{formData.name}</strong>. A Stoneza stone specialist is reviewing your request and will get back to you promptly.
+                    Thank you, <strong className="text-[#26221E]">{formData.name}</strong>. A Stoneza stone specialist is reviewing your request and will get back to you shortly.
                   </p>
                   <div className="pt-2">
                     <button

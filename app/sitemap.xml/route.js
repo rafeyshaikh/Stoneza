@@ -25,6 +25,7 @@ export async function GET() {
       { loc: `${domain}/pages/privacy-policy`, lastmod: new Date().toISOString() },
       { loc: `${domain}/pages/return-policy`, lastmod: new Date().toISOString() },
       { loc: `${domain}/pages/terms-and-conditions`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/pages/terms-of-supply`, lastmod: new Date().toISOString() },
     ];
 
     // Fetch dynamic products

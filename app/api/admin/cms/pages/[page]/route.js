@@ -11,6 +11,7 @@ const ALLOWED_PAGES = [
   "collectionsOverview",
   "privacyPolicy",
   "termsAndConditions",
+  "termsOfSupply",
   "disclaimer",
   "returnPolicy",
 ];
@@ -68,6 +69,11 @@ async function getOrCreatePagesDocument() {
 
       termsAndConditions: {
         title: "Terms & Conditions",
+        content: "",
+      },
+
+      termsOfSupply: {
+        title: "Terms of Supply",
         content: "",
       },
 

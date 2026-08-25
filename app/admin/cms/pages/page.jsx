@@ -61,6 +61,14 @@ export default function StaticPagesCmsPage() {
             </TabsTrigger>
 
             <TabsTrigger
+              value="termsOfSupply"
+              className="flex items-center gap-2 rounded-xl px-3.5 py-4 select-none text-xs font-medium transition-all cursor-pointer data-[state=active]:bg-stone-900 data-[state=active]:text-stone-50 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-100 dark:data-[state=active]:text-stone-950"
+            >
+              <FileText className="size-3.5" />
+              <span>Terms of Supply</span>
+            </TabsTrigger>
+
+            <TabsTrigger
               value="disclaimer"
               className="flex items-center gap-2 rounded-xl px-3.5 py-4 select-none text-xs font-medium transition-all cursor-pointer data-[state=active]:bg-stone-900 data-[state=active]:text-stone-50 data-[state=active]:shadow-sm dark:data-[state=active]:bg-stone-100 dark:data-[state=active]:text-stone-950"
             >
@@ -93,6 +101,10 @@ export default function StaticPagesCmsPage() {
 
           <TabsContent value="termsAndConditions" className="mt-0 focus-visible:outline-none">
             <PageEditor pageKey="termsAndConditions" title="Terms & Conditions" />
+          </TabsContent>
+
+          <TabsContent value="termsOfSupply" className="mt-0 focus-visible:outline-none">
+            <PageEditor pageKey="termsOfSupply" title="Terms of Supply" />
           </TabsContent>
 
           <TabsContent value="disclaimer" className="mt-0 focus-visible:outline-none">
