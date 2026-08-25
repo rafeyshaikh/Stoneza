@@ -51,17 +51,17 @@ export default function ComingSoonClient() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#1C1714] text-[#FAF8F5] relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
+    <div className="min-h-screen bg-white text-[#FAF8F5] relative overflow-hidden py-20 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
       {/* Background ambient lighting and subtle grid */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(200,169,128,0.18),rgba(255,255,255,0))] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#3A322C_1px,transparent_1px),linear-gradient(to_bottom,#3A322C_1px,transparent_1px)] bg-[size:4.5rem_4.5rem] opacity-20 pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#3A322C_1px,transparent_1px),linear-gradient(to_bottom,#3A322C_1px,transparent_1px)] bg-[size:4.5rem_4.5rem] opacity-8 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto w-full relative z-10 text-center">
         {/* Navigation Breadcrumb back to Home */}
         <div className="mb-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs font-heading uppercase tracking-[2px] text-[#C8A980]/80 hover:text-[#C8A980] transition-colors no-underline"
+            className="inline-flex items-center gap-2 text-xs font-heading uppercase tracking-[2px] text-[#57504A] hover:text-[#26221E] transition-colors no-underline"
           >
             <ArrowLeft className="size-3.5" />
             <span>Return to Homepage</span>
@@ -75,17 +75,17 @@ export default function ComingSoonClient() {
         </div>
 
         {/* Headline */}
-        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal text-white leading-[1.12] tracking-tight mb-6 max-w-3xl mx-auto">
+        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#1C1714] leading-[1.12] tracking-tight mb-6 max-w-3xl mx-auto">
           Curating New <span className="italic text-[#C8A980]">Architectural</span> Stone Horizons
         </h1>
 
         {/* Description */}
-        <p className="font-sans text-[16px] sm:text-[18px] leading-relaxed text-[#CBC9C4] max-w-2xl mx-auto font-light mb-12">
+        <p className="font-sans text-[16px] sm:text-[18px] leading-relaxed text-[#1C1714] max-w-2xl mx-auto font-light mb-12">
           Our stone masons in Bhilwara are hand-selecting and calibrating our upcoming natural stone surface release — featuring new monolithic textures, split-face veneers, and custom elevation panels.
         </p>
 
         {/* Early Access Registration Card */}
-        <div className="max-w-xl mx-auto bg-[#26221E]/90 border border-[#3A322C] rounded-2xl p-6 sm:p-8 backdrop-blur-md shadow-2xl mb-16 text-left">
+        <div className="max-w-xl mx-auto bg-[#26221E] border border-[#3A322C] rounded-2xl p-6 sm:p-8 backdrop-blur-md shadow-2xl mb-16 text-left">
           {!submitted ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <h2 className="font-display text-xl font-normal text-white">
@@ -157,7 +157,7 @@ export default function ComingSoonClient() {
         {/* Key Preview Pillars */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left border-t border-[#3A322C] pt-12 mb-16">
           {previewPillars.map((item, idx) => (
-            <div key={idx} className="rounded-xl border border-[#3A322C]/80 bg-[#26221E]/50 p-5 space-y-2">
+            <div key={idx} className="rounded-xl border border-[#3A322C] bg-[#26221E] p-5 space-y-2">
               <item.icon className="size-5 text-[#C8A980]" />
               <h3 className="font-display text-base font-medium text-white">
                 {item.title}
@@ -173,14 +173,14 @@ export default function ComingSoonClient() {
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/product"
-            className="inline-flex items-center gap-2 rounded bg-white/10 hover:bg-white/15 border border-white/20 px-6 py-3 text-xs font-heading font-semibold uppercase tracking-[0.14em] text-white transition-all no-underline"
+            className="inline-flex items-center gap-2 rounded bg-[#26221E] hover:bg-[#3A322C] border border-[#26221E]/70 px-6 py-3 text-xs font-heading font-semibold uppercase tracking-[0.14em] text-[#C8A980] transition-all no-underline"
           >
             <span>Explore Current 273 Products</span>
             <ArrowRight className="size-3.5" />
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded px-5 py-3 text-xs font-heading font-semibold uppercase tracking-[0.14em] text-[#C8A980] hover:text-white transition-colors no-underline"
+            className="inline-flex items-center gap-2 rounded px-5 py-3 text-xs font-heading font-semibold uppercase tracking-[0.14em] bg-[#C8A980] text-[#26221E] transition-colors cursor-pointer no-underline border border-[#26221E]/70"
           >
             <span>Contact Quarry Team</span>
           </Link>
