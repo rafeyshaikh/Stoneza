@@ -37,7 +37,7 @@ export default function CategoryCTA({
           </div>
 
           {/* Right Action Column */}
-          <div className="flex flex-col items-stretch sm:items-center lg:items-end gap-3 sm:gap-3.5 shrink-0 w-full sm:w-auto mt-2 lg:mt-0">
+          <div className="flex flex-col items-stretch sm:items-center lg:items-center gap-3 sm:gap-3.5 shrink-0 w-full sm:w-auto mt-2 lg:mt-0">
             <Link
               href={buttonLink}
               className="group inline-flex w-full sm:w-auto min-h-[46px] sm:min-h-[50px] md:h-[54px] items-center justify-center gap-2 sm:gap-3 rounded-lg sm:rounded-xl bg-[#C9A980] hover:bg-[#D5B892] px-5 sm:px-7 md:px-8 py-3 text-[11px] sm:text-xs md:text-[13px] font-heading font-semibold uppercase tracking-[1.2px] sm:tracking-[1.8px] text-[#2A2118] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md text-center cursor-pointer"
