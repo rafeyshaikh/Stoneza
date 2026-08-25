@@ -2,7 +2,7 @@ import { whyChooseData } from "@/data/WhyChooseUs";
 
 export default function WhyChooseUs() {
   return (
-    <section id="why-choose-us" className="py-16 sm:py-20 lg:py-24 max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+    <section id="why-choose-us" className="py-12 sm:py-14 lg:py-16 mb-10 max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
       {/* Section Header Title */}
       <div className="text-center max-w-4xl mx-auto mb-16 sm:mb-24">
         <h2 className="font-display text-xl sm:text-2xl lg:text-3xl text-[#1C1714] font-normal leading-[1.15]">
@@ -21,7 +21,7 @@ export default function WhyChooseUs() {
               className="flex flex-col items-center text-center w-full max-w-[380px] sm:max-w-[400px] px-3"
             >
               {/* Scaled Icon Container */}
-              <div className="h-20 w-20 mb-6 flex items-center justify-center text-[#1C1714]">
+              <div className="h-20 w-20 mb-2 flex items-center justify-center text-[#1C1714]">
                 <Icon className="text-4xl sm:text-5xl" />
               </div>
 
