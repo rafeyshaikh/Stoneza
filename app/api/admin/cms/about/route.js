@@ -62,7 +62,7 @@ export async function PATCH(request) {
     await doc.save();
 
     revalidateTag("about-data");
-    revalidatePath("/pages/about-us");
+    revalidatePath("/about-us");
     revalidatePath("/about");
 
     return response(true, 200, "About page CMS content updated successfully", doc);

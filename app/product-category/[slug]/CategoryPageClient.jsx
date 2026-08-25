@@ -303,7 +303,7 @@ export default function CategoryPageClient({ initialData, slug }) {
                   Browse All {initialData.products?.length || 0} Varieties
                 </Link>
                 <Link
-                  href="/pages/contact"
+                  href="/contact"
                   className="flex-1 h-9 sm:h-11 lg:h-12 bg-white text-black border border-black flex justify-center items-center cursor-pointer hover:bg-black/5 transition-all text-[10px] sm:text-xs lg:text-sm font-medium tracking-wider uppercase text-center px-2"
                 >
                   Talk to Expert
@@ -551,7 +551,7 @@ export default function CategoryPageClient({ initialData, slug }) {
       ) : (
         <div
           id="products-grid"
-          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${
+          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-[#eae8e2] ${
             gridSizeLarge ? "lg:grid-cols-4" : "lg:grid-cols-2"
           } gap-4 sm:gap-6 p-4 sm:p-6 md:p-8 lg:p-10 justify-items-center`}
         >
@@ -570,7 +570,7 @@ export default function CategoryPageClient({ initialData, slug }) {
       {!showAllProducts &&
         (categoryLevel === 1 || categoryLevel === 2) &&
         sortedProducts.length > sliceLength && (
-          <div className="flex justify-center items-center py-6 sm:py-10">
+          <div className="flex justify-center items-center py-6 sm:py-10 bg-linear-to-b from-[#eae8e2] to-white">
             <button
               className="rounded-lg border border-[#cbc9c4] bg-[#eae8e2] px-6 py-3 uppercase font-heading tracking-[2px] text-[11px] sm:text-[12px] font-medium cursor-pointer text-center flex justify-center items-center gap-2 hover:scale-[1.02] hover:border-black transition-all"
               onClick={() => setShowAllProducts(true)}
@@ -602,7 +602,7 @@ export default function CategoryPageClient({ initialData, slug }) {
         title={`Specifying ${category?.name || "Natural Stone"} for Your Project?`}
         description="Share your elevation drawings, BOQ, or paving schedules. Our stone specification team calculates quarry-direct pricing, custom edge profiles, and sample delivery."
         buttonText="REQUEST SPECIFICATION & QUOTE"
-        buttonLink="/#enquire"
+        buttonLink="/contact"
       />
     </div>
   );

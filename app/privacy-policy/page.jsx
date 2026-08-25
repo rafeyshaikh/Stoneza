@@ -10,23 +10,23 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const policySeo = pages?.disclaimer?.seo;
+    const policySeo = pages?.privacyPolicy?.seo;
     const title =
       policySeo?.metaTitle?.trim() ||
-      (pages?.disclaimer?.title
-        ? `${pages.disclaimer.title} | Stoneza`
-        : "Disclaimer | Stoneza");
+      (pages?.privacyPolicy?.title
+        ? `${pages.privacyPolicy.title} | Stoneza`
+        : "Privacy Policy | Stoneza");
     const description =
       policySeo?.metaDescription?.trim() ||
-      "Read the Legal Disclaimer and natural stone variation notices of Stoneza.";
+      "Read the Privacy Policy of Stoneza Natural Stones regarding personal data handling and user privacy.";
     const canonicalUrl =
       policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/disclaimer`;
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/privacy-policy`;
     const ogImage =
       policySeo?.ogImage?.trim() ||
       seo?.ogImage ||
       "";
-    const keywords = policySeo?.keywords?.trim() || "disclaimer, stone variation notice, stoneza legal";
+    const keywords = policySeo?.keywords?.trim() || "privacy policy, stoneza data policy, user terms";
 
     return {
       title,
@@ -45,22 +45,22 @@ export async function generateMetadata() {
     };
   } catch {
     return {
-      title: "Disclaimer | Stoneza",
-      description: "Read the Disclaimer of Stoneza.",
+      title: "Privacy Policy | Stoneza",
+      description: "Read the Privacy Policy of Stoneza.",
     };
   }
 }
 
-export default async function DisclaimerPage() {
-  let policy = { title: "Disclaimer", content: "" };
+export default async function PrivacyPolicyPage() {
+  let policy = { title: "Privacy Policy", content: "" };
   try {
     await connectDB();
     const pages = await Pages.findOne().lean();
-    if (pages?.disclaimer) {
-      policy = pages.disclaimer;
+    if (pages?.privacyPolicy) {
+      policy = pages.privacyPolicy;
     }
   } catch (error) {
-    console.error("DisclaimerPage error:", error.message);
+    console.error("PrivacyPolicyPage error:", error.message);
   }
 
   return (

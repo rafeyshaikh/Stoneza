@@ -7,14 +7,14 @@ const staticPromos = [
     title: "The Brand",
     caption: "What makes our products so covetable is the quality craftsmanship that goes in creating each piece.",
     buttonText: "Learn More",
-    buttonLink: "/pages/about-us",
+    buttonLink: "/about-us",
   },
   {
     image: "/assets/others/Art_of_Gifting.webp",
     title: "Art of Gifting",
     caption: "We create and curate the now of luxury with a keen eye that brings forth innovative design and a global style.",
     buttonText: "Learn More",
-    buttonLink: "/pages/about-us",
+    buttonLink: "/about-us",
   },
 ];
 
@@ -25,7 +25,7 @@ export default function BrandPromo({ promos }) {
         title: p.title || "",
         caption: p.caption || "",
         buttonText: p.buttonText || "Learn More",
-        buttonLink: p.buttonLink || "/pages/about-us",
+        buttonLink: p.buttonLink || "/about-us",
       }))
     : staticPromos;
 

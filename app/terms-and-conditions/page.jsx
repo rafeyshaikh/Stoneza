@@ -23,7 +23,7 @@ export async function generateMetadata() {
       "Read the website Terms & Conditions for browsing, requesting specifications, and accessing architectural stone resources at Stoneza.";
     const canonicalUrl =
       policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/terms-and-conditions`;
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/terms-and-conditions`;
     const ogImage =
       policySeo?.ogImage?.trim() ||
       seo?.ogImage ||
@@ -134,7 +134,7 @@ export default async function TermsAndConditionsPage() {
           </nav>
 
           <Link
-            href="/pages/terms-of-supply"
+            href="/terms-of-supply"
             className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-[#9A4A2E] hover:underline font-semibold"
           >
             <ShieldCheck className="size-3.5" />
@@ -171,7 +171,7 @@ export default async function TermsAndConditionsPage() {
             </div>
           </div>
           <Link
-            href="/pages/terms-of-supply"
+            href="/terms-of-supply"
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#9A4A2E] text-white text-xs font-mono uppercase tracking-wider font-semibold rounded hover:bg-[#7D3820] transition-colors shrink-0 shadow-xs"
           >
             View Terms of Supply <ArrowRight className="size-3.5" />

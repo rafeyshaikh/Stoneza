@@ -673,7 +673,7 @@ export default function ContactUsForm() {
           <div className="space-y-1.5">
             <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
             <Input
-              placeholder="e.g. https://stoneza.in/pages/contact"
+              placeholder="e.g. https://stoneza.in/contact"
               value={data.seo?.canonicalUrl || ""}
               onChange={(e) => setData({ ...data, seo: { ...data.seo, canonicalUrl: e.target.value } })}
             />

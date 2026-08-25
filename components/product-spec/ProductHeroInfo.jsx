@@ -109,7 +109,7 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
         </a>
         <a
           className="font-heading text-[11px] font-bold tracking-[0.15em] uppercase text-[#1C1714] bg-white border border-[#CBC9C4] hover:border-[#1C1714] hover:bg-[#F2EDE4] px-6 py-3.5 rounded flex-1 min-w-[180px] inline-flex items-center justify-center gap-2 transition-all duration-200 no-underline"
-          href={`mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(`${name} — sample request`)}&body=${encodeURIComponent(`Hello Stoneza,\n\nI would like to request physical sample swatches for ${name}.\n\nSelected Specifications:\n${Object.entries(specs || {}).filter(([_, v]) => Boolean(v)).map(([k, v]) => `• ${k}: ${v}`).join("\n")}\n\nDelivery Studio / Site Address:\n\nContact Number:`)}`}
+          href='/contact'
         >
           Request a sample
         </a>

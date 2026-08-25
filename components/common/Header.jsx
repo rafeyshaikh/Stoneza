@@ -135,7 +135,7 @@ export default function Header() {
             Projects
           </Link>
           <Link
-            href="/pages/about-us"
+            href="/about-us"
             className={`no-underline font-body opacity-85 hover:opacity-100 transition-all ${
               isSolidHeader ? "text-[#26221E]" : "text-white"
             }`}
@@ -161,7 +161,7 @@ export default function Header() {
         {/* Right Links & Search */}
         <div className="flex gap-5.5 items-center justify-end font-mono text-[10.5px] tracking-[0.17em] uppercase">
           <Link
-            href="/pages/contact"
+            href="/contact"
             className={`hidden lg:block no-underline opacity-85 hover:opacity-100 transition-all font-body ${
               isSolidHeader ? "text-[#26221E]" : "text-white"
             }`}
@@ -540,14 +540,14 @@ export default function Header() {
                     The Journal
                   </Link>
                   <Link
-                    href="/pages/about-us"
+                    href="/about-us"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-2.5 px-2 font-semibold text-[#26221E] hover:text-[#9A4A2E] transition-colors"
                   >
                     About Us
                   </Link>
                   <Link
-                    href="/pages/contact"
+                    href="/contact"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-2.5 px-2 font-semibold text-[#26221E] hover:text-[#9A4A2E] transition-colors"
                   >
@@ -567,7 +567,7 @@ export default function Header() {
                   WhatsApp Enquiry
                 </a>
                 <Link
-                  href="/pages/contact"
+                  href="/contact"
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full py-2 px-4 border border-[#26221E]/30 text-[#26221E] font-heading text-[11px] font-semibold tracking-[0.15em] uppercase rounded flex items-center justify-center hover:bg-[#26221E]/10 transition-colors no-underline"
                 >

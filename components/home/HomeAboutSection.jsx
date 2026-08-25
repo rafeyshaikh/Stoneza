@@ -79,7 +79,7 @@ export default function HomeAboutSection({
 
             <div className="pt-2 sm:pt-4">
               <Link
-                href="/pages/about-us"
+                href="/about-us"
                 className="inline-block bg-[#1C1714] text-[#FAF8F5] hover:bg-[#9A4A2E] hover:text-white font-heading text-[10.5px] sm:text-[11px] font-semibold tracking-[0.2em] uppercase px-8 py-4 transition-colors cursor-pointer"
               >
                 Read our story

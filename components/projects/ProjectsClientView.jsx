@@ -561,7 +561,7 @@ export default function ProjectsClientView({
             drawing.
           </p>
           <Link
-            href="/pages/contact"
+            href="/contact"
             className="inline-block bg-[#26221E] text-[#C9BDB2] hover:bg-[#8E4B2A] font-mono text-[10.5px] uppercase tracking-[0.14em] px-7 py-4 transition-colors"
           >
             Request references
@@ -582,7 +582,7 @@ export default function ProjectsClientView({
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
-              href="/pages/contact"
+              href="/contact"
               className="bg-[#26221E] text-[#C9BDB2] hover:bg-[#8E4B2A] font-mono text-[10.5px] uppercase tracking-[0.14em] px-7 py-4 transition-colors"
             >
               Start a project
@@ -734,7 +734,7 @@ export default function ProjectsClientView({
                 Close
               </button>
               <Link
-                href="/pages/contact"
+                href="/contact"
                 className="font-mono text-[10.5px] uppercase tracking-[0.14em] px-6 py-3 bg-[#26221E] text-[#C9BDB2] hover:bg-[#8E4B2A] transition-colors"
               >
                 Specify This Stone

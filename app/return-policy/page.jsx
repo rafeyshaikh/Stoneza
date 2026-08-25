@@ -10,23 +10,23 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const policySeo = pages?.privacyPolicy?.seo;
+    const policySeo = pages?.returnPolicy?.seo;
     const title =
       policySeo?.metaTitle?.trim() ||
-      (pages?.privacyPolicy?.title
-        ? `${pages.privacyPolicy.title} | Stoneza`
-        : "Privacy Policy | Stoneza");
+      (pages?.returnPolicy?.title
+        ? `${pages.returnPolicy.title} | Stoneza`
+        : "Return & Cancellation Policy | Stoneza");
     const description =
       policySeo?.metaDescription?.trim() ||
-      "Read the Privacy Policy of Stoneza Natural Stones regarding personal data handling and user privacy.";
+      "Read the Return & Cancellation Policy for custom-cut and quarry-direct natural stone orders at Stoneza.";
     const canonicalUrl =
       policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/privacy-policy`;
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/return-policy`;
     const ogImage =
       policySeo?.ogImage?.trim() ||
       seo?.ogImage ||
       "";
-    const keywords = policySeo?.keywords?.trim() || "privacy policy, stoneza data policy, user terms";
+    const keywords = policySeo?.keywords?.trim() || "return policy, stoneza cancellation, refund policy";
 
     return {
       title,
@@ -45,22 +45,22 @@ export async function generateMetadata() {
     };
   } catch {
     return {
-      title: "Privacy Policy | Stoneza",
-      description: "Read the Privacy Policy of Stoneza.",
+      title: "Return Policy | Stoneza",
+      description: "Read the Return Policy of Stoneza.",
     };
   }
 }
 
-export default async function PrivacyPolicyPage() {
-  let policy = { title: "Privacy Policy", content: "" };
+export default async function ReturnPolicyPage() {
+  let policy = { title: "Return Policy", content: "" };
   try {
     await connectDB();
     const pages = await Pages.findOne().lean();
-    if (pages?.privacyPolicy) {
-      policy = pages.privacyPolicy;
+    if (pages?.returnPolicy) {
+      policy = pages.returnPolicy;
     }
   } catch (error) {
-    console.error("PrivacyPolicyPage error:", error.message);
+    console.error("ReturnPolicyPage error:", error.message);
   }
 
   return (

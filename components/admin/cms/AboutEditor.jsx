@@ -351,7 +351,7 @@ export default function AboutEditor() {
           <div className="space-y-1.5">
             <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
             <Input
-              placeholder="e.g. https://stoneza.in/pages/about-us"
+              placeholder="e.g. https://stoneza.in/about-us"
               value={data.seo?.canonicalUrl || ""}
               onChange={(e) => setData({ ...data, seo: { ...data.seo, canonicalUrl: e.target.value } })}
             />

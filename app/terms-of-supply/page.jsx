@@ -23,7 +23,7 @@ export async function generateMetadata() {
       "Standard commercial Terms of Supply for quarry-direct natural stone orders, calibrated slabs, packing, tolerances, transit, and claims at Stoneza.";
     const canonicalUrl =
       policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/terms-of-supply`;
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/terms-of-supply`;
     const ogImage =
       policySeo?.ogImage?.trim() ||
       seo?.ogImage ||
@@ -192,7 +192,7 @@ export default async function TermsOfSupplyPage() {
           </nav>
 
           <Link
-            href="/pages/terms-and-conditions"
+            href="/terms-and-conditions"
             className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-[#78716C] hover:text-[#26221E] transition-colors"
           >
             <FileText className="size-3.5" />
@@ -269,7 +269,7 @@ export default async function TermsOfSupplyPage() {
                 Contact Sales
               </a>
               <Link
-                href="/pages/contact"
+                href="/contact"
                 className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-white border border-[#26221E] text-[#26221E] text-xs font-mono uppercase tracking-wider font-semibold rounded hover:bg-[#26221E] hover:text-white transition-colors"
               >
                 Reach Us

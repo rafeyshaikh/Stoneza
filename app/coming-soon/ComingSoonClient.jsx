@@ -179,7 +179,7 @@ export default function ComingSoonClient() {
             <ArrowRight className="size-3.5" />
           </Link>
           <Link
-            href="/pages/contact"
+            href="/contact"
             className="inline-flex items-center gap-2 rounded px-5 py-3 text-xs font-heading font-semibold uppercase tracking-[0.14em] text-[#C8A980] hover:text-white transition-colors no-underline"
           >
             <span>Contact Quarry Team</span>

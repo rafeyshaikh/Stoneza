@@ -52,7 +52,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/pages/about-us"
+                  href="/about-us"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
                   About Us
@@ -60,7 +60,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/pages/contact"
+                  href="/contact"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
                   Contact Us
@@ -68,7 +68,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/pages/terms-and-conditions"
+                  href="/terms-and-conditions"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
                   Terms & Conditions
@@ -76,7 +76,7 @@ export default function Footer() {
               </li>
               {/* <li>
                 <Link
-                  href="/pages/terms-of-supply"
+                  href="/terms-of-supply"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
                   Terms of Supply
@@ -84,7 +84,7 @@ export default function Footer() {
               </li> */}
               <li>
                 <Link
-                  href="/pages/return-policy"
+                  href="/return-policy"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
                   Return &amp; Refund Policy
@@ -215,21 +215,21 @@ export default function Footer() {
 
           <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-[12px]">
             <Link
-              href="/pages/privacy-policy"
+              href="/privacy-policy"
               className="transition-colors hover:text-white"
             >
               Privacy Policy
             </Link>
 
             <Link
-              href="/pages/disclaimer"
+              href="/disclaimer"
               className="transition-colors hover:text-white"
             >
               Disclaimer
             </Link>
 
             {/* <Link
-              href="/pages/terms-of-supply"
+              href="/terms-of-supply"
               className="transition-colors hover:text-white"
             >
               Terms of Supply

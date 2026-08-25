@@ -328,7 +328,7 @@ export default function SectionManager({ data = {}, onChange, uploadImage }) {
                       <div className="space-y-1.5">
                         <Label className="text-xs">Button Link</Label>
                         <Input
-                          placeholder="e.g. /pages/about-us"
+                          placeholder="e.g. /about-us"
                           value={promo.buttonLink || ""}
                           onChange={(e) => updateBrandPromoField(index, "buttonLink", e.target.value)}
                         />

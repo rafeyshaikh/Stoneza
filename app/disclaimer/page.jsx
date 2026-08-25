@@ -10,23 +10,23 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const policySeo = pages?.returnPolicy?.seo;
+    const policySeo = pages?.disclaimer?.seo;
     const title =
       policySeo?.metaTitle?.trim() ||
-      (pages?.returnPolicy?.title
-        ? `${pages.returnPolicy.title} | Stoneza`
-        : "Return & Cancellation Policy | Stoneza");
+      (pages?.disclaimer?.title
+        ? `${pages.disclaimer.title} | Stoneza`
+        : "Disclaimer | Stoneza");
     const description =
       policySeo?.metaDescription?.trim() ||
-      "Read the Return & Cancellation Policy for custom-cut and quarry-direct natural stone orders at Stoneza.";
+      "Read the Legal Disclaimer and natural stone variation notices of Stoneza.";
     const canonicalUrl =
       policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/pages/return-policy`;
+      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/disclaimer`;
     const ogImage =
       policySeo?.ogImage?.trim() ||
       seo?.ogImage ||
       "";
-    const keywords = policySeo?.keywords?.trim() || "return policy, stoneza cancellation, refund policy";
+    const keywords = policySeo?.keywords?.trim() || "disclaimer, stone variation notice, stoneza legal";
 
     return {
       title,
@@ -45,22 +45,22 @@ export async function generateMetadata() {
     };
   } catch {
     return {
-      title: "Return Policy | Stoneza",
-      description: "Read the Return Policy of Stoneza.",
+      title: "Disclaimer | Stoneza",
+      description: "Read the Disclaimer of Stoneza.",
     };
   }
 }
 
-export default async function ReturnPolicyPage() {
-  let policy = { title: "Return Policy", content: "" };
+export default async function DisclaimerPage() {
+  let policy = { title: "Disclaimer", content: "" };
   try {
     await connectDB();
     const pages = await Pages.findOne().lean();
-    if (pages?.returnPolicy) {
-      policy = pages.returnPolicy;
+    if (pages?.disclaimer) {
+      policy = pages.disclaimer;
     }
   } catch (error) {
-    console.error("ReturnPolicyPage error:", error.message);
+    console.error("DisclaimerPage error:", error.message);
   }
 
   return (

@@ -128,7 +128,7 @@ export default function PageEditor({
           <div className="space-y-1.5">
             <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
             <Input
-              placeholder={`e.g. https://stoneza.in/pages/${pageKey}`}
+              placeholder={`e.g. https://stoneza.in/${pageKey}`}
               value={seo.canonicalUrl || ""}
               onChange={(e) => setSeo({ ...seo, canonicalUrl: e.target.value })}
             />

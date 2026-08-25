@@ -357,14 +357,12 @@ export default function CollectionsOverviewClient({ data }) {
       </section>
 
       {/* 5. CALL TO ACTION SECTION */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 pt-16">
-        <CategoryCTA
-          title="Require Custom Stone Sizes or Quarry Samples?"
-          description="Share your project drawings or material specifications. Our stone specialists provide quarry-direct quotations and sample kits dispatched within 48 hours."
-          buttonText="REQUEST SAMPLES &amp; QUOTE"
-          buttonLink="/#enquire"
-        />
-      </section>
+      <CategoryCTA
+        title="Require Custom Stone Sizes or Quarry Samples?"
+        description="Share your project drawings or material specifications. Our stone specialists provide quarry-direct quotations and sample kits dispatched within 48 hours."
+        buttonText="REQUEST SAMPLES &amp; QUOTE"
+        buttonLink="/#enquire"
+      />
     </div>
   );
 }

@@ -19,13 +19,13 @@ export async function GET() {
     const urls = [
       { loc: `${domain}/`, lastmod: new Date().toISOString() },
       { loc: `${domain}/product`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/pages/about-us`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/pages/contact`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/pages/disclaimer`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/pages/privacy-policy`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/pages/return-policy`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/pages/terms-and-conditions`, lastmod: new Date().toISOString() },
-      { loc: `${domain}/pages/terms-of-supply`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/about-us`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/contact`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/disclaimer`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/privacy-policy`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/return-policy`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/terms-and-conditions`, lastmod: new Date().toISOString() },
+      { loc: `${domain}/terms-of-supply`, lastmod: new Date().toISOString() },
     ];
 
     // Fetch dynamic products

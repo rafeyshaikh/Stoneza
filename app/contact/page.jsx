@@ -27,7 +27,7 @@ export async function generateMetadata() {
       seoDoc?.ogImage ||
       "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png";
 
-    const canonicalUrl = "https://stoneza.in/pages/contact";
+    const canonicalUrl = "https://stoneza.in/contact";
 
     const keywords =
       contactSeo?.keywords?.trim() ||

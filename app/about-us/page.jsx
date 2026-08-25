@@ -23,7 +23,7 @@ export async function generateMetadata() {
       ? data.hero.image.url
       : "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png");
 
-  const canonicalUrl = "https://stoneza.in/pages/about-us";
+  const canonicalUrl = "https://stoneza.in/about-us";
 
   const keywords =
     data?.seo?.keywords?.trim() ||
@@ -145,7 +145,7 @@ export default async function AboutUsPage() {
     title: "Pictures look good. In person, stone hits different.",
     description: "Walk the Stoneza experience centre in Bhilwara — real textures under real light, from CNC-carved feature walls to full-format flooring and cladding. Every material, waiting to be touched.",
     buttonText: "PLAN YOUR VISIT →",
-    buttonLink: "/pages/contact",
+    buttonLink: "/contact",
   };
 
   const manifesto = data?.manifesto || {
@@ -158,7 +158,7 @@ export default async function AboutUsPage() {
     title: "Now you know our story. Tell us yours.",
     description: "Share what you're building, and a Stoneza consultant responds with factory-direct pricing, honest lead times and samples on their way — usually the same day.",
     buttonText: "START YOUR PROJECT →",
-    buttonLink: "/#quote",
+    buttonLink: "/contact",
   };
 
   const organizationSchema = {
@@ -199,7 +199,7 @@ export default async function AboutUsPage() {
         "@type": "ListItem",
         position: 2,
         name: "About Us",
-        item: "https://stoneza.in/pages/about-us",
+        item: "https://stoneza.in/about-us",
       },
     ],
   };
@@ -399,7 +399,7 @@ export default async function AboutUsPage() {
           </div>
 
           <Link
-            href={showroom.buttonLink || "/pages/contact"}
+            href={"/contact"}
             className="inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.25em] px-8 py-4 bg-[#c9a877] text-[#1c1917] hover:bg-[#b8965a] transition cursor-pointer shrink-0 shadow-sm"
           >
             {showroom.buttonText}
@@ -438,7 +438,7 @@ export default async function AboutUsPage() {
 
           <div className="pt-4">
             <Link
-              href={cta.buttonLink || "/#quote"}
+              href={"/contact"}
               className="inline-flex items-center gap-3 font-heading text-xs font-semibold uppercase tracking-[0.25em] px-8 py-4 bg-[#2a2118] text-white hover:bg-[#1a140f] transition cursor-pointer shadow-sm"
             >
               {cta.buttonText}
