@@ -377,7 +377,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
 
       {/* Left Column: Detailed Value Propositions & Direct Contact */}
       <div className="lg:w-1/2 flex flex-col justify-between">
-        <div>
+        <div className="">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[3px] bg-[#3B3530] border border-[#54493F] text-[#C9A980] text-[10px] font-sans font-semibold uppercase tracking-[0.18em] mb-3">
             <Clock className="size-3 text-[#C9A980]" />
             <span>Procurement & Project Consultation</span>
@@ -417,7 +417,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
           </div>
 
           {/* Key Metric Highlights */}
-          <div className="mt-4 grid grid-cols-3 gap-2.5 py-3 border-y border-[#4A413A]/60">
+          <div className="mt-8 grid grid-cols-3 gap-2.5 py-3 border-y border-[#4A413A]/60">
             {STATS.map((stat, idx) => (
               <div key={idx} className="text-center">
                 <span className="block font-serif text-[17px] md:text-[19px] font-semibold text-[#C9A980] leading-tight">

@@ -74,14 +74,14 @@ export default function Footer() {
                   Terms & Conditions
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/pages/terms-of-supply"
                   className="transition-colors hover:text-white cursor-pointer"
                 >
                   Terms of Supply
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/pages/return-policy"
@@ -228,12 +228,12 @@ export default function Footer() {
               Disclaimer
             </Link>
 
-            <Link
+            {/* <Link
               href="/pages/terms-of-supply"
               className="transition-colors hover:text-white"
             >
               Terms of Supply
-            </Link>
+            </Link> */}
           </div>
         </div>
       </Container>

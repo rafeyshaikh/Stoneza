@@ -156,7 +156,7 @@ export default async function Home() {
       
       <MainCategoriesGrid categories={mainCategoriesData} />
       <SignatureStones stones={featuredStones} />
-      <HomeAboutSection storyData={safeAbout?.story} imageleft={true}/>
+      <HomeAboutSection aboutData={safeAbout} storyData={safeAbout?.story} imageleft={true} />
       <MiddleBanner
         src={safeHomepage?.middleBanner?.image?.url || "/assets/Banner/All_products_banner.png"}
         title={safeHomepage?.middleBanner?.title || "All Products"}

@@ -3,6 +3,7 @@ import ImageWithLoader from "@/components/common/Loader";
 import Link from "next/link";
 
 export default function HomeAboutSection({
+  aboutData,
   storyData,
   imageleft = true,
   eyebrow = "SINCE 1992",
@@ -15,13 +16,20 @@ export default function HomeAboutSection({
     "Every lot, mined by us or sourced, then comes through our own works at Bhilwara for grading, calibration and finishing against one standard. You deal with one company, hold one company to the specification, and have one company to come back to.",
   ];
 
-  const displayEyebrow = storyData?.homepageEyebrow || eyebrow;
-  const displayTitle = storyData?.homepageTitle || title;
-  const displayLead = storyData?.homepageLead || lead;
-  const paragraphs = storyData?.homepageParagraphs || defaultParagraphs;
+  const story = storyData || aboutData?.story;
+  const hero = aboutData?.hero;
 
+  const displayEyebrow = story?.homepageEyebrow || story?.eyebrow || eyebrow;
+  const displayTitle = story?.homepageTitle || story?.title || title;
+  const displayLead = story?.homepageLead || story?.lead || lead;
+  const paragraphs = story?.homepageParagraphs || (story?.paragraphs?.length ? story.paragraphs : defaultParagraphs);
+
+  // Use the About Page banner (hero.image) or story image with high-quality fallback
   const imageUrl =
-    storyData?.homepageImage?.url ||
+    hero?.image?.url ||
+    aboutData?.hero?.image?.url ||
+    story?.image?.url ||
+    story?.homepageImage?.url ||
     "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png";
 
   return (
