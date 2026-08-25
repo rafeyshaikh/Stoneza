@@ -211,6 +211,7 @@ export default async function ProductDetailPage({ params }) {
           href: `/product-category/${c.slug}`,
           imageUrl:
             c.bannerImage?.square?.url ||
+            c.bannerImage?.wide?.url ||
             (Array.isArray(c.bannerImage?.wide) && c.bannerImage.wide[0]?.url) ||
             "",
           bg: "#FAF8F5",

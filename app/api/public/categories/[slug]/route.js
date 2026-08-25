@@ -60,6 +60,8 @@ export async function GET(request, { params }) {
       slug: item.slug,
 
       squareBanner: item.bannerImage?.square || null,
+
+      wideBanner: item.bannerImage?.wide || null,
     }));
 
     const categoryIds = await getDescendantCategoryIds(category._id);

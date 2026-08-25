@@ -63,7 +63,11 @@ export default function CategoryPageClient({ initialData, slug }) {
   const carouselSubCategories = (initialData.subCategories || []).map((sub, idx) => ({
     id: sub.slug,
     title: sub.name,
-    image: sub.squareBanner?.url || getPlaceholderImage(sub.name, idx + 200),
+    image:
+      sub.squareBanner?.url ||
+      sub.wideBanner?.url ||
+      (Array.isArray(sub.wideBanner) ? sub.wideBanner[0]?.url : "") ||
+      getPlaceholderImage(sub.name, idx + 200),
     href: `/product-category/${sub.slug}`,
   }));
 
@@ -210,8 +214,16 @@ export default function CategoryPageClient({ initialData, slug }) {
 
   const sliceLength = (!showAllProducts && (categoryLevel === 1 || categoryLevel === 2)) ? 8 : sortedProducts.length;
 
-  const topBannerUrl = category?.bannerImage?.wide?.[0]?.url || "/assets/hero/collection-banner.webp";
-  const wideBannerUrl = category?.bannerImage?.wide?.[1]?.url || category?.bannerImage?.wide?.[0]?.url || "/assets/hero/Big_Banner_Ethereal_Forms.jpg";
+  const topBannerUrl =
+    category?.bannerImage?.wide?.url ||
+    (Array.isArray(category?.bannerImage?.wide) ? category?.bannerImage?.wide?.[0]?.url : "") ||
+    category?.bannerImage?.square?.url ||
+    "/assets/hero/collection-banner.webp";
+  const wideBannerUrl =
+    category?.bannerImage?.wide?.url ||
+    (Array.isArray(category?.bannerImage?.wide) ? (category?.bannerImage?.wide?.[1]?.url || category?.bannerImage?.wide?.[0]?.url) : "") ||
+    category?.bannerImage?.square?.url ||
+    "/assets/hero/Big_Banner_Ethereal_Forms.jpg";
   const categoryName = category?.name || slug;
 
   return (
