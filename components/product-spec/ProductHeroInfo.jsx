@@ -55,7 +55,7 @@ export default function ProductHeroInfo({ product, specOptions, specs, handleSpe
         {derivedCollection && (
           <>
             <a href={collectionSlug ? `/collections/${collectionSlug}` : '/collections'} className="hover:text-[#9A4A2E] transition-colors">
-              {derivedCollection}-collection
+              {derivedCollection} collection
             </a>
             <span>·</span>
           </>
