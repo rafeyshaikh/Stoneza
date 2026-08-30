@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
 import { getAboutData } from "@/lib/getAboutData";
 
 export const dynamic = "force-dynamic";
@@ -206,12 +205,12 @@ export default async function AboutUsPage() {
 
   return (
     <div className="bg-[#faf8f5] text-[#2a2118] font-body antialiased">
-      <Script
+      <script
         id="about-organization-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
-      <Script
+      <script
         id="about-breadcrumb-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}

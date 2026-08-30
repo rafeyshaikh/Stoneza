@@ -48,10 +48,12 @@ export default function CategoryPageClient({ initialData, slug }) {
 
   const mappedProducts = rawProducts.map((prod, idx) => ({
     id: prod._id,
+    _id: prod._id,
     name: prod.name,
     price: prod.price || null,
-    image: prod.thumbnail?.url || getPlaceholderImage(prod.name, idx),
-    imageHover: prod.hoverImage?.url || prod.thumbnail?.url || getPlaceholderImage(prod.name, idx + 100),
+    images: prod.images || (prod.thumbnail ? [prod.thumbnail] : []),
+    image: prod.thumbnail?.url || (prod.images?.length ? prod.images[0].url : "") || getPlaceholderImage(prod.name, idx),
+    imageHover: prod.hoverImage?.url || (prod.images?.length > 1 ? prod.images[1].url : "") || prod.thumbnail?.url || (prod.images?.length ? prod.images[0].url : "") || getPlaceholderImage(prod.name, idx + 100),
     soldOut: false,
     slug: prod.slug,
     stoneDetails: prod.stoneDetails || {},

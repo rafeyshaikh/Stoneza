@@ -5,98 +5,36 @@ import Image from "next/image";
 import { PiCaretLeftLight } from "react-icons/pi";
 import { useState } from "react";
 import ImageWithLoader from "../common/Loader";
-import { isValidImageUrl } from "@/lib/utils";
+import { isValidImageUrl, optimizeImageUrl } from "@/lib/utils";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
-
-const largeShopData = [
-  {
-    title: "Ming Blue Decor Jar",
-    image: "/assets/gifting/1-Ming-Blue-Decor-Jar.jpg",
-    image_hover: "/assets/gifting/1-Ming-Blue-Decor-Jar-hover.jpg",
-  },
-  {
-    title: "Tidal Beige Decor Platter",
-    image: "/assets/gifting/2-Tidal-Beige-Decor-Platter.jpg",
-    image_hover: "/assets/gifting/2-Tidal-Beige-Decor-Platter-hover.jpg",
-  },
-  {
-    title: "Brushstroke Grey Decor Ball",
-    image: "/assets/gifting/3-Brushstroke-Grey-Decor-Ball.jpg",
-    image_hover: "/assets/gifting/3-Brushstroke-Grey-Decor-Ball-hover.jpg",
-  },
-  {
-    title: "Auric Grey Gold Fern Vase 1",
-    image: "/assets/gifting/4-Auric-Grey-Gold-Fern-Vase-1.jpg",
-    image_hover: "/assets/gifting/4-Auric-Grey-Gold-Fern-Vase-1-hover.jpg",
-  },
-  {
-    title: "Custard Apple Grey Gold Decor Set Of 2",
-    image: "/assets/gifting/5-Custard-Apple-Grey-Gold-Decor-Set-Of-2.jpg",
-    image_hover: "/assets/gifting/5-Custard-Apple-Grey-Gold-Decor-Set-Of-2-hover.jpg",
-  },
-  {
-    title: "Auric Grey Gold Fern Vase S",
-    image: "/assets/gifting/6-Auric-Grey-Gold-Fern-Vase-S.jpg",
-    image_hover: "/assets/gifting/6-Auric-Grey-Gold-Fern-Vase-S-hover.jpg",
-  },
-  {
-    title: "Audra Gold Table Clock",
-    image: "/assets/gifting/7-Audra-Gold-Table-Clock.jpg",
-    image_hover: "/assets/gifting/7-Audra-Gold-Table-Clock-hover.jpg",
-  },
-  {
-    title: "Fern White Gold Bookend",
-    image: "/assets/gifting/8-Fern-White-Gold-Bookend.jpg",
-    image_hover: "/assets/gifting/8-Fern-White-Gold-Bookend-hover.jpg",
-  },
-  {
-    title: "Primate Off-White Ceramic Vase",
-    image: "/assets/gifting/9-Primate-Off-White-Ceramic-Vase.jpg",
-    image_hover: "/assets/gifting/9-Primate-Off-White-Ceramic-Vase-hover.jpg",
-  },
-  {
-    title: "Primate Grey Ceramic Vase",
-    image: "/assets/gifting/10-Primate-Grey-Ceramic-Vase.jpg",
-    image_hover: "/assets/gifting/9-Primate-Off-White-Ceramic-Vase-hover.jpg",
-  },
-  {
-    title: "Sparkle Brown Candle Holder",
-    image: "/assets/gifting/11-Sparkle-Brown-Candle-Holder.jpg",
-    image_hover: "/assets/gifting/11-Sparkle-Brown-Candle-Holder-hover.jpg",
-  },
-  {
-    title: "Sparkle Grey Candle Holder",
-    image: "/assets/gifting/12-Sparkle-Grey-Candle-Holder.jpg",
-    image_hover: "/assets/gifting/11-Sparkle-Brown-Candle-Holder-hover.jpg",
-  },
-  {
-    title: "Sparkle Grey Bird Sculptures",
-    image: "/assets/gifting/13-Sparkle-Grey-Bird-Sculptures.jpg",
-    image_hover: "/assets/gifting/13-Sparkle-Grey-Bird-Sculptures-hover.jpg",
-  },
-  {
-    title: "Sparkle Grey Candlebra",
-    image: "/assets/gifting/14-Sparkle-Grey-Candlebra.jpg",
-    image_hover: "/assets/gifting/11-Sparkle-Brown-Candle-Holder-hover.jpg",
-  },
-  {
-    title: "Agate Brown Reed Diffuser",
-    image: "/assets/gifting/15-Agate-Brown-Reed-Diffuser.jpg",
-    image_hover: "/assets/gifting/15-Agate-Brown-Reed-Diffuser-hover.jpg",
-  }
-];
 
 export default function FeaturedProducts({ products = [], cmsData }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const displayProducts = products.length > 0
-    ? products.map((prod, idx) => ({
-        title: prod.name,
-        image: isValidImageUrl(prod.images?.[0]?.url) ? prod.images[0].url : getPlaceholderImage(prod.name, idx),
-        image_hover: isValidImageUrl(prod.hoverImage?.url) ? prod.hoverImage.url : (isValidImageUrl(prod.images?.[0]?.url) ? prod.images[0].url : getPlaceholderImage(prod.name, idx + 50)),
-        slug: prod.slug,
-      }))
-    : largeShopData;
+  const displayProducts =
+    products.length > 0
+      ? products.map((prod, idx) => {
+          const firstImg = prod.image || prod.images?.[0]?.url || "";
+          const secondImg = prod.hoverImage?.url || prod.images?.[1]?.url || "";
+          const mainImg = isValidImageUrl(firstImg)
+            ? optimizeImageUrl(firstImg)
+            : getPlaceholderImage(prod.name || "Featured Stone", idx);
+          const hoverImg = isValidImageUrl(secondImg)
+            ? optimizeImageUrl(secondImg)
+            : isValidImageUrl(firstImg)
+            ? optimizeImageUrl(firstImg)
+            : getPlaceholderImage(prod.name || "Featured Stone", idx + 50);
+
+          return {
+            title: prod.name || prod.title || "Featured Stone",
+            image: mainImg,
+            image_hover: hoverImg,
+            slug: prod.slug,
+          };
+        })
+      : [];
+
+  if (displayProducts.length === 0) return null;
 
   return (
     <section className="w-full pb-10 px-4 lg:px-12">
@@ -104,7 +42,7 @@ export default function FeaturedProducts({ products = [], cmsData }) {
         {/* Left Banner */}
         <div className="relative overflow-hidden">
           <Image
-            src={cmsData?.bannerImage?.url || "/assets/gifting/Gifting_Banner.jpg"}
+            src={cmsData?.bannerImage?.url || "/assets/Banner/All_products_banner.png"}
             alt={cmsData?.title || "Featured Products"}
             width={1200}
             height={700}
@@ -133,22 +71,27 @@ export default function FeaturedProducts({ products = [], cmsData }) {
                 ${currentIndex === index ? "opacity-100" : "hidden pointer-events-none "}`}
               >
                 {/* Main Image */}
-                <ImageWithLoader
-                  src={item.image}
-                  alt={item.title}
-                  width={300}
-                  height={400}
-                  className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
-                />
+                <div className="w-full h-full relative transition-opacity duration-500 group-hover:opacity-0">
+                  <ImageWithLoader
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="w-full h-full object-cover"
+                    placeholderTitle={item.title}
+                  />
+                </div>
 
                 {/* Hover Image */}
-                <Image
-                  src={item.image_hover}
-                  alt={item.title}
-                  width={300}
-                  height={400}
-                  className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                />
+                <div className="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none">
+                  <ImageWithLoader
+                    src={item.image_hover}
+                    alt={`${item.title} - hover`}
+                    fill
+                    className="w-full h-full object-cover"
+                    placeholderTitle={item.title}
+                    seedIndex={50}
+                  />
+                </div>
               </Link>
             ))}
 

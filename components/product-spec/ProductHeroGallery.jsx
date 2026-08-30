@@ -3,6 +3,7 @@
 import React from 'react';
 import ImageWithLoader from "@/components/common/Loader";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { optimizeImageUrl } from "@/lib/utils";
 
 export default function ProductHeroGallery({ slides, activeThumb, setActiveThumb }) {
   if (!slides || slides.length === 0) return null;
@@ -36,7 +37,7 @@ export default function ProductHeroGallery({ slides, activeThumb, setActiveThumb
             aria-label={slide.caption || slide.url || `Image ${idx + 1}`}
           >
             <ImageWithLoader
-              src={slide.url}
+              src={optimizeImageUrl(slide.url)}
               alt={slide.caption || `Thumbnail ${idx + 1}`}
               fill
               className="object-cover"
@@ -50,7 +51,7 @@ export default function ProductHeroGallery({ slides, activeThumb, setActiveThumb
       <div className="order-1 sm:order-2 w-full">
         <div className="relative aspect-square border border-[#CBC9C4] overflow-hidden bg-white rounded-[2px] shadow-xs group">
           <ImageWithLoader
-            src={currentSlide.url}
+            src={optimizeImageUrl(currentSlide.url)}
             alt={currentSlide.caption || "Product view"}
             fill
             className="object-cover transition-opacity duration-300"

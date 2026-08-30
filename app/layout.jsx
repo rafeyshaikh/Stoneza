@@ -112,10 +112,9 @@ export default async function RootLayout({ children }) {
           </>
         )}
         {/* Organization and LocalBusiness Structured Data Schema (F-09) */}
-        <Script
+        <script
           id="stoneza-org-schema"
           type="application/ld+json"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",

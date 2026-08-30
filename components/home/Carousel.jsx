@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageWithLoader from "../common/Loader";
-import { isValidImageUrl } from "@/lib/utils";
+import { isValidImageUrl, optimizeImageUrl } from "@/lib/utils";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
 
 export default function Carousel({
@@ -120,9 +120,17 @@ export default function Carousel({
         >
           {data.map((item, idx) => {
             const titleText = item.title || item.name || "Stoneza";
-            const validImg = isValidImageUrl(item.image)
-              ? item.image
+            const rawImg = item.image || item.thumbnail?.url || "";
+            const validImg = isValidImageUrl(rawImg)
+              ? optimizeImageUrl(rawImg)
               : getPlaceholderImage(titleText, idx);
+
+            const rawHover = item.hoverImage || item.imageHover || "";
+            const validHoverImg = isValidImageUrl(rawHover)
+              ? optimizeImageUrl(rawHover)
+              : "";
+            const hasHover = Boolean(validHoverImg && validHoverImg !== validImg);
+
             const targetHref = item.href || (item.slug ? `/product/${item.slug}` : "#");
 
             return (
@@ -133,14 +141,34 @@ export default function Carousel({
               >
                 {/* IMAGE CONTAINER */}
                 <div className="aspect-square relative overflow-hidden bg-[#F5F1EB] dark:bg-stone-900 border border-[#E4DDD3] dark:border-stone-800">
-                  <ImageWithLoader
-                    src={validImg}
-                    alt={titleText}
-                    fill
-                    sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 20vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    placeholderTitle={titleText}
-                  />
+                  <div
+                    className={`w-full h-full relative transition-opacity duration-300 ${
+                      hasHover ? "group-hover:opacity-0" : ""
+                    }`}
+                  >
+                    <ImageWithLoader
+                      src={validImg}
+                      alt={titleText}
+                      fill
+                      sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 20vw"
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      placeholderTitle={titleText}
+                    />
+                  </div>
+
+                  {hasHover && (
+                    <div className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <ImageWithLoader
+                        src={validHoverImg}
+                        alt={`${titleText} alternate view`}
+                        fill
+                        sizes="(max-width: 640px) 240px, (max-width: 1024px) 280px, 20vw"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        placeholderTitle={titleText}
+                        seedIndex={idx + 50}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* DETAILS */}

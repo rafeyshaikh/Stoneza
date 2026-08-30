@@ -385,7 +385,7 @@ export default function EnquiryForm({ initialStoneType = "", compact = false }) 
 
           <h2 className="font-serif text-[26px] md:text-[30px] xl:text-[34px] leading-[1.2] tracking-tight text-[#F5F1EA]">
             Tell us the project. Get a{" "}
-            <span className="italic font-serif text-[#C9A980]">real</span> quote.
+            <span className="italic font-serif text-[#C9A980]">real</span>{" "}quote.
           </h2>
 
           <p className="mt-2.5 font-sans text-[13.5px] leading-[1.6] text-[#B7AC9E]">

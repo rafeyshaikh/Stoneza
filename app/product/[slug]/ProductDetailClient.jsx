@@ -217,29 +217,8 @@ export default function ProductDetailClient({ productData }) {
     }
   };
 
-  // Structured SEO JSON-LD
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: productData.seo?.metaTitle || product.name,
-    image: productData.seo?.ogImage ? [productData.seo.ogImage] : product.images.map((i) => i.url),
-    description:
-      productData.seo?.metaDescription ||
-      product.shortDescription ||
-      'Premium natural stone product from Stoneza.',
-    sku: product.sku || product.skuCode || 'N/A',
-    brand: {
-      '@type': 'Brand',
-      name: 'Stoneza',
-    },
-  };
-
   return (
     <div className="bg-[#EAE8E2] text-[#1C1714] font-sans antialiased">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
 
       {/* Breadcrumb Navigation */}
       <nav className="border-b border-[#CBC9C4] bg-[#EAE8E2]">

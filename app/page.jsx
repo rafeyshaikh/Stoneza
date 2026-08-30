@@ -121,7 +121,7 @@ export default async function Home() {
         categoryMeta: prod.category?.name || prod.stoneType || "NATURAL STONE",
         price: prod.price,
         image: prod.images?.[0]?.url || "",
-        hoverImage: prod.hoverImage?.url || prod.images?.[0]?.url || "",
+        hoverImage: prod.hoverImage?.url || (prod.images?.length > 1 ? prod.images[1]?.url : "") || prod.images?.[0]?.url || "",
         href: `/product/${prod.slug}`,
       }))
     : whatsNewData;

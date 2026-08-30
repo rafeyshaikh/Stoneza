@@ -171,10 +171,9 @@ export default function HeaderSearchOverlay({
                       {searchResults.length > 0 ? (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                           {searchResults.map((product) => (
-                            <Link
+                            <div
                               key={product._id}
-                              href={`/product/${product.slug}`}
-                              className="group flex flex-col items-center text-center p-4"
+                              className="group flex flex-col items-center text-center"
                               onClick={handleClose}
                             >
                               <ProductCard
@@ -183,7 +182,7 @@ export default function HeaderSearchOverlay({
                                 hoveredId={hoveredId}
                                 button={false}
                               />
-                            </Link>
+                            </div>
                           ))}
                         </div>
                       ) : (

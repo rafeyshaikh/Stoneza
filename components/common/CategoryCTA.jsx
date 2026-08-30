@@ -10,7 +10,7 @@ export default function CategoryCTA({
   buttonLink = "/contact",
 }) {
   return (
-    <section className="w-full py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto">
+    <section className="w-full py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8 lg:px-12 mx-auto bg-gradient-to-b from-[#eae8e2] to-white">
       <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl md:rounded-[32px] bg-gradient-to-br from-[#2A2420] via-[#211C18] to-[#171310] border border-[#4A413A]/60 px-5 py-7 sm:px-8 sm:py-10 md:px-12 md:py-12 lg:px-14 lg:py-14 shadow-xl">
         {/* Subtle Ambient Background Effects */}
         <div className="pointer-events-none absolute inset-0 opacity-15" aria-hidden="true">
@@ -47,7 +47,7 @@ export default function CategoryCTA({
             </Link>
 
             <p className="text-center sm:text-right text-[11px] sm:text-xs text-[#8F8477]">
-              Trusted by <span className="font-semibold text-[#EDE8E1]">1000+</span> architects &amp; specifiers across India
+              Trusted by <span className="font-semibold text-[#EDE8E1]">1000+</span>{" "}architects &amp; specifiers across India
             </p>
           </div>
         </div>
