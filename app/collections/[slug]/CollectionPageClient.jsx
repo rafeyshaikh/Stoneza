@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import CategoryCTA from "@/components/common/CategoryCTA";
 import BigBanner from "@/components/home/BigBanner";
 import Carousel from "@/components/home/Carousel";
+import SiblingCollectionsCarousel from "@/components/collections/SiblingCollectionsCarousel";
 import ProductCard from "@/components/product/ProductCard";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
 
@@ -39,6 +41,9 @@ export default function CollectionPageClient({ initialData, slug }) {
 
   const collection = initialData.collection;
   const collectionLevel = collection?.collectionLevel || 1;
+  const parentCollection = initialData.parentCollection || collection?.parentCollection;
+  const siblingCollections = initialData.siblingCollections || initialData.siblingCategories || [];
+  const parentCollectionName = parentCollection?.name || "Collection";
   const rawProducts = initialData.products || [];
   
   const mappedProducts = rawProducts.map((prod, idx) => ({
@@ -151,23 +156,107 @@ export default function CollectionPageClient({ initialData, slug }) {
     return 0;
   });
 
-  const sliceLength = showAllProducts ? sortedProducts.length : Math.min(12, sortedProducts.length);
-  const wideBannerUrl = collection?.bannerImage?.wide?.[0]?.url || "/assets/hero/All-Products-Banner.png";
-  const collectionName = collection?.name || "Collection";
+  const sliceLength = (!showAllProducts && collectionLevel === 1) ? 8 : sortedProducts.length;
+  
+  const topBannerUrl =
+    collection?.bannerImage?.wide?.url ||
+    (Array.isArray(collection?.bannerImage?.wide) ? collection?.bannerImage?.wide?.[0]?.url : "") ||
+    collection?.bannerImage?.square?.url ||
+    "/assets/hero/collection-banner.webp";
+  const wideBannerUrl =
+    collection?.bannerImage?.wide?.url ||
+    (Array.isArray(collection?.bannerImage?.wide) ? (collection?.bannerImage?.wide?.[1]?.url || collection?.bannerImage?.wide?.[0]?.url) : "") ||
+    collection?.bannerImage?.square?.url ||
+    "/assets/hero/Big_Banner_Ethereal_Forms.jpg";
+  const collectionName = collection?.name || slug;
 
   return (
-    <div className="min-h-screen bg-[#eae8e2]">
+    <div className="w-full bg-[#eae8e2]">
       {/* Top Banner */}
-      <BigBanner
-        src={wideBannerUrl}
-        title={collectionName}
-        alt={collectionName}
-        button={null}
-        height={800}
-      />
+      {collectionLevel === 1 ? (
+        <div className="relative">
+          <BigBanner
+            src={topBannerUrl}
+            alt={collectionName}
+            button={null}
+            height={575}
+          />
+          <div className="absolute top-0 w-full inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent z-10 h-full flex flex-col justify-center gap-2 sm:gap-4 md:gap-6 items-start px-5 sm:px-8 md:px-12 lg:px-16">
+            {/* Breadcrumb Navigation */}
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-[0.16em] text-[#C8A980]">
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              <span className="text-white/40">/</span>
+              <Link href="/collections" className="hover:text-white transition-colors">Collections</Link>
+              <span className="text-white/40">/</span>
+              <span className="text-white">{collectionName}</span>
+            </nav>
+
+            <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light tracking-wide">
+              {collectionName}
+            </h1>
+            {collection?.description && (
+              <p className="text-white/90 font-body w-full sm:w-[80%] md:w-[65%] lg:w-[45%] text-xs sm:text-sm md:text-base lg:text-lg line-clamp-3 sm:line-clamp-4 md:line-clamp-none">
+                {collection.description}
+              </p>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="relative">
+          <BigBanner
+            src={topBannerUrl}
+            alt={collectionName}
+            button={null}
+            height={575}
+          />
+          <div className="absolute top-0 inset-0 z-10 flex items-center px-4 sm:px-8 md:px-12 lg:px-24">
+            <div className="bg-linear-to-br from-white/40 via-white/95 to-white/50 backdrop-blur-sm w-full sm:w-[85%] md:w-[70%] lg:w-[45%] max-w-[540px] p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col gap-2 sm:gap-4 lg:gap-6 shadow-md">
+              {/* Breadcrumb Navigation */}
+              <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-[10.5px] font-heading font-semibold uppercase tracking-[0.14em] text-[#9A4A2E]">
+                <Link href="/" className="hover:underline">Home</Link>
+                <span className="text-[#78716C]">/</span>
+                <Link href="/collections" className="hover:underline">Collections</Link>
+                <span className="text-[#78716C]">/</span>
+                {parentCollection && (
+                  <>
+                    <Link href={`/collections/${parentCollection.slug}`} className="hover:underline">
+                      {parentCollection.name}
+                    </Link>
+                    <span className="text-[#78716C]">/</span>
+                  </>
+                )}
+                <span className="text-[#1A1613] font-bold">{collectionName}</span>
+              </nav>
+
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading capitalize font-semibold tracking-wide text-[#1A1613]">
+                {collectionName}
+              </h1>
+              {collection?.description && (
+                <p className="text-xs sm:text-sm lg:text-base text-[#4A453F] line-clamp-3 sm:line-clamp-4 md:line-clamp-6 lg:line-clamp-none">
+                  {collection.description}
+                </p>
+              )}
+              <div className="flex items-center gap-2 sm:gap-3 pt-1">
+                <Link
+                  href="#products-grid"
+                  className="flex-1 h-9 sm:h-11 lg:h-12 bg-black text-white flex justify-center items-center cursor-pointer hover:bg-stone-800 transition-all text-[10px] sm:text-xs lg:text-sm font-medium tracking-wider uppercase text-center px-2"
+                >
+                  Browse All {initialData.products?.length || 0} Varieties
+                </Link>
+                <Link
+                  href="/contact"
+                  className="flex-1 h-9 sm:h-11 lg:h-12 bg-white text-black border border-black flex justify-center items-center cursor-pointer hover:bg-black/5 transition-all text-[10px] sm:text-xs lg:text-sm font-medium tracking-wider uppercase text-center px-2"
+                >
+                  Talk to Expert
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Action Header */}
-      <div className="border-y border-[#cbc9c4] px-10 py-5 bg-[#eae8e2] sticky top-0 z-30 shadow-xs">
+      <div className="border-y border-[#cbc9c4] px-10 py-3 bg-[#eae8e2] sticky top-[70px] lg:top-[127px] z-30 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Left Controls */}
           <div className="flex items-center gap-6">
@@ -371,6 +460,7 @@ export default function CollectionPageClient({ initialData, slug }) {
         </div>
       ) : (
         <div
+          id="products-grid"
           className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${gridSizeLarge ? "lg:grid-cols-4" : "lg:grid-cols-2"} gap-6 p-10 justify-items-center`}
         >
           {sortedProducts.slice(0, sliceLength).map((item) => (
@@ -386,32 +476,39 @@ export default function CollectionPageClient({ initialData, slug }) {
       )}
       
       {(!showAllProducts && collectionLevel === 1 && sortedProducts.length > sliceLength) && (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center py-6 sm:py-10 bg-gradient-to-b from-[#eae8e2] to-white">
           <button 
-            className="mb-10 rounded-lg border border-[#cbc9c4] bg-[#eae8e2] px-6 py-3 uppercase font-heading tracking-[2px] text-[12px] font-medium cursor-pointer text-center flex justify-center items-center gap-2 hover:scale-[1.02] hover:border-black transition-all" 
+            className="rounded-lg border border-[#cbc9c4] bg-[#eae8e2] px-6 py-3 uppercase font-heading tracking-[2px] text-[11px] sm:text-[12px] font-medium cursor-pointer text-center flex justify-center items-center gap-2 hover:scale-[1.02] hover:border-black transition-all" 
             onClick={() => setShowAllProducts(true)}
           >
             View All
-            <PiCaretDown className="text-2md" />
+            <PiCaretDown className="text-base" />
           </button>
         </div>
       )}
 
-      {(!showAllProducts && collectionLevel === 1) && (
-        <div>
-          {carouselSubCollections.length > 0 && (
-            <div className="col-span-full">
-              <Carousel title="Sub Collections" data={carouselSubCollections} />
-            </div>
-          )}
-          <CategoryCTA
-            title={`Specifying the ${collection?.name || "Stoneza"} Series for Your Project?`}
-            description="Consult with our stone specialists for custom piece sizing, calibrated thickness runs, and physical sample boxes delivered directly to your design studio."
-            buttonText="REQUEST SPECIFICATION & QUOTE"
-            buttonLink="/#enquire"
-          />
+      {/* Sub Collections Carousel for Master Family (Level 1) */}
+      {!showAllProducts && collectionLevel === 1 && carouselSubCollections.length > 0 && (
+        <div className="col-span-full">
+          <Carousel title="Sub Collections" data={carouselSubCollections} />
         </div>
       )}
+
+      {/* Sibling Category / Collection Carousel for Series (Level 2) */}
+      {collectionLevel === 2 && siblingCollections.length > 0 && (
+        <SiblingCollectionsCarousel
+          parentCollectionName={parentCollectionName}
+          siblingCollections={siblingCollections}
+        />
+      )}
+
+      {/* Final Call To Action */}
+      <CategoryCTA
+        title={`Specifying the ${collection?.name || "Stoneza"} Series for Your Project?`}
+        description="Consult with our stone specialists for custom piece sizing, calibrated thickness runs, and physical sample boxes delivered directly to your design studio."
+        buttonText="REQUEST SPECIFICATION & QUOTE"
+        buttonLink="/contact"
+      />
     </div>
   );
 }

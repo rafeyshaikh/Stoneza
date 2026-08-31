@@ -317,7 +317,7 @@ export default function CategoryPageClient({ initialData, slug }) {
       )}
 
       {/* Grid Settings & Filter Bar */}
-      <div className="sticky top-[62px] lg:top-[127px] h-12 sm:h-14 w-full border-y border-[#cbc9c4] bg-[#eae8e2] z-30 flex justify-between relative">
+      <div className="sticky top-[70px] lg:top-[127px] h-12 sm:h-14 w-full border-y border-[#cbc9c4] bg-[#eae8e2] z-30 flex justify-between relative">
         {/* Grid Sizer buttons */}
         <div className="border-r h-full w-20 sm:w-28 md:w-36 border-[#cbc9c4] flex items-center justify-center gap-2">
           <BiSolidGridAlt
@@ -586,7 +586,7 @@ export default function CategoryPageClient({ initialData, slug }) {
       {!showAllProducts && (categoryLevel === 1 || categoryLevel === 2) && (
         <div>
           {carouselSubCategories.length > 0 && (
-            <div className="col-span-full py-4 sm:py-6">
+            <div className="col-span-full">
               <Carousel title="Sub Categories" data={carouselSubCategories} />
             </div>
           )}

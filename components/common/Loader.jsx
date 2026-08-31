@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { isValidImageUrl } from "@/lib/utils";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
+import ProductWatermark from "@/components/common/ProductWatermark";
 
 export default function ImageWithLoader({
   src,
@@ -12,6 +13,8 @@ export default function ImageWithLoader({
   className = "",
   placeholderTitle,
   seedIndex = 0,
+  watermark = false,
+  watermarkTone = "charcoal",
   ...props
 }) {
   const [loading, setLoading] = useState(true);
@@ -65,6 +68,10 @@ export default function ImageWithLoader({
         } ${className}`}
         {...props}
       />
+
+      {watermark && !loading && (
+        <ProductWatermark tone={watermarkTone} />
+      )}
     </div>
   );
 }

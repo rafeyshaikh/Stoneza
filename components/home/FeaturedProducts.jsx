@@ -5,6 +5,7 @@ import Image from "next/image";
 import { PiCaretLeftLight } from "react-icons/pi";
 import { useState } from "react";
 import ImageWithLoader from "../common/Loader";
+import ProductWatermark from "../common/ProductWatermark";
 import { isValidImageUrl, optimizeImageUrl } from "@/lib/utils";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
 
@@ -92,6 +93,9 @@ export default function FeaturedProducts({ products = [], cmsData }) {
                     seedIndex={50}
                   />
                 </div>
+
+                {/* Product Watermark */}
+                <ProductWatermark />
               </Link>
             ))}
 

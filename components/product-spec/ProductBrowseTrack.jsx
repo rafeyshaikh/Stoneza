@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import ProductWatermark from "@/components/common/ProductWatermark";
 
 export default function ProductBrowseTrack({
   title,
@@ -63,6 +64,7 @@ export default function ProductBrowseTrack({
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : null}
+                <ProductWatermark />
               </div>
               <h3 className="font-serif text-base font-normal text-[#1C1714] mt-2.5 mb-1 group-hover:underline underline-offset-4">
                 {item.title}

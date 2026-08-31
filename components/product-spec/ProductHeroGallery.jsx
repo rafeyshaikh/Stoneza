@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ImageWithLoader from "@/components/common/Loader";
+import ProductWatermark from "@/components/common/ProductWatermark";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { optimizeImageUrl } from "@/lib/utils";
 
@@ -57,6 +58,7 @@ export default function ProductHeroGallery({ slides, activeThumb, setActiveThumb
             className="object-cover transition-opacity duration-300"
             seedIndex={activeThumb}
           />
+          <ProductWatermark />
 
           {/* Mobile Previous / Next Arrow Controls */}
           {slides.length > 1 && (

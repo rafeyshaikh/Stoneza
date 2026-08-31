@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import ImageWithLoader from "@/components/common/Loader";
+import ProductWatermark from "@/components/common/ProductWatermark";
 import { redirectToWhatsApp } from "@/lib/whatsapp";
 import { isValidImageUrl, optimizeImageUrl } from "@/lib/utils";
 
@@ -84,6 +85,9 @@ export default function ProductCard({
               />
             </div>
           )}
+
+          {/* Product Watermark */}
+          <ProductWatermark />
 
           {/* Action buttons (View Product / Enquiry Now) */}
           {button && (

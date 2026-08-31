@@ -7,17 +7,18 @@ import { PiCaretLeftThin, PiCaretRightThin } from "react-icons/pi";
 import ImageWithLoader from "@/components/common/Loader";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
 
-export default function SiblingCategoriesCarousel({
-  parentCategoryName = "Category",
-  siblingCategories = [],
-  parentCollectionName,
-  siblingCollections,
+export default function SiblingCollectionsCarousel({
+  parentCollectionName = "Collection",
+  siblingCollections = [],
+  // aliases for backwards compatibility
+  parentCategoryName,
+  siblingCategories,
 }) {
   const items =
-    siblingCategories && siblingCategories.length > 0
-      ? siblingCategories
-      : siblingCollections || [];
-  const parentName = parentCollectionName || parentCategoryName || "Category";
+    siblingCollections && siblingCollections.length > 0
+      ? siblingCollections
+      : siblingCategories || [];
+  const parentName = parentCollectionName || parentCategoryName || "Collection";
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: items.length > 4,
@@ -59,7 +60,7 @@ export default function SiblingCategoriesCarousel({
     return null;
   }
 
-  const formattedParent = parentName.toLowerCase();
+  const formattedParent = parentName;
 
   return (
     <section className="py-14 sm:py-20 border-t border-[#CBC9C4] bg-[#EAE8E2] overflow-hidden">
@@ -74,7 +75,7 @@ export default function SiblingCategoriesCarousel({
               Elsewhere in {formattedParent}
             </h2>
             <p className="font-body text-sm sm:text-base text-[#57534E] max-w-2xl mt-3 leading-relaxed">
-              {items.length} more surface{items.length > 1 ? "s" : ""} from the same quarries, cut and finished in the same works.
+              {items.length} more series from the same quarries, cut and finished in the same works.
             </p>
           </div>
 
@@ -112,7 +113,7 @@ export default function SiblingCategoriesCarousel({
                 className="pl-4 sm:pl-6 flex-[0_0_85%] sm:flex-[0_0_50%] md:flex-[0_0_33.333%] lg:flex-[0_0_25%] min-w-0"
               >
                 <Link
-                  href={item.href}
+                  href={item.href || `/collections/${item.slug}`}
                   className="group relative block aspect-[3/4] rounded-sm overflow-hidden bg-[#24201D] shadow-md text-white no-underline transition-all duration-500 hover:shadow-2xl"
                 >
                   {/* Background Stone Image */}
