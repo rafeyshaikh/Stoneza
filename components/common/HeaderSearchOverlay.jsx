@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { CiSearch } from "react-icons/ci";
@@ -16,6 +16,7 @@ export default function HeaderSearchOverlay({
   categories = [],
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,14 +43,19 @@ export default function HeaderSearchOverlay({
       try {
         if (active) setLoading(true);
         const res = await fetch(
-          `/api/public/products?search=${encodeURIComponent(searchQuery)}&limit=4`
+          `/api/public/products?search=${encodeURIComponent(searchQuery.trim())}&limit=4`
         );
         const data = await res.json();
-        if (active && data.success && data.data && data.data.items) {
-          setSearchResults(data.data.items);
+        if (active) {
+          if (data.success && data.data && data.data.items) {
+            setSearchResults(data.data.items);
+          } else {
+            setSearchResults([]);
+          }
         }
       } catch (err) {
         console.error("Header search error:", err);
+        if (active) setSearchResults([]);
       } finally {
         if (active) setLoading(false);
       }
@@ -130,6 +136,13 @@ export default function HeaderSearchOverlay({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && searchQuery.trim()) {
+                        const q = searchQuery.trim();
+                        handleClose();
+                        router.push(`/product?search=${encodeURIComponent(q)}`);
+                      }
+                    }}
                     placeholder="Type to search products..."
                     className="w-full bg-transparent border-none outline-none text-md md:text-lg font-light tracking-wide placeholder-[#B7AC9E] text-[#1c1714] capitalize"
                     autoFocus
@@ -147,7 +160,7 @@ export default function HeaderSearchOverlay({
 
               {/* Live Search Results Scrollable Container */}
               {searchQuery.trim() && (
-                <div className="max-h-[60vh] overflow-y-auto pr-2 mt-8 scrollbar-thin scrollbar-thumb-stone-300 scrollbar-track-transparent">
+                <div className="max-h-[60vh] overflow-y-auto pr-2 mt-8 scrollbar-thin scrollbar-thumb-stone-300 scrollbar-track-transparent pb-12">
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 text-left">
                     {/* Products Column */}
                     <div className="lg:col-span-3">
@@ -205,7 +218,7 @@ export default function HeaderSearchOverlay({
                             <li key={cat.slug} className="w-auto lg:w-full">
                               <Link
                                 href={`/product-category/${cat.slug}`}
-                                className="text-xs lg:text-sm text-[#1c1714] bg-stone-200/50 hover:bg-[#9a4a2e] hover:text-white transition-all duration-300 block py-1.5 px-4 lg:px-3 lg:py-1 rounded-full lg:rounded-none lg:bg-transparent capitalize font-heading font-medium lg:font-normal"
+                                className="text-xs lg:text-sm text-[#1c1714] bg-stone-200/50 hover:bg-[#9a4a2e] hover:text-white transition-all block py-1.5 px-4 lg:px-3 lg:py-1 rounded-full lg:rounded-none lg:bg-transparent capitalize font-heading font-medium lg:font-normal"
                                 onClick={handleClose}
                               >
                                 {cat.name}

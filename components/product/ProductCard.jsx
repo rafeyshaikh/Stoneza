@@ -127,7 +127,7 @@ export default function ProductCard({
             {collectionName}
           </h4>
         ) : null}
-        <h3 className="mr-auto font-display text-base text-[#393938] capitalize">
+        <h3 className="mr-auto text-left font-display text-base text-[#393938] capitalize">
           {name}
         </h3>
       </div>

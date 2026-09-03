@@ -1,5 +1,7 @@
 import { connectDB } from "@/lib/databaseConnection";
 import Product from "@/models/Product.model";
+import Category from "@/models/Category.model";
+import Collection from "@/models/Collection.model";
 import ProductsClient from "./ProductsClient";
 import { Suspense } from "react";
 import Seo from "@/models/Seo.model";
@@ -44,5 +46,9 @@ export default async function ProductsPage() {
     console.error("ProductsPage error:", error.message);
   }
 
-  return <ProductsClient products={safeProducts} />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#EAE8E2]" />}>
+      <ProductsClient products={safeProducts} />
+    </Suspense>
+  );
 }

@@ -11,7 +11,8 @@ import { useSearchParams } from "next/navigation";
 export default function ProductsClient({ products }) {
   const searchParams = useSearchParams();
   const [hoveredId, setHoveredId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const initialSearch = searchParams.get("search") || searchParams.get("q") || "";
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   // Sort states (Price sorting removed)
   const [sortBy, setSortBy] = useState("default");
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -28,6 +29,19 @@ export default function ProductsClient({ products }) {
     colors: [],
     badges: [],
   });
+
+  // Sync state when URL searchParams change
+  useEffect(() => {
+    const urlQuery = searchParams.get("search") || searchParams.get("q") || "";
+    setSearchQuery(urlQuery);
+    const urlStoneType = searchParams.get("stoneType");
+    if (urlStoneType) {
+      setActiveFilters((prev) => ({
+        ...prev,
+        stoneTypes: [urlStoneType],
+      }));
+    }
+  }, [searchParams]);
 
 
   // Generic lists of options
@@ -130,7 +144,11 @@ export default function ProductsClient({ products }) {
       const query = searchQuery.toLowerCase();
       const matchesName = product.name?.toLowerCase().includes(query);
       const matchesTags = product.tags?.some((tag) => tag.toLowerCase().includes(query));
-      if (!matchesName && !matchesTags) {
+      const matchesCategory = product.category?.name?.toLowerCase().includes(query);
+      const matchesCollection = product.collection?.name?.toLowerCase().includes(query);
+      const matchesStoneType = product.stoneDetails?.stoneType?.toLowerCase().includes(query);
+      const matchesShortDesc = product.shortDescription?.toLowerCase().includes(query);
+      if (!matchesName && !matchesTags && !matchesCategory && !matchesCollection && !matchesStoneType && !matchesShortDesc) {
         return false;
       }
     }

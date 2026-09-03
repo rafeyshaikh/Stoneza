@@ -4,6 +4,7 @@ import { getDescendantCategoryIds } from "@/lib/getDescendantCategoryIds";
 
 import Category from "@/models/Category.model";
 import Product from "@/models/Product.model";
+import Collection from "@/models/Collection.model";
 
 export async function GET(request, { params }) {
   try {
@@ -24,6 +25,7 @@ export async function GET(request, { params }) {
     );
 
     const search = searchParams.get("search")?.trim() || "";
+    const sanitizedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
     const sort = searchParams.get("sort") || "newest";
 
@@ -74,23 +76,23 @@ export async function GET(request, { params }) {
       },
     };
 
-    if (search) {
+    if (sanitizedSearch) {
       filter.$or = [
         {
           name: {
-            $regex: search,
+            $regex: sanitizedSearch,
             $options: "i",
           },
         },
         {
           tags: {
-            $regex: search,
+            $regex: sanitizedSearch,
             $options: "i",
           },
         },
         {
           shortDescription: {
-            $regex: search,
+            $regex: sanitizedSearch,
             $options: "i",
           },
         },

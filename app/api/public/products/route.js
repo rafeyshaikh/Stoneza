@@ -4,6 +4,7 @@ import { getDescendantCategoryIds } from "@/lib/getDescendantCategoryIds";
 
 import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
+import Collection from "@/models/Collection.model";
 
 export async function GET(request) {
   try {
@@ -18,7 +19,8 @@ export async function GET(request) {
       Math.max(1, Number(searchParams.get("limit")) || 12),
     );
 
-    const search = searchParams.get("search") || "";
+    const search = (searchParams.get("search") || "").trim();
+    const sanitizedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const categorySlug = searchParams.get("category")?.trim() || "";
     const sort = searchParams.get("sort") || "newest";
 
@@ -30,23 +32,23 @@ export async function GET(request) {
       status: "published",
     };
 
-    if (search.trim()) {
+    if (sanitizedSearch) {
       filter.$or = [
         {
           name: {
-            $regex: search,
+            $regex: sanitizedSearch,
             $options: "i",
           },
         },
         {
           tags: {
-            $regex: search,
+            $regex: sanitizedSearch,
             $options: "i",
           },
         },
         {
           shortDescription: {
-            $regex: search,
+            $regex: sanitizedSearch,
             $options: "i",
           },
         },
