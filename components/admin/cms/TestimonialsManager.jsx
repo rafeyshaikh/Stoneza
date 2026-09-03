@@ -12,7 +12,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
   const [activeIdx, setActiveIdx] = useState(null);
 
   const addTestimonial = () => {
-    const item = {
+    const item = { 
       name: "",
       review: "",
       stars: 5,
@@ -74,7 +74,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
             Manage testimonials, star ratings, review statements, and display sequences.
           </p>
         </div>
-        <Button onClick={addTestimonial} size="sm" type="button" className="cursor-pointer border border-black bg-white hover:bg-gray-100">
+        <Button onClick={addTestimonial} size="sm" variant="outline" type="button" className="cursor-pointer">
           <Plus className="mr-2 size-4" /> Add Testimonial
         </Button>
       </div>
@@ -118,7 +118,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
                       moveTestimonial(idx, "up");
                     }}
                     disabled={idx === 0}
-                    className="p-1 hover:text-stone-500 disabled:opacity-30"
+                    className="p-1 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 disabled:opacity-30 cursor-pointer"
                     type="button"
                   >
                     <ArrowUp size={12} />
@@ -129,7 +129,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
                       moveTestimonial(idx, "down");
                     }}
                     disabled={idx === testimonials.length - 1}
-                    className="p-1 hover:text-stone-500 disabled:opacity-30"
+                    className="p-1 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 disabled:opacity-30 cursor-pointer"
                     type="button"
                   >
                     <ArrowDown size={12} />
@@ -139,7 +139,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
                       e.stopPropagation();
                       deleteTestimonial(idx);
                     }}
-                    className="p-1 text-red-500 hover:text-red-700"
+                    className="p-1 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
                     type="button"
                   >
                     <Trash2 size={12} />
@@ -150,14 +150,14 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
           </div>
 
           {/* EDITOR CARD */}
-          <div className="rounded-xl border border-stone-300 bg-white p-5 dark:border-stone-700 dark:bg-stone-900">
+          <div className="rounded-xl border border-stone-300 bg-white p-5 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
             {activeIdx === null || !testimonials[activeIdx] ? (
-              <div className="flex h-full items-center justify-center text-sm text-stone-500">
+              <div className="flex h-full items-center justify-center text-sm text-stone-500 dark:text-stone-400">
                 Select a reviewer card from the list to edit details.
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="border-b pb-3">
+                <div className="border-b border-stone-200 dark:border-stone-800 pb-3">
                   <h4 className="font-heading font-medium text-stone-900 dark:text-stone-100">
                     Edit Testimonial #{activeIdx + 1}
                   </h4>
@@ -169,6 +169,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
                     <Input
                       id="review-name"
                       placeholder="e.g. John Doe"
+                      className="placeholder:text-stone-500 dark:placeholder:text-stone-400"
                       value={testimonials[activeIdx].name || ""}
                       onChange={(e) =>
                         updateField(activeIdx, "name", e.target.value)
@@ -184,7 +185,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
                       onChange={(e) =>
                         updateField(activeIdx, "stars", Number(e.target.value))
                       }
-                      className="flex h-10 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-950 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100"
+                      className="flex h-10 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-950 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:focus:ring-stone-400"
                     >
                       <option value={5}>5 Stars (Excellent)</option>
                       <option value={4}>4 Stars (Good)</option>
@@ -201,6 +202,7 @@ export default function TestimonialsManager({ testimonials = [], onChange }) {
                     id="review-text"
                     rows={4}
                     placeholder="Enter review statement details here..."
+                    className="placeholder:text-stone-500 dark:placeholder:text-stone-400"
                     value={testimonials[activeIdx].review || ""}
                     onChange={(e) =>
                       updateField(activeIdx, "review", e.target.value)

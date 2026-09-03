@@ -101,7 +101,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
             Manage main slider slides, banners, actions, and display ordering.
           </p>
         </div>
-        <Button onClick={addSlide} size="sm" type="button" className="cursor-pointer border border-black bg-white text-black hover:bg-gray-100">
+        <Button onClick={addSlide} size="sm" variant="outline" type="button" className="cursor-pointer">
           <Plus className="mr-2 size-4" /> Add Slide
         </Button>
       </div>
@@ -127,7 +127,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
               >
                 <div className="flex items-center gap-2 truncate">
                   <span className="text-[10px] opacity-60">#{idx + 1}</span>
-                  <div className="relative size-8 shrink-0 overflow-hidden rounded bg-stone-300">
+                  <div className="relative size-8 shrink-0 overflow-hidden rounded bg-stone-200 dark:bg-stone-800">
                     {slide.image?.url ? (
                       <img
                         src={slide.image.url}
@@ -135,7 +135,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
                         className="size-full object-cover"
                       />
                     ) : (
-                      <div className="flex size-full items-center justify-center text-stone-400">
+                      <div className="flex size-full items-center justify-center text-stone-400 dark:text-stone-500">
                         <ImageIcon size={14} />
                       </div>
                     )}
@@ -152,7 +152,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
                       moveSlide(idx, "up");
                     }}
                     disabled={idx === 0}
-                    className="p-1 hover:text-stone-500 disabled:opacity-30"
+                    className="p-1 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 disabled:opacity-30 cursor-pointer"
                     type="button"
                   >
                     <ArrowUp size={12} />
@@ -163,7 +163,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
                       moveSlide(idx, "down");
                     }}
                     disabled={idx === slides.length - 1}
-                    className="p-1 hover:text-stone-500 disabled:opacity-30"
+                    className="p-1 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 disabled:opacity-30 cursor-pointer"
                     type="button"
                   >
                     <ArrowDown size={12} />
@@ -173,7 +173,7 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
                       e.stopPropagation();
                       deleteSlide(idx);
                     }}
-                    className="p-1 text-red-500 hover:text-red-700"
+                    className="p-1 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
                     type="button"
                   >
                     <Trash2 size={12} />
@@ -184,25 +184,25 @@ export default function HeroManager({ slides = [], onChange, uploadImage }) {
           </div>
 
           {/* ACTIVE SLIDE EDITOR */}
-          <div className="rounded-xl border border-stone-300 bg-white p-5 dark:border-stone-700 dark:bg-stone-900">
+          <div className="rounded-xl border border-stone-300 bg-white p-5 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100">
             {activeSlideIndex === null || !slides[activeSlideIndex] ? (
-              <div className="flex h-full items-center justify-center text-sm text-stone-500">
+              <div className="flex h-full items-center justify-center text-sm text-stone-500 dark:text-stone-400">
                 Select a slide from the sidebar to edit its content.
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex items-center justify-between border-b pb-3">
+                <div className="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3">
                   <h4 className="font-heading font-medium text-stone-900 dark:text-stone-100">
                     Edit Slide #{activeSlideIndex + 1}
                   </h4>
-                  <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer select-none">
+                  <label className="flex items-center gap-2 text-xs font-semibold cursor-pointer select-none text-stone-700 dark:text-stone-300">
                     <input
                       type="checkbox"
                       checked={slides[activeSlideIndex].isActive}
                       onChange={(e) =>
                         updateSlideField(activeSlideIndex, "isActive", e.target.checked)
                       }
-                      className="rounded border-stone-300 text-stone-950 focus:ring-stone-950"
+                      className="rounded border-stone-300 bg-white text-stone-950 focus:ring-stone-950 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 dark:focus:ring-stone-400"
                     />
                     Is Active
                   </label>

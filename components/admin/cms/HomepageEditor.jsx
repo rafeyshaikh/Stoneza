@@ -18,8 +18,6 @@ export default function HomepageEditor() {
     featuredProducts: { title: "", caption: "", buttonText: "", bannerImage: { url: "", publicId: "" } },
     middleBanner: { title: "", eyebrow: "", caption: "", buttonText: "", buttonLink: "", image: { url: "", publicId: "" } },
     newArrivalsTitle: "What's New",
-    threeBanners: [],
-    brandPromos: [],
     testimonials: [],
     footer: { caption: "", copyright: "" },
   });
@@ -39,8 +37,6 @@ export default function HomepageEditor() {
             featuredProducts: result.data.featuredProducts || { title: "", caption: "", buttonText: "", bannerImage: { url: "", publicId: "" } },
             middleBanner: result.data.middleBanner || { title: "", eyebrow: "", caption: "", buttonText: "", buttonLink: "", image: { url: "", publicId: "" } },
             newArrivalsTitle: result.data.newArrivalsTitle || "What's New",
-            threeBanners: result.data.threeBanners || [],
-            brandPromos: result.data.brandPromos || [],
             testimonials: result.data.testimonials || [],
             footer: result.data.footer || { caption: "", copyright: "" },
           });
@@ -80,8 +76,6 @@ export default function HomepageEditor() {
       if (data.heroSlides?.some((s) => s.pendingFile)) pendingUploadsCount++;
       if (data.featuredProducts?.pendingFile) pendingUploadsCount++;
       if (data.middleBanner?.pendingFile) pendingUploadsCount++;
-      if (data.threeBanners?.some((b) => b.pendingFile)) pendingUploadsCount++;
-      if (data.brandPromos?.some((p) => p.pendingFile)) pendingUploadsCount++;
 
       if (pendingUploadsCount > 0) {
         toast.loading("Uploading images to Cloudinary...", { id: "cms-save" });
@@ -120,32 +114,6 @@ export default function HomepageEditor() {
         delete payload.middleBanner.pendingFile;
       }
 
-      // 4. Process Three Banners pending images
-      if (data.threeBanners && data.threeBanners.length > 0) {
-        for (let i = 0; i < data.threeBanners.length; i++) {
-          if (data.threeBanners[i].pendingFile) {
-            const uploaded = await uploadImage(data.threeBanners[i].pendingFile, "homepage/threebanners");
-            if (uploaded) {
-              payload.threeBanners[i].image = uploaded;
-            }
-          }
-          delete payload.threeBanners[i].pendingFile;
-        }
-      }
-
-      // 5. Process Brand Promos pending images
-      if (data.brandPromos && data.brandPromos.length > 0) {
-        for (let i = 0; i < data.brandPromos.length; i++) {
-          if (data.brandPromos[i].pendingFile) {
-            const uploaded = await uploadImage(data.brandPromos[i].pendingFile, "homepage/promos");
-            if (uploaded) {
-              payload.brandPromos[i].image = uploaded;
-            }
-          }
-          delete payload.brandPromos[i].pendingFile;
-        }
-      }
-
       toast.loading("Saving settings to database...", { id: "cms-save" });
 
       const res = await fetch("/api/admin/cms/homepage", {
@@ -170,14 +138,14 @@ export default function HomepageEditor() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center text-stone-500 dark:text-stone-400">
-        <Loader2 className="mr-2 size-6 animate-spin text-stone-900 dark:text-white" />
+        <Loader2 className="mr-2 size-6 animate-spin text-stone-900 dark:text-stone-100" />
         Loading homepage CMS configurations...
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 relative">
+    <div className="space-y-6 relative text-stone-900 dark:text-stone-100">
       {/* STICKY ACTION SAVE BAR */}
       <div className="sticky top-14 z-30 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between rounded-xl border border-stone-300/80 bg-white/95 p-4 shadow-md backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/95">
         <div>

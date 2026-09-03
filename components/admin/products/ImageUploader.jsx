@@ -67,7 +67,7 @@ export default function ImageUploader({
           type="button"
           variant="outline"
           disabled={uploading}
-          className="cursor-pointer bg-white hover:bg-gray-100 w-full sm:w-auto shrink-0"
+          className="cursor-pointer w-full sm:w-auto shrink-0"
           onClick={() => inputRef.current?.click()}
         >
           {uploading ? (
@@ -92,7 +92,7 @@ export default function ImageUploader({
       )}
 
       {displayUrl && (
-        <div className="relative mt-5 h-48 w-48 overflow-hidden rounded-xl border">
+        <div className="relative mt-5 h-48 w-48 overflow-hidden rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-100 dark:bg-stone-800">
           <Image
             src={displayUrl}
             alt="Preview"

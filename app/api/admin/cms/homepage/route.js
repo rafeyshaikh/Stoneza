@@ -5,12 +5,6 @@ import { revalidateTag, revalidatePath } from "next/cache";
 import Homepage from "@/models/Homepage.model";
 import cloudinary from "@/lib/cloudinary";
 
-const defaultThreeBanners = [
-  { title: "Photo Frames", image: { url: "/assets/others/Below_Banner_1.jpg", publicId: "" }, buttonLink: "/products" },
-  { title: "Decor Object", image: { url: "/assets/others/Below_Banner_2.jpg", publicId: "" }, buttonLink: "/products" },
-  { title: "Book Boxes", image: { url: "/assets/others/Below_Banner_3.jpg", publicId: "" }, buttonLink: "/products" },
-];
-
 async function getOrCreateHomepageDocument() {
   let homepage = await Homepage.findOne();
 
@@ -31,8 +25,6 @@ async function getOrCreateHomepageDocument() {
         image: { url: "", publicId: "" }
       },
       newArrivalsTitle: "What's New",
-      threeBanners: defaultThreeBanners,
-      brandPromos: [],
       testimonials: [],
       footer: {
         caption: "",
@@ -44,10 +36,6 @@ async function getOrCreateHomepageDocument() {
         keywords: "",
       },
     });
-  } else if (!homepage.threeBanners || homepage.threeBanners.length === 0) {
-    homepage.threeBanners = defaultThreeBanners;
-    homepage.markModified("threeBanners");
-    await homepage.save();
   }
 
   return homepage;
@@ -86,12 +74,6 @@ export async function PATCH(request) {
     if (homepage.middleBanner?.image?.publicId) {
       oldPublicIds.add(homepage.middleBanner.image.publicId);
     }
-    (homepage.threeBanners || []).forEach((banner) => {
-      if (banner.image?.publicId) oldPublicIds.add(banner.image.publicId);
-    });
-    (homepage.brandPromos || []).forEach((promo) => {
-      if (promo.image?.publicId) oldPublicIds.add(promo.image.publicId);
-    });
 
     // 2. Collect all public IDs in updated/new data
     const newPublicIds = new Set();
@@ -110,16 +92,6 @@ export async function PATCH(request) {
     if (updatedMiddle?.image?.publicId) {
       newPublicIds.add(updatedMiddle.image.publicId);
     }
-
-    const updatedThree = body.threeBanners !== undefined ? body.threeBanners : homepage.threeBanners;
-    (updatedThree || []).forEach((banner) => {
-      if (banner.image?.publicId) newPublicIds.add(banner.image.publicId);
-    });
-
-    const updatedPromos = body.brandPromos !== undefined ? body.brandPromos : homepage.brandPromos;
-    (updatedPromos || []).forEach((promo) => {
-      if (promo.image?.publicId) newPublicIds.add(promo.image.publicId);
-    });
 
     // 3. Identify orphaned publicIds to delete from Cloudinary
     const idsToDelete = [...oldPublicIds].filter((id) => !newPublicIds.has(id));
@@ -149,14 +121,6 @@ export async function PATCH(request) {
     }
     if (body.newArrivalsTitle !== undefined) {
       homepage.newArrivalsTitle = body.newArrivalsTitle;
-    }
-    if (body.threeBanners !== undefined) {
-      homepage.threeBanners = body.threeBanners;
-      homepage.markModified("threeBanners");
-    }
-    if (body.brandPromos !== undefined) {
-      homepage.brandPromos = body.brandPromos;
-      homepage.markModified("brandPromos");
     }
     if (body.testimonials !== undefined) {
       homepage.testimonials = body.testimonials;

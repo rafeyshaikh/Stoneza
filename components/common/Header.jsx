@@ -290,9 +290,9 @@ export default function Header() {
                             <li className="pt-2">
                               <Link
                                 href={colSubCategoryHref}
-                                className="inline-flex items-center gap-1 font-mono text-[10.5px] uppercase tracking-wider text-[#9A4A2E] hover:underline font-bold"
+                                className="inline-flex items-center gap-1 font-body text-sm uppercase text-[#9A4A2E] hover:underline font-bold"
                               >
-                                + {hiddenLinksCount} more formats →
+                                + {hiddenLinksCount} more Sub Categories →
                               </Link>
                             </li>
                           )}

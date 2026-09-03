@@ -56,21 +56,6 @@ const middleBannerSchema = new mongoose.Schema({
   buttonLink: { type: String, trim: true },
 }, { _id: false });
 
-const threeBannerSchema = new mongoose.Schema({
-  title: { type: String, trim: true },
-  image: imageSchema,
-  buttonText: { type: String, trim: true },
-  buttonLink: { type: String, trim: true },
-}, { _id: false });
-
-const twoBannerSchema = new mongoose.Schema({
-  title: { type: String, trim: true },
-  image: imageSchema,
-  caption: { type: String, trim: true },
-  buttonText: { type: String, trim: true },
-  buttonLink: { type: String, trim: true },
-}, { _id: false });
-
 const testimonialSchema = new mongoose.Schema(
   {
     name: {
@@ -105,10 +90,6 @@ const homepageSchema = new mongoose.Schema(
     middleBanner: middleBannerSchema,
 
     newArrivalsTitle: String,
-
-    threeBanners: [threeBannerSchema],
-
-    brandPromos: [twoBannerSchema],
 
     testimonials: [testimonialSchema],
 
