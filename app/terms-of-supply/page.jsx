@@ -3,6 +3,9 @@ import Pages from "@/models/Pages.model";
 import Seo from "@/models/Seo.model";
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck, Mail, Phone, FileText } from "lucide-react";
+import { resolveEntityMetadata } from "@/lib/seo/resolveMetadata";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export async function generateMetadata() {
   try {
@@ -12,50 +15,21 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const policySeo = pages?.termsOfSupply?.seo;
-    const title =
-      policySeo?.metaTitle?.trim() ||
-      (pages?.termsOfSupply?.title
-        ? `${pages.termsOfSupply.title} | Stoneza`
-        : "Terms of Supply | Stoneza Natural Stone");
-    const description =
-      policySeo?.metaDescription?.trim() ||
-      "Standard commercial Terms of Supply for quarry-direct natural stone orders, calibrated slabs, packing, tolerances, transit, and claims at Stoneza.";
-    const canonicalUrl =
-      policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/terms-of-supply`;
-    const ogImage =
-      policySeo?.ogImage?.trim() ||
-      seo?.ogImage ||
-      "";
-    const keywords =
-      policySeo?.keywords?.trim() ||
-      "terms of supply, stoneza commercial policy, stone order terms, quarry supply agreement, natural stone dispatch terms";
+    const policy = pages?.termsOfSupply;
 
-    return {
-      title,
-      description,
-      keywords,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        images: ogImage ? [{ url: ogImage }] : [],
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: ogImage ? [ogImage] : [],
-      },
-    };
+    return resolveEntityMetadata({
+      entityType: "page",
+      entity: policy,
+      seo: policy?.seo,
+      path: "/terms-of-supply",
+      globalSeo: seo,
+      defaultTitle: policy?.title ? `${policy.title}` : "Terms of Supply",
+      defaultDescription:
+        "Standard commercial Terms of Supply for quarry-direct natural stone orders, calibrated slabs, packing, tolerances, transit, and claims at Stoneza.",
+    });
   } catch {
     return {
-      title: "Terms of Supply | Stoneza",
+      title: "Terms of Supply",
       description: "Standard commercial Terms of Supply for natural stone orders at Stoneza.",
     };
   }
@@ -178,8 +152,18 @@ export default async function TermsOfSupplyPage() {
     },
   ];
 
+  const structuredData = resolveStructuredData({
+    entityType: "page",
+    entity: policy,
+    options: {
+      path: "/terms-of-supply",
+      defaultTitle: policy.title || "Terms of Supply",
+    },
+  });
+
   return (
     <div className="min-h-screen bg-[#FBF9F6]">
+      <JsonLd data={structuredData} id="terms-supply-ldjson" />
       {/* Top Banner / Breadcrumb */}
       <div className="border-b border-[#E4DDD3] bg-[#F2EDE4]/60 py-6 sm:py-8">
         <div className="container mx-auto max-w-4xl px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">

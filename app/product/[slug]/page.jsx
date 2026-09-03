@@ -4,6 +4,9 @@ import Product from "@/models/Product.model";
 import Category from "@/models/Category.model";
 import Collection from "@/models/Collection.model";
 import ProductDetailClient from "./ProductDetailClient";
+import { resolveEntityMetadata } from "@/lib/seo/resolveMetadata";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export const dynamic = "force-dynamic";
 
@@ -15,63 +18,18 @@ export async function generateMetadata({ params }) {
 
     if (!product) {
       return {
-        title: "Product Not Found | Stoneza",
+        title: "Product Not Found",
         description: "The requested stone product could not be found.",
       };
     }
 
-    let title = product.seo?.metaTitle?.trim();
-    if (!title || title.includes("Manufacturer, Supplier & Exporter") || title.length > 45) {
-      title = `${product.name} — ${product.stoneDetails?.stoneType || "Natural Stone"}`;
-    }
-    title = title.replace(/\s*\|\s*Stoneza.*$/i, "").replace(/\s*—\s*Stoneza.*$/i, "").trim();
-
-    const description =
-      product.seo?.metaDescription?.trim() ||
-      product.shortDescription?.trim() ||
-      (product.description?.replace(/<[^>]*>/g, "")?.slice(0, 160)?.trim() ||
-        `Explore quarry-direct ${product.name} natural stone. Calibrated thickness, custom sizes, and architectural specification from Stoneza.`);
-
-    const ogImage =
-      product.seo?.ogImage?.trim() ||
-      (product.images?.length
-        ? typeof product.images[0] === "string"
-          ? product.images[0]
-          : product.images[0]?.url
-        : "https://res.cloudinary.com/chlmognp/image/upload/v1785340265/stoneza/homepage/hero/newslide1-pk39hw4z.png");
-
-    const canonicalUrl = `https://stoneza.in/product/${slug}`;
-
-    const keywords =
-      product.seo?.keywords?.length
-        ? product.seo.keywords
-        : product.tags?.length
-        ? product.tags
-        : [product.name, product.stoneDetails?.stoneType, "natural stone", "Stoneza"].filter(Boolean);
-
-    return {
-      title,
-      description,
-      keywords: Array.isArray(keywords) ? keywords.join(", ") : keywords,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        siteName: "Stoneza",
-        images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: product.name }] : [],
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: ogImage ? [ogImage] : [],
-      },
-    };
-  } catch {
+    return resolveEntityMetadata({
+      entityType: "product",
+      entity: product,
+      path: `/product/${slug}`,
+    });
+  } catch (error) {
+    console.error("Product generateMetadata error:", error);
     return {
       title: "Product",
       description: "Explore premium natural stone products from Stoneza.",
@@ -240,102 +198,14 @@ export default async function ProductDetailPage({ params }) {
     notFound();
   }
 
-  // Generate Product & Offer Schema (F-08)
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: safeProduct.name,
-    image: (safeProduct.images || [])
-      .map((img) => (typeof img === "string" ? img : img?.url))
-      .filter(Boolean),
-    description: safeProduct.description || safeProduct.shortDescription,
-    sku: safeProduct.sku,
-    mpn: safeProduct.sku,
-    brand: {
-      "@type": "Brand",
-      name: "Stoneza",
-    },
-    material: safeProduct.stoneDetails?.stoneType || "Natural Stone",
-    offers: {
-      "@type": "Offer",
-      url: `https://stoneza.in/product/${safeProduct.slug}`,
-      priceCurrency: "INR",
-      price: "0",
-      priceSpecification: {
-        "@type": "UnitPriceSpecification",
-        priceType: "https://schema.org/InvoicePrice",
-        description: "Price on request • ex-factory",
-      },
-      availability: "https://schema.org/InStock",
-      seller: {
-        "@type": "Organization",
-        name: "Stoneza",
-      },
-    },
-  };
-
-  // Generate FAQPage Schema (F-09)
-  const faqSchema =
-    safeProduct.faqs && safeProduct.faqs.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: safeProduct.faqs.map((faq) => ({
-            "@type": "Question",
-            name: faq.question,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: faq.answer,
-            },
-          })),
-        }
-      : null;
-
-  // Generate BreadcrumbList Schema (F-09, F-11)
-  const breadcrumbElements = [
-    { "@type": "ListItem", position: 1, name: "Home", item: "https://stoneza.in" },
-  ];
-  let pos = 2;
-  if (safeProduct.categoryName) {
-    breadcrumbElements.push({
-      "@type": "ListItem",
-      position: pos++,
-      name: safeProduct.categoryName,
-      item: `https://stoneza.in/product-category/${safeProduct.categorySlug || ""}`,
-    });
-  }
-  breadcrumbElements.push({
-    "@type": "ListItem",
-    position: pos++,
-    name: safeProduct.name,
-    item: `https://stoneza.in/product/${safeProduct.slug}`,
+  const structuredData = resolveStructuredData({
+    entityType: "product",
+    entity: safeProduct,
   });
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: breadcrumbElements,
-  };
 
   return (
     <>
-      <script
-        id="product-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-      />
-      {faqSchema && (
-        <script
-          id="faq-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-        />
-      )}
-      <script
-        id="breadcrumb-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <JsonLd data={structuredData} id="product-ldjson" />
       <ProductDetailClient productData={safeProduct} />
     </>
   );

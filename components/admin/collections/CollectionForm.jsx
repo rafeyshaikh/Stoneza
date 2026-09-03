@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import SeoManager from "@/components/admin/seo/SeoManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -81,6 +82,18 @@ export default function CollectionForm({
           : initialData.seo?.keywords || "",
         canonicalUrl: initialData.seo?.canonicalUrl || "",
         ogImage: initialData.seo?.ogImage || "",
+        ogTitle: initialData.seo?.ogTitle || "",
+        ogDescription: initialData.seo?.ogDescription || "",
+        ogUrl: initialData.seo?.ogUrl || "",
+        ogType: initialData.seo?.ogType || "website",
+        twitterCard: initialData.seo?.twitterCard || "summary_large_image",
+        twitterTitle: initialData.seo?.twitterTitle || "",
+        twitterDescription: initialData.seo?.twitterDescription || "",
+        twitterImage: initialData.seo?.twitterImage || "",
+        robotsIndex: initialData.seo?.robotsIndex !== false,
+        robotsFollow: initialData.seo?.robotsFollow !== false,
+        enableCustomJsonLd: Boolean(initialData.seo?.enableCustomJsonLd),
+        customJsonLd: initialData.seo?.customJsonLd || "",
       },
     };
   });
@@ -178,16 +191,13 @@ export default function CollectionForm({
           wide: wideBanners,
         },
         seo: {
-          metaTitle: formData.seo.metaTitle.trim(),
-          metaDescription: formData.seo.metaDescription.trim(),
-          keywords: formData.seo.keywords
+          ...formData.seo,
+          keywords: typeof formData.seo?.keywords === "string"
             ? formData.seo.keywords
                 .split(",")
                 .map((item) => item.trim())
                 .filter(Boolean)
-            : [],
-          canonicalUrl: formData.seo.canonicalUrl.trim(),
-          ogImage: formData.seo.ogImage.trim(),
+            : formData.seo?.keywords || [],
         },
       };
 
@@ -239,7 +249,7 @@ export default function CollectionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-6 w-full">
       <Section title="Basic Details">
         <div className="grid gap-6 md:grid-cols-2">
           <Field label="Collection Name *">
@@ -395,50 +405,25 @@ export default function CollectionForm({
         </div>
       </Section>
 
-      <Section title="Search Engine Optimization (SEO)">
-        <div className="grid gap-6 md:grid-cols-2">
-          <Field label="Meta Title">
-            <Input
-              value={formData.seo.metaTitle}
-              onChange={(e) => handleSeoChange("metaTitle", e.target.value)}
-              placeholder="e.g. Poolside Stone Collection | Stoneza"
-            />
-          </Field>
-
-          <Field label="Canonical URL">
-            <Input
-              value={formData.seo.canonicalUrl}
-              onChange={(e) => handleSeoChange("canonicalUrl", e.target.value)}
-              placeholder="e.g. https://stoneza.in/collections/poolside-collection"
-            />
-          </Field>
-
-          <Field label="Keywords (Comma separated)">
-            <Input
-              value={formData.seo.keywords}
-              onChange={(e) => handleSeoChange("keywords", e.target.value)}
-              placeholder="e.g. poolside stone, pool tiles, natural copings"
-            />
-          </Field>
-
-          <Field label="OG Image URL">
-            <Input
-              value={formData.seo.ogImage}
-              onChange={(e) => handleSeoChange("ogImage", e.target.value)}
-              placeholder="https://..."
-            />
-          </Field>
-        </div>
-
-        <Field label="Meta Description">
-          <Textarea
-            rows={3}
-            value={formData.seo.metaDescription}
-            onChange={(e) => handleSeoChange("metaDescription", e.target.value)}
-            placeholder="Meta description for search engine results..."
-          />
-        </Field>
-      </Section>
+      <SeoManager
+        seo={formData.seo}
+        onChange={(field, value) =>
+          setFormData((prev) => ({
+            ...prev,
+            seo: { ...prev.seo, [field]: value },
+          }))
+        }
+        entityContext={{
+          type: "collection",
+          name: formData.name,
+          description: formData.description,
+          slug: formData.slug || generateSlug(formData.name),
+          image:
+            formData.bannerImage?.square?.url ||
+            (Array.isArray(formData.bannerImage?.wide) && formData.bannerImage.wide[0]?.url) ||
+            "",
+        }}
+      />
 
       <div className="flex items-center justify-end gap-4 border-t border-stone-300/70 pt-6 dark:border-stone-800">
         <Button

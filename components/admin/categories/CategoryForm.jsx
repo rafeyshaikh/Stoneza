@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Trash2, Layers, Sparkles, LayoutGrid, Link as LinkIcon } from "lucide-react";
 
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import SeoManager from "@/components/admin/seo/SeoManager";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,6 +138,18 @@ export default function CategoryForm({
           : initialData.seo?.keywords || "",
         canonicalUrl: initialData.seo?.canonicalUrl || "",
         ogImage: initialData.seo?.ogImage || "",
+        ogTitle: initialData.seo?.ogTitle || "",
+        ogDescription: initialData.seo?.ogDescription || "",
+        ogUrl: initialData.seo?.ogUrl || "",
+        ogType: initialData.seo?.ogType || "website",
+        twitterCard: initialData.seo?.twitterCard || "summary_large_image",
+        twitterTitle: initialData.seo?.twitterTitle || "",
+        twitterDescription: initialData.seo?.twitterDescription || "",
+        twitterImage: initialData.seo?.twitterImage || "",
+        robotsIndex: initialData.seo?.robotsIndex !== false,
+        robotsFollow: initialData.seo?.robotsFollow !== false,
+        enableCustomJsonLd: Boolean(initialData.seo?.enableCustomJsonLd),
+        customJsonLd: initialData.seo?.customJsonLd || "",
       },
     };
   });
@@ -934,47 +947,26 @@ export default function CategoryForm({
         </div>
       </section>
 
-      {/* SEO Settings */}
-      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
-        <h3 className="mb-5 text-lg font-semibold text-stone-900 dark:text-stone-100">
-          SEO Settings
-        </h3>
-
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Meta title">
-            <Input
-              placeholder="e.g. Natural Stone Paving | Stoneza"
-              value={formData.seo.metaTitle}
-              onChange={(e) => handleSeoChange("metaTitle", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Canonical URL">
-            <Input
-              placeholder="https://stoneza.in/product-category/..."
-              value={formData.seo.canonicalUrl}
-              onChange={(e) => handleSeoChange("canonicalUrl", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Meta description" className="md:col-span-2">
-            <Textarea
-              placeholder="Meta description for search engines"
-              rows={3}
-              value={formData.seo.metaDescription}
-              onChange={(e) => handleSeoChange("metaDescription", e.target.value)}
-            />
-          </Field>
-
-          <Field label="Keywords (comma separated)" className="md:col-span-2">
-            <Input
-              placeholder="paving, cobblestone, sandstone"
-              value={formData.seo.keywords}
-              onChange={(e) => handleSeoChange("keywords", e.target.value)}
-            />
-          </Field>
-        </div>
-      </section>
+      <SeoManager
+        seo={formData.seo}
+        onChange={(field, value) =>
+          setFormData((prev) => ({
+            ...prev,
+            seo: { ...prev.seo, [field]: value },
+          }))
+        }
+        entityContext={{
+          type: "category",
+          name: formData.name,
+          description: formData.description,
+          slug: formData.slug || generateSlug(formData.name),
+          image:
+            formData.bannerImage?.square?.url ||
+            formData.bannerImage?.wide?.url ||
+            (Array.isArray(formData.bannerImage?.wide) ? formData.bannerImage.wide[0]?.url : "") ||
+            "",
+        }}
+      />
 
       {submitError && (
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">

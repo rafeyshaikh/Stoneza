@@ -139,11 +139,23 @@ const projectSchema = new mongoose.Schema(
     },
 
     seo: {
-      metaTitle: String,
-      metaDescription: String,
-      keywords: [String],
-      ogImage: String,
-      canonicalUrl: String,
+      metaTitle: { type: String, trim: true, default: "" },
+      metaDescription: { type: String, trim: true, default: "" },
+      keywords: { type: mongoose.Schema.Types.Mixed, default: [] },
+      canonicalUrl: { type: String, trim: true, default: "" },
+      ogImage: { type: String, trim: true, default: "" },
+      ogTitle: { type: String, trim: true, default: "" },
+      ogDescription: { type: String, trim: true, default: "" },
+      ogUrl: { type: String, trim: true, default: "" },
+      ogType: { type: String, trim: true, default: "website" },
+      twitterCard: { type: String, trim: true, default: "summary_large_image" },
+      twitterTitle: { type: String, trim: true, default: "" },
+      twitterDescription: { type: String, trim: true, default: "" },
+      twitterImage: { type: String, trim: true, default: "" },
+      robotsIndex: { type: Boolean, default: true },
+      robotsFollow: { type: Boolean, default: true },
+      enableCustomJsonLd: { type: Boolean, default: false },
+      customJsonLd: { type: String, default: "" },
     },
   },
   {
@@ -153,7 +165,6 @@ const projectSchema = new mongoose.Schema(
   }
 );
 
-// Virtual for location display if formatted string is not set
 projectSchema.virtual("fullLocation").get(function () {
   if (this.location?.formatted) return this.location.formatted;
   const parts = [this.location?.city, this.location?.state].filter(Boolean);

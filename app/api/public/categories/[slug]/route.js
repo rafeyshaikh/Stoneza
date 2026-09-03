@@ -133,17 +133,14 @@ export async function GET(request, { params }) {
           slug
           images
           hoverImage
-
           isFeatured
           isBestSeller
           isNewArrival
-
           category
+          collection
         `)
-        .populate(
-          "category",
-          "_id name slug"
-        )
+        .populate("category", "_id name slug")
+        .populate("collection", "_id name slug")
         .sort(sortOption)
         .skip((page - 1) * limit)
         .limit(limit)
@@ -166,6 +163,8 @@ export async function GET(request, { params }) {
       hoverImage: product.hoverImage || null,
 
       category: product.category,
+      collection: product.collection,
+      collectionName: product.collection?.name || "",
 
       badges: [
         ...(product.isFeatured ? ["Featured"] : []),

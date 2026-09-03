@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import SeoManager from "@/components/admin/seo/SeoManager";
 import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 export default function AboutEditor() {
@@ -42,7 +43,27 @@ export default function AboutEditor() {
             showroom: result.data.showroom || { eyebrow: "", title: "", description: "", buttonText: "", buttonLink: "" },
             manifesto: result.data.manifesto || { quote: "", sub: "" },
             cta: result.data.cta || { eyebrow: "", title: "", description: "", buttonText: "", buttonLink: "" },
-            seo: result.data.seo || { metaTitle: "", metaDescription: "", keywords: "", canonicalUrl: "", ogImage: "" },
+            seo: {
+              metaTitle: result.data.seo?.metaTitle || "",
+              metaDescription: result.data.seo?.metaDescription || "",
+              keywords: Array.isArray(result.data.seo?.keywords)
+                ? result.data.seo.keywords.join(", ")
+                : result.data.seo?.keywords || "",
+              canonicalUrl: result.data.seo?.canonicalUrl || "",
+              ogImage: result.data.seo?.ogImage || "",
+              ogTitle: result.data.seo?.ogTitle || "",
+              ogDescription: result.data.seo?.ogDescription || "",
+              ogUrl: result.data.seo?.ogUrl || "",
+              ogType: result.data.seo?.ogType || "website",
+              twitterCard: result.data.seo?.twitterCard || "summary_large_image",
+              twitterTitle: result.data.seo?.twitterTitle || "",
+              twitterDescription: result.data.seo?.twitterDescription || "",
+              twitterImage: result.data.seo?.twitterImage || "",
+              robotsIndex: result.data.seo?.robotsIndex !== false,
+              robotsFollow: result.data.seo?.robotsFollow !== false,
+              enableCustomJsonLd: Boolean(result.data.seo?.enableCustomJsonLd),
+              customJsonLd: result.data.seo?.customJsonLd || "",
+            },
           });
         }
       } catch (e) {
@@ -337,52 +358,22 @@ export default function AboutEditor() {
       </section>
 
       {/* 5. SEO & METADATA */}
-      <section className="space-y-4 rounded-2xl border p-5 bg-stone-50/80 dark:bg-stone-950/70">
-        <h3 className="font-heading text-base font-semibold">SEO & Metadata</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Title</Label>
-            <Input
-              placeholder="e.g. About Stoneza | 34+ Years of Natural Stone Quarries"
-              value={data.seo?.metaTitle || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, metaTitle: e.target.value } })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
-            <Input
-              placeholder="e.g. https://stoneza.in/about-us"
-              value={data.seo?.canonicalUrl || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, canonicalUrl: e.target.value } })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Keywords (Comma separated)</Label>
-            <Input
-              placeholder="e.g. Stoneza about us, Bijolia sandstone, natural stone Rajasthan"
-              value={data.seo?.keywords || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, keywords: e.target.value } })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">OG Image URL</Label>
-            <Input
-              placeholder="https://..."
-              value={data.seo?.ogImage || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, ogImage: e.target.value } })}
-            />
-          </div>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Description</Label>
-          <Textarea
-            rows={3}
-            placeholder="Search engine description for the About Us page..."
-            value={data.seo?.metaDescription || ""}
-            onChange={(e) => setData({ ...data, seo: { ...data.seo, metaDescription: e.target.value } })}
-          />
-        </div>
-      </section>
+      <SeoManager
+        seo={data.seo}
+        onChange={(field, value) =>
+          setData((prev) => ({
+            ...prev,
+            seo: { ...(prev.seo || {}), [field]: value },
+          }))
+        }
+        entityContext={{
+          type: "about",
+          name: "About Stoneza",
+          description: data.story?.lead || "Three generations of quarrying Bijolia sandstone, Kota stone & Asind granite.",
+          path: "/about-us",
+          image: data.hero?.image?.url || "",
+        }}
+      />
     </div>
   );
 }

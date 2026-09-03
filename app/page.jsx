@@ -1,7 +1,6 @@
 import HeroSection from "@/components/home/HeroSection";
 import StatsBanner from "@/components/home/StatsBanner";
 import MainCategoriesGrid from "@/components/home/MainCategoriesGrid";
-import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Product from "@/models/Product.model";
 import Blog from "@/models/Blog.model";
 import Homepage from "@/models/Homepage.model";

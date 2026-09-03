@@ -5,9 +5,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import TipTapEditor from "@/components/admin/editor/TipTapEditor";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import SeoManager from "@/components/admin/seo/SeoManager";
 
 export default function PageEditor({
   pageKey,
@@ -21,6 +19,18 @@ export default function PageEditor({
     keywords: "",
     canonicalUrl: "",
     ogImage: "",
+    ogTitle: "",
+    ogDescription: "",
+    ogUrl: "",
+    ogType: "website",
+    twitterCard: "summary_large_image",
+    twitterTitle: "",
+    twitterDescription: "",
+    twitterImage: "",
+    robotsIndex: true,
+    robotsFollow: true,
+    enableCustomJsonLd: false,
+    customJsonLd: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -40,12 +50,26 @@ export default function PageEditor({
       if (data.success) {
         setPageTitle(data.data?.title || title);
         setContent(data.data?.content || "");
-        setSeo(data.data?.seo || {
-          metaTitle: "",
-          metaDescription: "",
-          keywords: "",
-          canonicalUrl: "",
-          ogImage: "",
+        setSeo({
+          metaTitle: data.data?.seo?.metaTitle || "",
+          metaDescription: data.data?.seo?.metaDescription || "",
+          keywords: Array.isArray(data.data?.seo?.keywords)
+            ? data.data.seo.keywords.join(", ")
+            : data.data?.seo?.keywords || "",
+          canonicalUrl: data.data?.seo?.canonicalUrl || "",
+          ogImage: data.data?.seo?.ogImage || "",
+          ogTitle: data.data?.seo?.ogTitle || "",
+          ogDescription: data.data?.seo?.ogDescription || "",
+          ogUrl: data.data?.seo?.ogUrl || "",
+          ogType: data.data?.seo?.ogType || "website",
+          twitterCard: data.data?.seo?.twitterCard || "summary_large_image",
+          twitterTitle: data.data?.seo?.twitterTitle || "",
+          twitterDescription: data.data?.seo?.twitterDescription || "",
+          twitterImage: data.data?.seo?.twitterImage || "",
+          robotsIndex: data.data?.seo?.robotsIndex !== false,
+          robotsFollow: data.data?.seo?.robotsFollow !== false,
+          enableCustomJsonLd: Boolean(data.data?.seo?.enableCustomJsonLd),
+          customJsonLd: data.data?.seo?.customJsonLd || "",
         });
       }
     } catch (error) {
@@ -62,15 +86,18 @@ export default function PageEditor({
 
       const res = await fetch(`/api/admin/cms/pages/${pageKey}`, {
         method: "PATCH",
-
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           title: pageTitle,
           content,
-          seo,
+          seo: {
+            ...seo,
+            keywords: typeof seo.keywords === "string"
+              ? seo.keywords.split(",").map((k) => k.trim()).filter(Boolean)
+              : seo.keywords || [],
+          },
         }),
       });
 
@@ -90,7 +117,7 @@ export default function PageEditor({
   };
 
   return (
-    <div className="space-y-5 w-full">
+    <div className="space-y-6 w-full">
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70">
         <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">
           {title} Content
@@ -112,54 +139,16 @@ export default function PageEditor({
       </section>
 
       {/* SEO & Metadata Section */}
-      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70 space-y-4">
-        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">
-          {title} SEO & Metadata
-        </h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Title</Label>
-            <Input
-              placeholder={`e.g. ${title} | Stoneza`}
-              value={seo.metaTitle || ""}
-              onChange={(e) => setSeo({ ...seo, metaTitle: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
-            <Input
-              placeholder={`e.g. https://stoneza.in/${pageKey}`}
-              value={seo.canonicalUrl || ""}
-              onChange={(e) => setSeo({ ...seo, canonicalUrl: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Keywords (Comma separated)</Label>
-            <Input
-              placeholder="e.g. natural stone, terms, stoneza policy"
-              value={seo.keywords || ""}
-              onChange={(e) => setSeo({ ...seo, keywords: e.target.value })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">OG Image URL</Label>
-            <Input
-              placeholder="https://..."
-              value={seo.ogImage || ""}
-              onChange={(e) => setSeo({ ...seo, ogImage: e.target.value })}
-            />
-          </div>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Description</Label>
-          <Textarea
-            rows={3}
-            placeholder={`Search engine description for the ${title} page...`}
-            value={seo.metaDescription || ""}
-            onChange={(e) => setSeo({ ...seo, metaDescription: e.target.value })}
-          />
-        </div>
-      </section>
+      <SeoManager
+        seo={seo}
+        onChange={(field, value) => setSeo((prev) => ({ ...prev, [field]: value }))}
+        entityContext={{
+          type: "page",
+          name: pageTitle || title,
+          description: content,
+          path: `/${pageKey}`,
+        }}
+      />
 
       <div className="flex justify-end">
         <Button

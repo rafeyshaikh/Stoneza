@@ -2,6 +2,9 @@ import ContactClientView from "./ContactClientView";
 import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
 import Seo from "@/models/Seo.model";
+import { resolveEntityMetadata } from "@/lib/seo/resolveMetadata";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export const dynamic = "force-dynamic";
 
@@ -13,51 +16,22 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const contactSeo = pagesDoc?.contactUs?.seo;
-    const title =
-      contactSeo?.metaTitle?.trim() ||
-      "Contact Stoneza — Stone Supply & Specification";
-    const description =
-      contactSeo?.metaDescription?.trim() ||
-      "Get a quotation for quarry-direct natural stone from Stoneza. Direct phone/WhatsApp, sample box requests, and technical project consultation from Bhilwara, Rajasthan.";
+    const contactUs = pagesDoc?.contactUs;
 
-    const ogImage =
-      contactSeo?.ogImage?.trim() ||
-      pagesDoc?.contactUs?.hero?.bgImage ||
-      seoDoc?.ogImage ||
-      "https://res.cloudinary.com/chlmognp/image/upload/v1785340267/stoneza/homepage/hero/newslide4-ms69hw8o.png";
-
-    const canonicalUrl = "https://stoneza.in/contact";
-
-    const keywords =
-      contactSeo?.keywords?.trim() ||
-      "contact stoneza, stone manufacturer bhilwara, natural stone sample box, sandstone quotation, stone supplier india";
-
-    return {
-      title,
-      description,
-      keywords,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        images: [{ url: ogImage }],
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: [ogImage],
-      },
-    };
+    return resolveEntityMetadata({
+      entityType: "page",
+      entity: contactUs,
+      seo: contactUs?.seo,
+      path: "/contact",
+      globalSeo: seoDoc,
+      defaultTitle: "Contact Stoneza — Stone Supply & Specification",
+      defaultDescription:
+        "Get a quotation for quarry-direct natural stone from Stoneza. Direct phone/WhatsApp, sample box requests, and technical project consultation from Bhilwara, Rajasthan.",
+    });
   } catch (error) {
     console.error("Contact generateMetadata error:", error);
     return {
-      title: "Contact Stoneza | Natural Stone Supply & Specification",
+      title: "Contact Stoneza",
       description: "Get in touch with Stoneza for natural stone supply, free sample boxes, and quotation requests.",
     };
   }
@@ -75,5 +49,15 @@ export default async function ContactPage() {
     console.error("Contact page server fetch error:", error);
   }
 
-  return <ContactClientView initialData={initialCmsData} />;
+  const structuredData = resolveStructuredData({
+    entityType: "contact",
+    entity: initialCmsData,
+  });
+
+  return (
+    <>
+      <JsonLd data={structuredData} id="contact-ldjson" />
+      <ContactClientView initialData={initialCmsData} />
+    </>
+  );
 }

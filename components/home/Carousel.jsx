@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageWithLoader from "../common/Loader";
 import { isValidImageUrl, optimizeImageUrl } from "@/lib/utils";
 import { getPlaceholderImage } from "@/lib/placeholderImage";
+import ProductWatermark from "../common/ProductWatermark";
 
 export default function Carousel({
   eyebrow = "",
@@ -154,6 +155,7 @@ export default function Carousel({
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       placeholderTitle={titleText}
                     />
+                    <ProductWatermark />
                   </div>
 
                   {hasHover && (
@@ -167,6 +169,7 @@ export default function Carousel({
                         placeholderTitle={titleText}
                         seedIndex={idx + 50}
                       />
+                      <ProductWatermark />
                     </div>
                   )}
                 </div>

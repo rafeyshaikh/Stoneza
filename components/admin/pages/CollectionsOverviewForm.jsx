@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader from "@/components/admin/products/ImageUploader";
+import SeoManager from "@/components/admin/seo/SeoManager";
 import { uploadAdminImage } from "@/lib/uploadAdminImage";
 
 const DEFAULT_COLLECTIONS_DATA = {
@@ -87,6 +88,27 @@ export default function CollectionsOverviewForm() {
               badge: result.data.megamenu?.featuredCard?.badge || "",
               href: result.data.megamenu?.featuredCard?.href || "",
             },
+          },
+          seo: {
+            metaTitle: result.data.seo?.metaTitle || "",
+            metaDescription: result.data.seo?.metaDescription || "",
+            keywords: Array.isArray(result.data.seo?.keywords)
+              ? result.data.seo.keywords.join(", ")
+              : result.data.seo?.keywords || "",
+            canonicalUrl: result.data.seo?.canonicalUrl || "",
+            ogImage: result.data.seo?.ogImage || "",
+            ogTitle: result.data.seo?.ogTitle || "",
+            ogDescription: result.data.seo?.ogDescription || "",
+            ogUrl: result.data.seo?.ogUrl || "",
+            ogType: result.data.seo?.ogType || "website",
+            twitterCard: result.data.seo?.twitterCard || "summary_large_image",
+            twitterTitle: result.data.seo?.twitterTitle || "",
+            twitterDescription: result.data.seo?.twitterDescription || "",
+            twitterImage: result.data.seo?.twitterImage || "",
+            robotsIndex: result.data.seo?.robotsIndex !== false,
+            robotsFollow: result.data.seo?.robotsFollow !== false,
+            enableCustomJsonLd: Boolean(result.data.seo?.enableCustomJsonLd),
+            customJsonLd: result.data.seo?.customJsonLd || "",
           },
         });
       }
@@ -406,54 +428,22 @@ export default function CollectionsOverviewForm() {
       </section>
 
       {/* 3. SEO & METADATA */}
-      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-950/70 space-y-4">
-        <h3 className="font-heading text-lg font-semibold text-stone-900 dark:text-stone-100">
-          3. SEO & Metadata
-        </h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Title</Label>
-            <Input
-              placeholder="e.g. Natural Stone Collections | Stoneza"
-              value={data.seo?.metaTitle || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, metaTitle: e.target.value } })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Canonical URL</Label>
-            <Input
-              placeholder="e.g. https://stoneza.in/collections"
-              value={data.seo?.canonicalUrl || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, canonicalUrl: e.target.value } })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Keywords (Comma separated)</Label>
-            <Input
-              placeholder="e.g. natural stone collections, sandstone paving, cladding ranges"
-              value={data.seo?.keywords || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, keywords: e.target.value } })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">OG Image URL</Label>
-            <Input
-              placeholder="https://..."
-              value={data.seo?.ogImage || ""}
-              onChange={(e) => setData({ ...data, seo: { ...data.seo, ogImage: e.target.value } })}
-            />
-          </div>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs uppercase tracking-wider text-stone-600 dark:text-stone-400">Meta Description</Label>
-          <Textarea
-            rows={3}
-            placeholder="Search engine description for the Collections overview page..."
-            value={data.seo?.metaDescription || ""}
-            onChange={(e) => setData({ ...data, seo: { ...data.seo, metaDescription: e.target.value } })}
-          />
-        </div>
-      </section>
+      <SeoManager
+        seo={data.seo}
+        onChange={(field, value) =>
+          setData((prev) => ({
+            ...prev,
+            seo: { ...(prev.seo || {}), [field]: value },
+          }))
+        }
+        entityContext={{
+          type: "collectionsOverview",
+          name: data.title || "Collections",
+          description: data.description || "",
+          path: "/collections",
+          image: data.bannerImage?.square?.url || "",
+        }}
+      />
 
       {/* SAVE BUTTON */}
       <div className="flex justify-end pt-2">

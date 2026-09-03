@@ -191,7 +191,7 @@ export default function ProductsClient({ products }) {
       />
 
       {/* Sticky Filters & Search Header Bar */}
-      <div className="sticky top-[63px] lg:top-[106px] h-14 w-full border border-[#cbc9c4] bg-[#eae8e2] z-40 flex justify-between relative">
+      <div className="sticky top-[70px] lg:top-[127px] h-14 w-full border border-[#cbc9c4] bg-[#eae8e2] z-40 flex justify-between relative">
         
         {/* Search Field */}
         <div className="border-r h-full basis-6/10 border-[#cbc9c4] flex items-center justify-center gap-2">

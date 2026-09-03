@@ -132,10 +132,12 @@ export async function GET(request) {
           isBestSeller
           isNewArrival
           category
+          collection
           price
         `,
         )
         .populate("category", "_id name slug categoryLevel")
+        .populate("collection", "_id name slug")
         .sort(sortOption)
         .skip((page - 1) * limit)
         .limit(limit)
@@ -156,6 +158,8 @@ export async function GET(request) {
       hoverImage: product.hoverImage || null,
 
       category: product.category,
+      collection: product.collection,
+      collectionName: product.collection?.name || "",
 
       price: product.price || null,
 

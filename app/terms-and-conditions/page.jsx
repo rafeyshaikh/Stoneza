@@ -3,6 +3,9 @@ import Pages from "@/models/Pages.model";
 import Seo from "@/models/Seo.model";
 import Link from "next/link";
 import { ArrowRight, FileText, ShieldCheck } from "lucide-react";
+import { resolveEntityMetadata } from "@/lib/seo/resolveMetadata";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export async function generateMetadata() {
   try {
@@ -12,49 +15,21 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const policySeo = pages?.termsAndConditions?.seo;
-    const title =
-      policySeo?.metaTitle?.trim() ||
-      (pages?.termsAndConditions?.title
-        ? `${pages.termsAndConditions.title} | Stoneza`
-        : "Terms & Conditions | Stoneza");
-    const description =
-      policySeo?.metaDescription?.trim() ||
-      "Read the website Terms & Conditions for browsing, requesting specifications, and accessing architectural stone resources at Stoneza.";
-    const canonicalUrl =
-      policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/terms-and-conditions`;
-    const ogImage =
-      policySeo?.ogImage?.trim() ||
-      seo?.ogImage ||
-      "";
-    const keywords =
-      policySeo?.keywords?.trim() || "terms and conditions, website terms of use, stoneza legal";
+    const policy = pages?.termsAndConditions;
 
-    return {
-      title,
-      description,
-      keywords,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        images: ogImage ? [{ url: ogImage }] : [],
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: ogImage ? [ogImage] : [],
-      },
-    };
+    return resolveEntityMetadata({
+      entityType: "page",
+      entity: policy,
+      seo: policy?.seo,
+      path: "/terms-and-conditions",
+      globalSeo: seo,
+      defaultTitle: policy?.title ? `${policy.title}` : "Terms & Conditions",
+      defaultDescription:
+        "Read the website Terms & Conditions for browsing, requesting specifications, and accessing architectural stone resources at Stoneza.",
+    });
   } catch {
     return {
-      title: "Terms & Conditions | Stoneza",
+      title: "Terms & Conditions",
       description: "Read the Terms & Conditions of Stoneza.",
     };
   }
@@ -71,6 +46,15 @@ export default async function TermsAndConditionsPage() {
   } catch (error) {
     console.error("TermsAndConditionsPage error:", error.message);
   }
+
+  const structuredData = resolveStructuredData({
+    entityType: "page",
+    entity: policy,
+    options: {
+      path: "/terms-and-conditions",
+      defaultTitle: policy.title || "Terms & Conditions",
+    },
+  });
 
   const sections = [
     {
@@ -122,6 +106,8 @@ export default async function TermsAndConditionsPage() {
 
   return (
     <div className="min-h-screen bg-[#FBF9F6]">
+      <JsonLd data={structuredData} id="terms-conditions-ldjson" />
+
       {/* Top Banner / Breadcrumb */}
       <div className="border-b border-[#E4DDD3] bg-[#F2EDE4]/60 py-6 sm:py-8">
         <div className="container mx-auto max-w-4xl px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">

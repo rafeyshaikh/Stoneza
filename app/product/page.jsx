@@ -35,7 +35,10 @@ export default async function ProductsPage() {
   let safeProducts = [];
   try {
     await connectDB();
-    const products = await Product.find({ status: "published" }).lean();
+    const products = await Product.find({ status: "published" })
+      .populate("collection", "name slug")
+      .populate("category", "name slug")
+      .lean();
     safeProducts = JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("ProductsPage error:", error.message);

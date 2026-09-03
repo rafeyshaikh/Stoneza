@@ -63,7 +63,7 @@ export default function ProductTechnicalAccordion({ product }) {
   // Define left and right column fields
   const leftFields = [
     { label: 'Product', value: `${name}${collectionName ? ` — ${collectionName}` : ''}` },
-    { label: 'Spec code', value: sku ? <strong>{sku}</strong> : null, raw: sku },
+    { label: 'SKU', value: sku ? <strong>{sku}</strong> : null, raw: sku },
     { label: 'Trade name', value: stoneDetails.tradeName, raw: stoneDetails.tradeName },
     { label: 'Stone type', value: stoneDetails.stoneType, raw: stoneDetails.stoneType },
     { label: 'Piece size', value: stoneDetails.pieceSize, raw: stoneDetails.pieceSize },
@@ -88,7 +88,7 @@ export default function ProductTechnicalAccordion({ product }) {
   const totalValues = leftFields.length + rightFields.length;
 
   return (
-    <details className="group border-b border-[#CBC9C4]" open>
+    <details className="group border-b border-[#CBC9C4]" open={false}>
       <summary className="list-none cursor-pointer py-5 sm:py-6 flex items-center gap-4 select-none [&::-webkit-details-marker]:hidden">
         <h3 className="font-serif font-normal text-xl sm:text-2xl text-[#1C1714] flex-1 group-open:font-semibold">
           Technical data sheet

@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ProductWatermark from "../common/ProductWatermark";
 
 export const DEFAULT_SIGNATURE_STONES = [
   {
@@ -166,6 +167,7 @@ export default function SignatureStones({
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   unoptimized
                 />
+                <ProductWatermark />
               </div>
 
               {/* DETAILS */}

@@ -1,6 +1,9 @@
 import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
 import Seo from "@/models/Seo.model";
+import { resolveEntityMetadata } from "@/lib/seo/resolveMetadata";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export async function generateMetadata() {
   try {
@@ -10,42 +13,21 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const policySeo = pages?.privacyPolicy?.seo;
-    const title =
-      policySeo?.metaTitle?.trim() ||
-      (pages?.privacyPolicy?.title
-        ? `${pages.privacyPolicy.title} | Stoneza`
-        : "Privacy Policy | Stoneza");
-    const description =
-      policySeo?.metaDescription?.trim() ||
-      "Read the Privacy Policy of Stoneza Natural Stones regarding personal data handling and user privacy.";
-    const canonicalUrl =
-      policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/privacy-policy`;
-    const ogImage =
-      policySeo?.ogImage?.trim() ||
-      seo?.ogImage ||
-      "";
-    const keywords = policySeo?.keywords?.trim() || "privacy policy, stoneza data policy, user terms";
+    const policy = pages?.privacyPolicy;
 
-    return {
-      title,
-      description,
-      keywords,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        images: ogImage ? [{ url: ogImage }] : [],
-        type: "website",
-      },
-    };
+    return resolveEntityMetadata({
+      entityType: "page",
+      entity: policy,
+      seo: policy?.seo,
+      path: "/privacy-policy",
+      globalSeo: seo,
+      defaultTitle: policy?.title ? `${policy.title}` : "Privacy Policy",
+      defaultDescription:
+        "Read the Privacy Policy of Stoneza Natural Stones regarding personal data handling and user privacy.",
+    });
   } catch {
     return {
-      title: "Privacy Policy | Stoneza",
+      title: "Privacy Policy",
       description: "Read the Privacy Policy of Stoneza.",
     };
   }
@@ -63,17 +45,29 @@ export default async function PrivacyPolicyPage() {
     console.error("PrivacyPolicyPage error:", error.message);
   }
 
+  const structuredData = resolveStructuredData({
+    entityType: "page",
+    entity: policy,
+    options: {
+      path: "/privacy-policy",
+      defaultTitle: policy.title || "Privacy Policy",
+    },
+  });
+
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">
-      <h1 className="mb-8 text-center font-display text-2xl uppercase tracking-[6px] text-[#393938] dark:text-[#ede8e1] md:text-3xl">
-        {policy.title}
-      </h1>
-      <div
-        className="prose prose-stone max-w-none dark:prose-invert font-body text-sm leading-relaxed text-[#4b433c] dark:text-[#b7ac9e]"
-        dangerouslySetInnerHTML={{
-          __html: policy.content || "<p>No content available.</p>",
-        }}
-      />
-    </div>
+    <>
+      <JsonLd data={structuredData} id="privacy-policy-ldjson" />
+      <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">
+        <h1 className="mb-8 text-center font-display text-2xl uppercase tracking-[6px] text-[#393938] dark:text-[#ede8e1] md:text-3xl">
+          {policy.title}
+        </h1>
+        <div
+          className="prose prose-stone max-w-none dark:prose-invert font-body text-sm leading-relaxed text-[#4b433c] dark:text-[#b7ac9e]"
+          dangerouslySetInnerHTML={{
+            __html: policy.content || "<p>No content available.</p>",
+          }}
+        />
+      </div>
+    </>
   );
 }

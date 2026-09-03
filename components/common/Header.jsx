@@ -234,11 +234,6 @@ export default function Header() {
                       {col.title}
                     </h4>
                   )}
-                {col.subtitle && (
-                  <p className="font-mono text-[10.5px] tracking-[0.03em] text-[#26221E] opacity-50 mb-4 leading-normal">
-                    {col.subtitle}
-                  </p>
-                )}
                 <ul className="list-none m-0 p-0">
                   {col.links?.map((link, lIdx) => (
                     <li key={lIdx}>

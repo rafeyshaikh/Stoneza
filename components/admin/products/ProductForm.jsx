@@ -220,14 +220,24 @@ export default function ProductForm({
 
       seo: {
         metaTitle: initialData.seo?.metaTitle || "",
-
         metaDescription: initialData.seo?.metaDescription || "",
-
-        keywords: initialData.seo?.keywords?.join(", ") || "",
-
+        keywords: Array.isArray(initialData.seo?.keywords)
+          ? initialData.seo.keywords.join(", ")
+          : initialData.seo?.keywords || "",
         canonicalUrl: initialData.seo?.canonicalUrl || "",
-
         ogImage: initialData.seo?.ogImage || "",
+        ogTitle: initialData.seo?.ogTitle || "",
+        ogDescription: initialData.seo?.ogDescription || "",
+        ogUrl: initialData.seo?.ogUrl || "",
+        ogType: initialData.seo?.ogType || "website",
+        twitterCard: initialData.seo?.twitterCard || "summary_large_image",
+        twitterTitle: initialData.seo?.twitterTitle || "",
+        twitterDescription: initialData.seo?.twitterDescription || "",
+        twitterImage: initialData.seo?.twitterImage || "",
+        robotsIndex: initialData.seo?.robotsIndex !== false,
+        robotsFollow: initialData.seo?.robotsFollow !== false,
+        enableCustomJsonLd: Boolean(initialData.seo?.enableCustomJsonLd),
+        customJsonLd: initialData.seo?.customJsonLd || "",
       },
 
       variants: (initialData.variants || []).map((v) => ({
@@ -449,10 +459,12 @@ export default function ProductForm({
         seo: {
           ...formData.seo,
 
-          keywords: formData.seo.keywords
-            .split(",")
-            .map((item) => item.trim())
-            .filter(Boolean),
+          keywords: typeof formData.seo?.keywords === "string"
+            ? formData.seo.keywords
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean)
+            : formData.seo?.keywords || [],
         },
       };
 
@@ -971,9 +983,20 @@ export default function ProductForm({
         </div>
       </section>
 
-      <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">
-        <h3 className="mb-5 text-lg font-semibold">SEO Settings</h3>
-        <ProductSeoForm seo={formData.seo} onChange={handleSeoChange} />
+      <section>
+        <ProductSeoForm
+          seo={formData.seo}
+          onChange={handleSeoChange}
+          entityContext={{
+            type: "product",
+            name: formData.name,
+            description: formData.description || formData.shortDescription,
+            slug: formData.slug || generateSlug(formData.name),
+            sku: formData.sku,
+            stoneType: formData.stoneDetails?.stoneType,
+            image: formData.images?.[0]?.url || "",
+          }}
+        />
       </section>
 
       <section className="rounded-2xl border border-stone-300/70 bg-stone-50/80 p-6 dark:border-stone-800 dark:bg-stone-950/70">

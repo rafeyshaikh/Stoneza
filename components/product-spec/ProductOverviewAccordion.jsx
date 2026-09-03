@@ -51,7 +51,7 @@ export default function ProductOverviewAccordion({ overview }) {
   };
 
   return (
-    <details className="group border-b border-[#CBC9C4]" open>
+    <details className="group border-b border-[#CBC9C4]" open={false}>
       <summary className="list-none cursor-pointer py-5 sm:py-6 flex items-center gap-4 select-none [&::-webkit-details-marker]:hidden">
         <h3 className="font-serif font-normal text-xl sm:text-2xl text-[#1C1714] flex-1 group-open:font-semibold">
           Product overview

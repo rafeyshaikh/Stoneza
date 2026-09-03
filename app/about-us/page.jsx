@@ -1,75 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getAboutData } from "@/lib/getAboutData";
+import { resolveEntityMetadata } from "@/lib/seo/resolveMetadata";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const data = await getAboutData();
-  const title =
-    data?.seo?.metaTitle?.trim() ||
-    "About Us — Quarrying & Heritage Since 1992";
-
-  const description =
-    data?.seo?.metaDescription?.trim() ||
-    (data?.story?.lead
-      ? data.story.lead
-      : "Discover Stoneza's legacy since 1992. Three generations of quarrying Bijolia sandstone, Kota stone & Asind granite with in-house processing in Bhilwara, Rajasthan.");
-
-  const heroImageUrl =
-    data?.seo?.ogImage?.trim() ||
-    (data?.hero?.image?.url && !data.hero.image.url.includes("wp-content")
-      ? data.hero.image.url
-      : "https://res.cloudinary.com/chlmognp/image/upload/v1785340266/stoneza/homepage/hero/newslide2-sl58hw9a.png");
-
-  const canonicalUrl = "https://stoneza.in/about-us";
-
-  const keywords =
-    data?.seo?.keywords?.trim() ||
-    [
-      "Stoneza about us",
-      "Bijolia sandstone quarry",
-      "Kota stone manufacturer",
-      "Asind granite supplier",
-      "natural stone suppliers Rajasthan",
-      "Bhilwara stone factory",
-      "natural stone cladding",
-      "architectural stone solutions",
-    ].join(", ");
-
-  return {
-    title,
-    description,
-    keywords,
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      siteName: "Stoneza",
-      images: [
-        {
-          url: heroImageUrl,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [heroImageUrl],
-    },
-  };
+  return resolveEntityMetadata({
+    entityType: "about",
+    entity: data,
+    seo: data?.seo,
+    path: "/about-us",
+    defaultTitle: "About Us — Quarrying & Heritage Since 1992",
+    defaultDescription:
+      data?.story?.lead ||
+      "Discover Stoneza's legacy since 1992. Three generations of quarrying Bijolia sandstone, Kota stone & Asind granite with in-house processing in Bhilwara, Rajasthan.",
+  });
 }
 
 export default async function AboutUsPage() {
   const data = await getAboutData();
+  const structuredData = resolveStructuredData({
+    entityType: "about",
+    entity: data,
+  });
 
   const hero = {
     ...data?.hero,
@@ -160,61 +117,9 @@ export default async function AboutUsPage() {
     buttonLink: "/contact",
   };
 
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Stoneza",
-    url: "https://stoneza.in",
-    logo: "https://stoneza.in/assets/logo.png",
-    description: "Owners of quarries in Bijolia, Kota & Asind with in-house processing factories in Bhilwara, Rajasthan.",
-    foundingDate: "1992",
-    foundingLocation: {
-      "@type": "Place",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Bhilwara",
-        addressRegion: "Rajasthan",
-        addressCountry: "IN",
-      },
-    },
-    founder: (founders?.people || []).map((p) => ({
-      "@type": "Person",
-      name: p.name,
-      jobTitle: p.role,
-    })),
-  };
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://stoneza.in",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "About Us",
-        item: "https://stoneza.in/about-us",
-      },
-    ],
-  };
-
   return (
     <div className="bg-[#faf8f5] text-[#2a2118] font-body antialiased">
-      <script
-        id="about-organization-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-      />
-      <script
-        id="about-breadcrumb-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <JsonLd data={structuredData} id="about-ldjson" />
       {/* 1. HERO SECTION */}
       <section className="relative h-[72vh] min-h-[520px] text-white flex items-end overflow-hidden">
         <Image

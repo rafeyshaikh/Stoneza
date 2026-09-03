@@ -20,6 +20,11 @@ export default function ProductCard({
   const name = prod?.name || "";
   const productSlug = prod?.slug || slug || "";
   const productId = (prod?.id || prod?._id)?.toString();
+  const collectionName =
+    prod?.collection?.name ||
+    prod?.collectionName ||
+    (typeof prod?.collection === "object" ? prod?.collection?.name : "") ||
+    "";
 
   // Primary main image
   const rawImage =
@@ -117,7 +122,12 @@ export default function ProductCard({
           )}
         </div>
 
-        <h3 className="text-center font-body text-[14px] text-[#393938] capitalize">
+        {collectionName ? (
+          <h4 className="mr-auto font-heading text-[12px] text-[#9A4A2E] uppercase tracking-wider mb-1">
+            {collectionName}
+          </h4>
+        ) : null}
+        <h3 className="mr-auto font-display text-base text-[#393938] capitalize">
           {name}
         </h3>
       </div>

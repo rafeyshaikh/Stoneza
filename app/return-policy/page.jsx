@@ -1,6 +1,9 @@
 import { connectDB } from "@/lib/databaseConnection";
 import Pages from "@/models/Pages.model";
 import Seo from "@/models/Seo.model";
+import { resolveEntityMetadata } from "@/lib/seo/resolveMetadata";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export async function generateMetadata() {
   try {
@@ -10,42 +13,21 @@ export async function generateMetadata() {
       Seo.findOne().lean(),
     ]);
 
-    const policySeo = pages?.returnPolicy?.seo;
-    const title =
-      policySeo?.metaTitle?.trim() ||
-      (pages?.returnPolicy?.title
-        ? `${pages.returnPolicy.title} | Stoneza`
-        : "Return & Cancellation Policy | Stoneza");
-    const description =
-      policySeo?.metaDescription?.trim() ||
-      "Read the Return & Cancellation Policy for custom-cut and quarry-direct natural stone orders at Stoneza.";
-    const canonicalUrl =
-      policySeo?.canonicalUrl?.trim() ||
-      `${process.env.NEXT_PUBLIC_BASE_URL || "https://stoneza.in"}/return-policy`;
-    const ogImage =
-      policySeo?.ogImage?.trim() ||
-      seo?.ogImage ||
-      "";
-    const keywords = policySeo?.keywords?.trim() || "return policy, stoneza cancellation, refund policy";
+    const policy = pages?.returnPolicy;
 
-    return {
-      title,
-      description,
-      keywords,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        images: ogImage ? [{ url: ogImage }] : [],
-        type: "website",
-      },
-    };
+    return resolveEntityMetadata({
+      entityType: "page",
+      entity: policy,
+      seo: policy?.seo,
+      path: "/return-policy",
+      globalSeo: seo,
+      defaultTitle: policy?.title ? `${policy.title}` : "Return & Cancellation Policy",
+      defaultDescription:
+        "Read the Return & Cancellation Policy for custom-cut and quarry-direct natural stone orders at Stoneza.",
+    });
   } catch {
     return {
-      title: "Return Policy | Stoneza",
+      title: "Return Policy",
       description: "Read the Return Policy of Stoneza.",
     };
   }
@@ -63,17 +45,29 @@ export default async function ReturnPolicyPage() {
     console.error("ReturnPolicyPage error:", error.message);
   }
 
+  const structuredData = resolveStructuredData({
+    entityType: "page",
+    entity: policy,
+    options: {
+      path: "/return-policy",
+      defaultTitle: policy.title || "Return Policy",
+    },
+  });
+
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">
-      <h1 className="mb-8 text-center font-display text-2xl uppercase tracking-[6px] text-[#393938] dark:text-[#ede8e1] md:text-3xl">
-        {policy.title}
-      </h1>
-      <div
-        className="prose prose-stone max-w-none dark:prose-invert font-body text-sm leading-relaxed text-[#4b433c] dark:text-[#b7ac9e]"
-        dangerouslySetInnerHTML={{
-          __html: policy.content || "<p>No content available.</p>",
-        }}
-      />
-    </div>
+    <>
+      <JsonLd data={structuredData} id="return-policy-ldjson" />
+      <div className="container mx-auto max-w-3xl px-4 py-16 md:py-24">
+        <h1 className="mb-8 text-center font-display text-2xl uppercase tracking-[6px] text-[#393938] dark:text-[#ede8e1] md:text-3xl">
+          {policy.title}
+        </h1>
+        <div
+          className="prose prose-stone max-w-none dark:prose-invert font-body text-sm leading-relaxed text-[#4b433c] dark:text-[#b7ac9e]"
+          dangerouslySetInnerHTML={{
+            __html: policy.content || "<p>No content available.</p>",
+          }}
+        />
+      </div>
+    </>
   );
 }
