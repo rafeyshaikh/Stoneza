@@ -32,6 +32,13 @@ export default function TipTapEditor({
 
   Link.configure({
     openOnClick: false,
+    autolink: true,
+    defaultProtocol: "https",
+    HTMLAttributes: {
+      class: "text-[#9A4A2E] underline underline-offset-4 hover:text-[#78351f] transition-colors font-medium",
+      target: "_blank",
+      rel: "noopener noreferrer",
+    },
   }),
 
   Placeholder.configure({

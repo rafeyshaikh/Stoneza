@@ -587,7 +587,7 @@ export default function CategoryPageClient({ initialData, slug }) {
         )}
 
       {!showAllProducts && (categoryLevel === 1 || categoryLevel === 2) && (
-        <div>
+        <div id="sub-categories" className="scroll-mt-28 sm:scroll-mt-36">
           {carouselSubCategories.length > 0 && (
             <div className="col-span-full">
               <Carousel title="Sub Categories" data={carouselSubCategories} />

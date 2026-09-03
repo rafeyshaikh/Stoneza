@@ -181,174 +181,206 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Nav Tabs Row (Desktop) */}
+      {/* Nav Tabs Row (Desktop) with Horizontal Scroll & Wrap Protection */}
       {displayNavItems.length > 0 && (
         <div
-          className={`hidden lg:block border-t transition-colors duration-300 ${
+          className={`hidden lg:block border-t transition-colors duration-300 overflow-hidden ${
             isSolidHeader ? "border-[#26221E]/12" : "border-transparent"
           }`}
         >
-          <ul className="list-none m-0 p-0 flex justify-center gap-4 sm:gap-8 md:gap-14 flex-wrap">
-            {displayNavItems.map((item, idx) => (
-              <li key={idx} onMouseEnter={() => handleMouseEnterTab(idx)}>
-                <Link
-                  href={item.href || `/product-category/${item.slug}`}
-                  onClick={() => toggleTab(idx)}
-                  className={`appearance-none bg-transparent border-0 cursor-pointer font-sans text-[15px] font-semibold tracking-[0.13em] uppercase py-3.5 px-1 border-b-[3px] transition-colors font-heading inline-block no-underline ${
-                    isSolidHeader ? "text-[#26221E]" : "text-white"
-                  } ${
-                    activeTab === idx
-                      ? isSolidHeader
-                        ? "border-[#26221E]"
-                        : "border-white"
-                      : isSolidHeader
-                      ? "border-transparent hover:border-[#26221E]/30"
-                      : "border-transparent hover:border-white/40"
-                  }`}
-                >
-                  {item.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Mega Menu Overlay Wrapper (Absolute Positioning - Does not displace page layout) */}
-      {activeTab !== null && displayNavItems[activeTab] && (
-        <div className="hidden lg:block absolute top-full left-0 right-0 w-full bg-[#C9BDB2] border-t border-[#26221E]/16 px-4 md:px-8 shadow-[0_22px_40px_-26px_rgba(38,34,30,0.5)] z-[999] pointer-events-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[repeat(4,minmax(148px,1fr))_minmax(240px,336px)] gap-6 lg:gap-10 py-8.5 pb-11.5 max-w-[1620px] mx-auto items-start">
-            {/* Dynamic Columns */}
-            {displayNavItems[activeTab].categories?.map((col, cIdx) => {
-              const isClickable = !col.isCmsColumn && (col.isDbCategory || col.isCollection || Boolean(col.href));
-              return (
-                <div key={cIdx} className="flex flex-col">
-                  {isClickable ? (
-                    <Link href={col.href || `/product-category/${col.slug}`}>
-                      <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.75 border-b border-[#26221E]/30 hover:underline underline-offset-4 cursor-pointer">
-                        {col.title}
-                      </h4>
-                    </Link>
-                  ) : (
-                    <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.75 border-b border-[#26221E]/30 cursor-default select-none">
-                      {col.title}
-                    </h4>
-                  )}
-                <ul className="list-none m-0 p-0">
-                  {col.links?.map((link, lIdx) => (
-                    <li key={lIdx}>
-                      <Link
-                        href={link.href || `/product-category/${link.slug}`}
-                        className="flex justify-between items-baseline gap-2.5 text-[#26221E] no-underline py-2 group"
-                      >
-                        <b className="font-sans text-[16px] font-normal flex items-center gap-2.25 group-hover:underline underline-offset-4">
-                          {link.name || link.title}
-                          {link.badge && (
-                            <em
-                              className={`font-mono text-[8.5px] not-italic tracking-[0.11em] px-1.5 py-0.75 relative -top-px ${link.badge === "NEW"
-                                  ? "text-white bg-[#8E4B2A]"
-                                  : "text-[#26221E] opacity-45 border border-[#26221E]/30"
-                                }`}
-                            >
-                              {link.badge}
-                            </em>
-                          )}
-                        </b>
-                        {link.count && (
-                          <span className="font-mono text-[11px] opacity-50">
-                            {link.count}
-                          </span>
-                        )}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Dynamic Quick Action Links (at bottom of column 4 / last column) */}
-                {cIdx === (displayNavItems[activeTab].categories.length - 1) &&
-                  displayNavItems[activeTab].actionLinks &&
-                  displayNavItems[activeTab].actionLinks.length > 0 && (
-                    <div className="mt-3.5 pt-3.75 border-t border-[#26221E]/30">
-                      {displayNavItems[activeTab].actionLinks.map((al, alIdx) => (
-                        <a
-                          key={alIdx}
-                          href={al.href}
-                          className="block font-sans text-[15px] text-[#26221E] no-underline py-1.75 opacity-82 hover:opacity-100 hover:underline underline-offset-4"
-                        >
-                          {al.label}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-              </div>
-              );
-            })}
-
-            {/* Standalone Quick Action Links if no category columns exist */}
-            {(!displayNavItems[activeTab].categories ||
-              displayNavItems[activeTab].categories.length === 0) &&
-              displayNavItems[activeTab].actionLinks &&
-              displayNavItems[activeTab].actionLinks.length > 0 && (
-                <div className="flex flex-col">
-                  <div className="pt-1">
-                    {displayNavItems[activeTab].actionLinks.map((al, alIdx) => (
-                      <a
-                        key={alIdx}
-                        href={al.href}
-                        className="block font-sans text-[15px] text-[#26221E] no-underline py-1.75 opacity-82 hover:opacity-100 hover:underline underline-offset-4"
-                      >
-                        {al.label}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {/* Dynamic Spotlight Featured Card (5th Column) */}
-            {displayNavItems[activeTab].images?.[0] && (
-              <Link
-                href={displayNavItems[activeTab].images[0].href || "#"}
-                className="block no-underline text-inherit bg-[#F5F1EB] group overflow-hidden md:col-span-2 lg:col-span-1 border border-[#E4DDD3]/60 transition-shadow hover:shadow-md"
-              >
-                <div className="aspect-[16/11] relative bg-stone-300 overflow-hidden">
-                  {displayNavItems[activeTab].images[0].image ? (
-                    <Image
-                      src={displayNavItems[activeTab].images[0].image}
-                      alt={displayNavItems[activeTab].images[0].title || "Featured Product"}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-stone-300 text-stone-500 font-mono text-xs">
-                      {displayNavItems[activeTab].images[0].title}
-                    </div>
-                  )}
-                  <span className="absolute top-2.5 left-2.5 bg-[#9C7233] text-white font-mono text-[8.5px] uppercase tracking-[0.16em] px-2 py-0.5 font-bold shadow-xs">
-                    {displayNavItems[activeTab].images[0].eyebrow || "Featured Product"}
-                  </span>
-                  {displayNavItems[activeTab].images[0].badge && (
-                    <span className="absolute left-2.5 bottom-2 font-mono text-[9px] text-white/90 bg-black/40 px-2 py-0.5 rounded-xs backdrop-blur-xs">
-                      {displayNavItems[activeTab].images[0].badge}
-                    </span>
-                  )}
-                </div>
-                <div className="p-4.5 sm:p-5 md:p-5.5">
-                  <p className="font-mono text-[9.5px] tracking-[0.17em] uppercase text-[#9C7233] mb-2 font-bold">
-                    {displayNavItems[activeTab].title}
-                  </p>
-                  <h5 className="font-serif text-[21px] font-normal mb-2 text-[#26221E] group-hover:underline underline-offset-4 leading-tight">
-                    {displayNavItems[activeTab].images[0].title}
-                  </h5>
-                  <p className="font-serif text-[13.5px] leading-relaxed text-[#57504A] m-0 line-clamp-2">
-                    {displayNavItems[activeTab].images[0].description}
-                  </p>
-                </div>
-              </Link>
-            )}
+          <div className="max-w-[1620px] mx-auto px-4 overflow-x-auto no-scrollbar">
+            <ul className="list-none m-0 p-0 flex justify-start lg:justify-center items-center gap-4 sm:gap-6 md:gap-8 xl:gap-12 flex-nowrap min-w-max mx-auto">
+              {displayNavItems.map((item, idx) => (
+                <li key={idx} className="shrink-0" onMouseEnter={() => handleMouseEnterTab(idx)}>
+                  <Link
+                    href={item.href || `/product-category/${item.slug}`}
+                    onClick={() => toggleTab(idx)}
+                    className={`whitespace-nowrap appearance-none bg-transparent border-0 cursor-pointer font-sans text-[14px] xl:text-[15px] font-semibold tracking-[0.12em] uppercase py-3.5 px-1 border-b-[3px] transition-colors font-heading inline-block no-underline ${
+                      isSolidHeader ? "text-[#26221E]" : "text-white"
+                    } ${
+                      activeTab === idx
+                        ? isSolidHeader
+                          ? "border-[#26221E]"
+                          : "border-white"
+                        : isSolidHeader
+                        ? "border-transparent hover:border-[#26221E]/30"
+                        : "border-transparent hover:border-white/40"
+                    }`}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
+
+      {/* Mega Menu Overlay Wrapper with Responsive Grid & Link Overflow Protection */}
+      {activeTab !== null && displayNavItems[activeTab] && (() => {
+        const activeItem = displayNavItems[activeTab];
+        const categoriesList = Array.isArray(activeItem?.categories) ? activeItem.categories : [];
+        const hasCategories = categoriesList.length > 0;
+        const spotlightImage = activeItem?.images?.[0];
+        const MAX_MEGA_MENU_LINKS_PER_COL = 7;
+
+        return (
+          <div className="hidden lg:block absolute top-full left-0 right-0 w-full bg-[#C9BDB2] border-t border-[#26221E]/16 px-4 md:px-8 shadow-[0_22px_40px_-26px_rgba(38,34,30,0.5)] z-[999] pointer-events-auto max-h-[calc(100vh-130px)] overflow-y-auto scrollbar-thin scrollbar-thumb-[#26221E]/20 scrollbar-track-transparent">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 py-8.5 pb-11 max-w-[1620px] mx-auto items-start">
+              {/* Dynamic Columns Sub-Grid */}
+              {hasCategories ? (
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 w-full items-start">
+                  {categoriesList.map((col, cIdx) => {
+                    const links = Array.isArray(col.links) ? col.links : [];
+                    const visibleLinks = links.slice(0, MAX_MEGA_MENU_LINKS_PER_COL);
+                    const hiddenLinksCount = links.length - MAX_MEGA_MENU_LINKS_PER_COL;
+                    const isClickable = !col.isCmsColumn && (col.isDbCategory || col.isCollection || Boolean(col.href));
+                    const colBaseHref = col.href || `/product-category/${col.slug}`;
+                    const colHref = colBaseHref;
+                    const colSubCategoryHref = colBaseHref.includes("#")
+                      ? colBaseHref
+                      : (col.isCollection ? colBaseHref : `${colBaseHref}#sub-categories`);
+
+                    return (
+                      <div key={cIdx} className="flex flex-col min-w-0">
+                        {isClickable ? (
+                          <Link href={colHref} className="group/head block">
+                            <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.5 border-b border-[#26221E]/30 group-hover/head:underline underline-offset-4 cursor-pointer truncate">
+                              {col.title}
+                            </h4>
+                          </Link>
+                        ) : (
+                          <h4 className="font-sans text-[12.5px] font-bold tracking-[0.14em] uppercase text-[#26221E] mb-3 pb-2.5 border-b border-[#26221E]/30 cursor-default select-none truncate">
+                            {col.title}
+                          </h4>
+                        )}
+
+                        <ul className="list-none m-0 p-0 space-y-0.5">
+                          {visibleLinks.map((link, lIdx) => (
+                            <li key={lIdx}>
+                              <Link
+                                href={link.href || `/product-category/${link.slug}`}
+                                className="flex justify-between items-baseline gap-2 text-[#26221E] no-underline py-1.5 group/link"
+                              >
+                                <b className="font-sans text-[15px] font-normal flex items-center gap-2 group-hover/link:underline underline-offset-4 truncate">
+                                  <span className="truncate">{link.name || link.title}</span>
+                                  {link.badge && (
+                                    <em
+                                      className={`font-mono text-[8px] not-italic tracking-[0.11em] px-1.5 py-0.5 shrink-0 ${
+                                        link.badge === "NEW"
+                                          ? "text-white bg-[#8E4B2A]"
+                                          : "text-[#26221E] opacity-45 border border-[#26221E]/30"
+                                      }`}
+                                    >
+                                      {link.badge}
+                                    </em>
+                                  )}
+                                </b>
+                                {link.count && (
+                                  <span className="font-mono text-[11px] opacity-50 shrink-0">
+                                    {link.count}
+                                  </span>
+                                )}
+                              </Link>
+                            </li>
+                          ))}
+
+                          {/* UI Protection: "+ N More" link to sub-categories carousel */}
+                          {hiddenLinksCount > 0 && (
+                            <li className="pt-2">
+                              <Link
+                                href={colSubCategoryHref}
+                                className="inline-flex items-center gap-1 font-mono text-[10.5px] uppercase tracking-wider text-[#9A4A2E] hover:underline font-bold"
+                              >
+                                + {hiddenLinksCount} more formats →
+                              </Link>
+                            </li>
+                          )}
+                        </ul>
+
+                        {/* Dynamic Quick Action Links (at bottom of last column) */}
+                        {cIdx === (categoriesList.length - 1) &&
+                          activeItem.actionLinks &&
+                          activeItem.actionLinks.length > 0 && (
+                            <div className="mt-3.5 pt-3 border-t border-[#26221E]/30 space-y-1">
+                              {activeItem.actionLinks.map((al, alIdx) => (
+                                <a
+                                  key={alIdx}
+                                  href={al.href}
+                                  className="block font-sans text-[14px] text-[#26221E] no-underline py-1 opacity-85 hover:opacity-100 hover:underline underline-offset-4 font-medium"
+                                >
+                                  {al.label}
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : activeItem.actionLinks && activeItem.actionLinks.length > 0 ? (
+                /* Standalone Quick Action Links if no category columns exist */
+                <div className="flex-1 flex flex-col pt-1 space-y-1">
+                  {activeItem.actionLinks.map((al, alIdx) => (
+                    <a
+                      key={alIdx}
+                      href={al.href}
+                      className="block font-sans text-[15px] text-[#26221E] no-underline py-1.5 opacity-85 hover:opacity-100 hover:underline underline-offset-4"
+                    >
+                      {al.label}
+                    </a>
+                  ))}
+                </div>
+              ) : null}
+
+              {/* Dynamic Spotlight Featured Card (Protected Side Column) */}
+              {spotlightImage && (
+                <div className="w-full lg:w-[280px] xl:w-[320px] shrink-0 sticky top-2">
+                  <Link
+                    href={spotlightImage.href || "#"}
+                    className="block no-underline text-inherit bg-[#F5F1EB] group overflow-hidden border border-[#E4DDD3]/60 transition-shadow hover:shadow-md"
+                  >
+                    <div className="aspect-[16/11] relative bg-stone-300 overflow-hidden">
+                      {spotlightImage.image ? (
+                        <Image
+                          src={spotlightImage.image}
+                          alt={spotlightImage.title || "Featured Product"}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-stone-300 text-stone-500 font-mono text-xs">
+                          {spotlightImage.title}
+                        </div>
+                      )}
+                      <span className="absolute top-2.5 left-2.5 bg-[#9C7233] text-white font-mono text-[8.5px] uppercase tracking-[0.16em] px-2 py-0.5 font-bold shadow-xs">
+                        {spotlightImage.eyebrow || "Featured Product"}
+                      </span>
+                      {spotlightImage.badge && (
+                        <span className="absolute left-2.5 bottom-2 font-mono text-[9px] text-white/90 bg-black/40 px-2 py-0.5 rounded-xs backdrop-blur-xs">
+                          {spotlightImage.badge}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-4 sm:p-5">
+                      <p className="font-mono text-[9.5px] tracking-[0.17em] uppercase text-[#9C7233] mb-1.5 font-bold">
+                        {activeItem.title}
+                      </p>
+                      <h5 className="font-serif text-[19px] xl:text-[21px] font-normal mb-2 text-[#26221E] group-hover:underline underline-offset-4 leading-tight">
+                        {spotlightImage.title}
+                      </h5>
+                      <p className="font-serif text-[13px] leading-relaxed text-[#57504A] m-0 line-clamp-2">
+                        {spotlightImage.description}
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* MOBILE SLIDE-OUT DRAWER MENU */}
       <AnimatePresence>
@@ -424,6 +456,7 @@ export default function Header() {
                     const mainHref = item.isCollection || item.slug === "collections"
                       ? "/collections"
                       : `/product-category/${item.slug}`;
+                    const MAX_MOBILE_LINKS_PER_SUB = 5;
 
                     return (
                       <div
@@ -472,7 +505,14 @@ export default function Header() {
 
                               {item.categories.map((sub) => {
                                 const isClickable = !sub.isCmsColumn && (sub.isDbCategory || sub.isCollection || Boolean(sub.href));
-                                const subHref = sub.href || (sub.isCollection ? `/collections/${sub.slug}` : `/product-category/${sub.slug}`);
+                                const subBaseHref = sub.href || (sub.isCollection ? `/collections/${sub.slug}` : `/product-category/${sub.slug}`);
+                                const subHref = subBaseHref;
+                                const subSubCategoryHref = subBaseHref.includes("#")
+                                  ? subBaseHref
+                                  : (sub.isCollection ? subBaseHref : `${subBaseHref}#sub-categories`);
+                                const subLinks = Array.isArray(sub.links) ? sub.links : [];
+                                const visibleSubLinks = subLinks.slice(0, MAX_MOBILE_LINKS_PER_SUB);
+                                const hiddenSubCount = subLinks.length - MAX_MOBILE_LINKS_PER_SUB;
 
                                 return (
                                   <div key={sub.title} className="space-y-1">
@@ -490,18 +530,27 @@ export default function Header() {
                                       </span>
                                     )}
 
-                                    {sub.links && sub.links.length > 0 && (
+                                    {subLinks.length > 0 && (
                                       <div className="pl-3 space-y-1 border-l-2 border-[#26221E]/20 mt-1">
-                                        {sub.links.map((link) => (
+                                        {visibleSubLinks.map((link) => (
                                           <Link
                                             key={link.name}
                                             href={link.href || `/product-category/${link.slug}`}
                                             onClick={() => setMobileMenuOpen(false)}
-                                            className="block text-[#4A423C] hover:text-[#1C1714] hover:underline transition-colors py-0.5"
+                                            className="block text-[#4A423C] hover:text-[#1C1714] hover:underline transition-colors py-0.5 truncate"
                                           >
                                             {link.name}
                                           </Link>
                                         ))}
+                                        {hiddenSubCount > 0 && (
+                                          <Link
+                                            href={subSubCategoryHref}
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className="block text-[11px] font-semibold text-[#9A4A2E] hover:underline pt-0.5"
+                                          >
+                                            + {hiddenSubCount} more formats →
+                                          </Link>
+                                        )}
                                       </div>
                                     )}
                                   </div>

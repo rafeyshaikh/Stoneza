@@ -26,6 +26,8 @@ import OnSiteProjects from "@/components/home/OnSiteProjects";
 import { getOnSiteProjectsData } from "@/lib/getOnSiteProjectsData";
 import JournalSection from "@/components/home/JournalSection";
 import { getJournalArticlesData } from "@/lib/getJournalArticlesData";
+import { resolveStructuredData } from "@/lib/seo/schemaGenerator";
+import JsonLd from "@/components/common/JsonLd";
 
 export async function generateMetadata() {
   try {
@@ -88,14 +90,20 @@ export default async function Home() {
   let safeAbout = null;
   let safeNewArrivals = [];
   let safeLatestBlogs = [];
+  let safeSeo = null;
 
   try {
     await connectDB();
     categories = await getCategoriesForLayout();
     mainCategoriesData = await getMainCategoriesData();
 
-    const homepage = await Homepage.findOne().lean();
+    const [homepage, seoDoc] = await Promise.all([
+      Homepage.findOne().lean(),
+      Seo.findOne().lean(),
+    ]);
+
     safeHomepage = homepage ? JSON.parse(JSON.stringify(homepage)) : null;
+    safeSeo = seoDoc ? JSON.parse(JSON.stringify(seoDoc)) : null;
 
     safeAbout = await getAboutData();
 
@@ -148,8 +156,14 @@ export default async function Home() {
       getJournalArticlesData(),
     ]);
 
+  const structuredData = resolveStructuredData({
+    entityType: "home",
+    seo: safeSeo,
+  });
+
   return (
     <div>
+      <JsonLd data={structuredData} id="homepage-ldjson" />
       <HeroSection slides={safeHomepage?.heroSlides} />
       <StatsBanner />
       

@@ -55,6 +55,19 @@
   max-width: 100%;
 }
 
+.ProseMirror a {
+  color: #9a4a2e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.ProseMirror a:hover {
+  color: #78351f;
+}
+
 .ProseMirror {
   outline: none;
   min-height: 400px;
